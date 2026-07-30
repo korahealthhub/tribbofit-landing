@@ -832,7 +832,8 @@ function renderResult(){
   const cta = document.getElementById('result-cta');
   if (device === 'ios'){
     cta.textContent = 'Baixar no App Store';
-    cta.href = 'https://apps.apple.com/app/id6769632514';
+    cta.href = isInApp ? '/download/?utm_source=calculadora&utm_medium=inapp' : 'https://apps.apple.com/app/id6769632514';
+    if (isInApp) cta.removeAttribute('target');
   } else if (device === 'android'){
     cta.textContent = 'Baixar no Google Play';
     cta.href = 'https://play.google.com/store/apps/details?id=com.usekoraapp.health';
@@ -854,6 +855,15 @@ const navEl = document.getElementById('nav');
 window.addEventListener('scroll', () => {
   navEl.classList.toggle('scrolled', window.scrollY > 40);
 }, { passive: true });
+
+// ═══ In-app browser: redireciona links App Store para /download/ ══
+var isInApp = /Instagram|FBAN|FBAV|musical_ly|TikTok|BytedanceWebview|Snapchat|Threads/i.test(ua);
+if (isInApp) {
+  document.querySelectorAll('a[href*="apps.apple.com"]').forEach(function(a){
+    a.href = '/download/?utm_source=calculadora&utm_medium=inapp';
+    a.removeAttribute('target');
+  });
+}
 </script>
 
 <!-- ─── Barra mobile de download (igual sobre.html) ──────────────── -->

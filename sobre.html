@@ -2514,5 +2514,15 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     Baixar no Android — Google Play
   </a>
 </div>
+<script>
+(function(){
+  var ua=navigator.userAgent||'';
+  if(!/Instagram|FBAN|FBAV|musical_ly|TikTok|BytedanceWebview|Snapchat|Threads/i.test(ua))return;
+  document.querySelectorAll('a[href*="apps.apple.com"]').forEach(function(a){
+    a.href='/download/?utm_source=sobre&utm_medium=inapp';
+    a.removeAttribute('target');
+  });
+})();
+</script>
 </body>
 </html>

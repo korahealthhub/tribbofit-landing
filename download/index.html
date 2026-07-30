@@ -24,6 +24,7 @@
 <title>Kora | Download</title>
 <meta name="description" content="Baixe o Kora — App de saúde completo com Coach IA.">
 <meta name="robots" content="noindex">
+<meta name="apple-itunes-app" content="app-id=6769632514">
 <link rel="icon" href="../logo-k.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -49,7 +50,6 @@ body{
   padding:24px;
 }
 
-/* ─── Logo ───────────────────────────────────── */
 .logo{
   height:28px;
   object-fit:contain;
@@ -58,7 +58,7 @@ body{
   margin-bottom:40px;
 }
 
-/* ─── Spinner ────────────────────────────────── */
+/* Spinner — só aparece fora do in-app browser */
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinner{
   width:36px;height:36px;
@@ -68,8 +68,6 @@ body{
   animation:spin .8s linear infinite;
   margin-bottom:20px;
 }
-
-/* ─── Status text ────────────────────────────── */
 .status{
   font-size:15px;
   font-weight:600;
@@ -78,7 +76,64 @@ body{
   margin-bottom:52px;
 }
 
-/* ─── Fallback buttons ───────────────────────── */
+/* Banner in-app browser */
+.inapp-banner{
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  gap:8px;
+  margin-bottom:32px;
+  max-width:320px;
+}
+.inapp-banner.visible{display:flex}
+.inapp-title{
+  font-size:18px;
+  font-weight:700;
+  color:#F5F0E6;
+  line-height:1.3;
+}
+.inapp-subtitle{
+  font-size:14px;
+  color:rgba(245,240,230,0.55);
+  line-height:1.5;
+}
+.inapp-open-browser{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  margin-top:8px;
+  padding:12px 24px;
+  border-radius:50px;
+  background:rgba(93,202,165,0.12);
+  border:1px solid rgba(93,202,165,0.3);
+  color:#5DCAA5;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  transition:background .18s;
+}
+.inapp-open-browser:hover{
+  background:rgba(93,202,165,0.2);
+}
+.inapp-hint{
+  font-size:12px;
+  color:rgba(245,240,230,0.35);
+  margin-top:4px;
+  line-height:1.5;
+}
+.inapp-copied{
+  font-size:13px;
+  font-weight:600;
+  color:#5DCAA5;
+  opacity:0;
+  transition:opacity .3s;
+  margin-top:4px;
+}
+.inapp-copied.show{opacity:1}
+
+/* Fallback buttons */
 .fallback{
   display:flex;
   flex-direction:column;
@@ -122,20 +177,46 @@ body{
 .dl-btn-body{display:flex;flex-direction:column;gap:2px}
 .dl-btn-label{font-size:14px;font-weight:700;color:#F5F0E6}
 .dl-btn-caption{font-size:12px;color:rgba(245,240,230,0.45)}
+
+/* Estado in-app: botões maiores e mais visíveis */
+body.is-inapp .fallback-label{display:none}
+body.is-inapp .dl-btn{
+  padding:16px 20px;
+  background:rgba(93,202,165,0.08);
+  border-color:rgba(93,202,165,0.2);
+}
 </style>
 </head>
 <body>
 
 <img src="../nome-kora.png" class="logo" alt="Kora">
 
-<div class="spinner"></div>
-<p class="status">Redirecionando...</p>
+<!-- Estado normal: spinner + redirect -->
+<div id="auto-redirect">
+  <div class="spinner"></div>
+  <p class="status">Redirecionando...</p>
+</div>
+
+<!-- Estado in-app browser: banner com instrução -->
+<div id="inapp-banner" class="inapp-banner">
+  <p class="inapp-title">Toque no botão abaixo para baixar</p>
+  <p class="inapp-subtitle">O download abre direto na App Store</p>
+  <button class="inapp-open-browser" id="copy-link" type="button">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+    </svg>
+    Copiar link e abrir no navegador
+  </button>
+  <p class="inapp-hint" id="inapp-hint">Ou toque em <strong>⋯</strong> → <strong>Abrir no navegador</strong></p>
+  <p class="inapp-copied" id="copied-msg">Link copiado!</p>
+</div>
 
 <div class="fallback">
   <p class="fallback-label">Ou escolha manualmente</p>
 
   <!-- iOS -->
-  <a href="https://apps.apple.com/br/app/kora-health-hub/id6769632514"
+  <a id="btn-ios" href="https://apps.apple.com/br/app/kora-health-hub/id6769632514"
      class="dl-btn"
      target="_blank" rel="noopener"
      onclick="gtag('event','click_appstore',{'event_category':'conversion','event_label':'app_store_ios'});ttq.track('ClickButton',{contents:[{content_id:'app_store_ios',content_type:'app',content_name:'Kora iOS App Store'}]});">
@@ -187,8 +268,16 @@ body{
   var isIOS     = /iPhone|iPad|iPod/i.test(ua);
   var isAndroid = /Android/i.test(ua);
 
+  // Detecta in-app browsers (Instagram, Facebook, TikTok, Threads, Snapchat)
+  var isInApp = /Instagram|FBAN|FBAV|musical_ly|TikTok|BytedanceWebview|Snapchat|Threads/i.test(ua);
+  var isInstagram = /Instagram/i.test(ua);
+  var isTikTok = /musical_ly|TikTok|BytedanceWebview/i.test(ua);
+
+  var storeUrl = 'https://apps.apple.com/br/app/kora-health-hub/id6769632514';
+  var pageUrl = window.location.href;
+
   var destination = isIOS
-    ? 'https://apps.apple.com/br/app/kora-health-hub/id6769632514'
+    ? storeUrl
     : isAndroid
     ? 'https://play.google.com/store/apps/details?id=com.usekoraapp.health'
     : '/';
@@ -201,7 +290,8 @@ body{
 
   gtag('event', 'smart_link_redirect', {
     'event_category': 'conversion',
-    'event_label': eventLabel
+    'event_label': eventLabel,
+    'is_inapp': isInApp ? 'yes' : 'no'
   });
 
   ttq.track('ClickButton', {
@@ -212,9 +302,52 @@ body{
     }]
   });
 
-  setTimeout(function() {
-    window.location.href = destination;
-  }, 500);
+  if (isInApp) {
+    // In-app browser: mostra botões em vez de redirecionar
+    document.body.classList.add('is-inapp');
+    document.getElementById('auto-redirect').style.display = 'none';
+    document.getElementById('inapp-banner').classList.add('visible');
+
+    // Hint contextual por plataforma
+    var hint = document.getElementById('inapp-hint');
+    if (isInstagram) {
+      hint.innerHTML = 'Ou toque em <strong>⋯</strong> no topo → <strong>Abrir no navegador</strong>';
+    } else if (isTikTok) {
+      hint.innerHTML = 'Ou toque em <strong>⋯</strong> → <strong>Abrir no navegador</strong>';
+    } else {
+      hint.innerHTML = 'Ou abra este link no Safari / Chrome';
+    }
+
+    // Botão copiar link
+    document.getElementById('copy-link').addEventListener('click', function() {
+      var fullUrl = 'https://korahealthhub.com.br/download/';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(fullUrl).then(function() {
+          showCopied();
+        });
+      } else {
+        var input = document.createElement('input');
+        input.value = fullUrl;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        showCopied();
+      }
+    });
+
+    function showCopied() {
+      var msg = document.getElementById('copied-msg');
+      msg.classList.add('show');
+      setTimeout(function(){ msg.classList.remove('show'); }, 2000);
+    }
+
+  } else {
+    // Navegador normal: redireciona automaticamente
+    setTimeout(function() {
+      window.location.href = destination;
+    }, 500);
+  }
 </script>
 
 </body>

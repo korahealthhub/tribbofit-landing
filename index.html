@@ -30,6 +30,7 @@
 <meta property="og:image" content="./og-image.png">
 <meta property="og:image:alt" content="Kora — App de saúde que organiza seus planos em um só lugar">
 <meta property="og:url" content="https://korahealthhub.github.io/kora-landing">
+<meta name="apple-itunes-app" content="app-id=6769632514">
 <link rel="icon" href="./logo-k.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -269,6 +270,36 @@ footer{
   transition:color .2s;
 }
 .foot-link:hover{color:var(--text-dim)}
+
+/* ─── In-app browser toast ──────────────────────────────────── */
+.inapp-toast{
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:rgba(10,26,24,0.96);
+  border-top:1px solid rgba(93,202,165,0.25);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  padding:16px 20px;
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  text-align:center;
+  animation:slideUp .3s ease;
+}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.inapp-toast.visible{display:flex}
+.inapp-toast-text{font-size:14px;color:rgba(245,240,230,0.75);line-height:1.5}
+.inapp-toast-text strong{color:#5DCAA5}
+.inapp-toast-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:10px 20px;border-radius:50px;
+  background:rgba(93,202,165,0.15);border:1px solid rgba(93,202,165,0.3);
+  color:#5DCAA5;font-size:13px;font-weight:700;cursor:pointer;
+  transition:background .18s;
+}
+.inapp-toast-btn:hover{background:rgba(93,202,165,0.25)}
+.inapp-toast-copied{font-size:12px;color:#5DCAA5;opacity:0;transition:opacity .3s}
+.inapp-toast-copied.show{opacity:1}
 </style>
 </head>
 <body>
@@ -390,11 +421,51 @@ footer{
   </div>
 </footer>
 
+<!-- Toast para in-app browser -->
+<div id="inapp-toast" class="inapp-toast">
+  <p class="inapp-toast-text">Para baixar, abra no <strong>Safari</strong> ou <strong>Chrome</strong></p>
+  <button id="inapp-copy" class="inapp-toast-btn" type="button">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    Copiar link
+  </button>
+  <p id="inapp-copied" class="inapp-toast-copied">Link copiado! Cole no navegador.</p>
+</div>
+
 <script>
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
   nav.classList.toggle('scrolled', window.scrollY > 40);
 }, {passive: true});
+
+(function(){
+  var ua = navigator.userAgent || '';
+  var isInApp = /Instagram|FBAN|FBAV|musical_ly|TikTok|BytedanceWebview|Snapchat|Threads/i.test(ua);
+
+  if (isInApp) {
+    document.getElementById('inapp-toast').classList.add('visible');
+
+    document.getElementById('inapp-copy').addEventListener('click', function() {
+      var url = 'https://korahealthhub.com.br/';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(showCopied);
+      } else {
+        var input = document.createElement('input');
+        input.value = url;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        showCopied();
+      }
+    });
+
+    function showCopied() {
+      var msg = document.getElementById('inapp-copied');
+      msg.classList.add('show');
+      setTimeout(function(){ msg.classList.remove('show'); }, 2500);
+    }
+  }
+})();
 </script>
 
 </body>
