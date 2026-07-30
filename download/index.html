@@ -185,6 +185,33 @@ body.is-inapp .dl-btn{
   background:rgba(93,202,165,0.08);
   border-color:rgba(93,202,165,0.2);
 }
+body.is-inapp .dl-btn-ios-inapp{
+  background:linear-gradient(135deg,#3DAA85,#5DCAA5);
+  border-color:rgba(93,202,165,0.3);
+  box-shadow:0 6px 24px rgba(61,170,133,0.28);
+}
+body.is-inapp .dl-btn-ios-inapp .dl-btn-icon{
+  background:rgba(255,255,255,0.18);
+}
+body.is-inapp .dl-btn-ios-inapp .dl-btn-label{color:#fff}
+body.is-inapp .dl-btn-ios-inapp .dl-btn-caption{color:rgba(255,255,255,0.7)}
+.toast-feedback{
+  position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:rgba(10,26,24,0.96);border:1px solid rgba(93,202,165,0.35);
+  border-radius:16px;padding:24px 28px;z-index:9999;
+  display:none;flex-direction:column;align-items:center;gap:10px;
+  text-align:center;max-width:300px;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  box-shadow:0 20px 60px rgba(0,0,0,0.6);
+  animation:toastPop .3s ease;
+}
+@keyframes toastPop{from{opacity:0;transform:translate(-50%,-50%) scale(0.9)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.toast-feedback.visible{display:flex}
+.toast-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9998;
+  display:none;
+}
+.toast-overlay.visible{display:block}
 </style>
 </head>
 <body>
@@ -210,6 +237,14 @@ body.is-inapp .dl-btn{
   </button>
   <p class="inapp-hint" id="inapp-hint">Ou toque em <strong>⋯</strong> → <strong>Abrir no navegador</strong></p>
   <p class="inapp-copied" id="copied-msg">Link copiado!</p>
+</div>
+
+<!-- Toast de feedback ao copiar -->
+<div id="toast-overlay" class="toast-overlay"></div>
+<div id="toast-feedback" class="toast-feedback">
+  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#5DCAA5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+  <p style="font-size:16px;font-weight:700;color:#F5F0E6;margin:0">Link copiado!</p>
+  <p style="font-size:13px;color:rgba(245,240,230,0.6);margin:0;line-height:1.5">Agora abra o <strong style="color:#5DCAA5">Safari</strong> e cole o link na barra de endereço</p>
 </div>
 
 <div class="fallback">
@@ -318,23 +353,53 @@ body.is-inapp .dl-btn{
       hint.innerHTML = 'Ou abra este link no Safari / Chrome';
     }
 
-    // Botão copiar link
+    // Transforma botão iOS: em vez de link direto (bloqueado), copia o link
+    var btnIos = document.getElementById('btn-ios');
+    if (btnIos) {
+      btnIos.href = '#';
+      btnIos.removeAttribute('target');
+      btnIos.classList.add('dl-btn-ios-inapp');
+      btnIos.querySelector('.dl-btn-label').textContent = 'Baixar no iPhone';
+      btnIos.querySelector('.dl-btn-caption').textContent = 'Toque para copiar o link';
+      btnIos.addEventListener('click', function(e) {
+        e.preventDefault();
+        copyAndShowToast('https://korahealthhub.com.br/download/');
+      });
+    }
+
+    // Botão copiar link do banner
     document.getElementById('copy-link').addEventListener('click', function() {
-      var fullUrl = 'https://korahealthhub.com.br/download/';
+      copyAndShowToast('https://korahealthhub.com.br/download/');
+    });
+
+    function copyAndShowToast(url) {
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(fullUrl).then(function() {
-          showCopied();
-        });
+        navigator.clipboard.writeText(url).then(showToast);
       } else {
         var input = document.createElement('input');
-        input.value = fullUrl;
+        input.value = url;
         document.body.appendChild(input);
         input.select();
         document.execCommand('copy');
         document.body.removeChild(input);
-        showCopied();
+        showToast();
       }
-    });
+    }
+
+    function showToast() {
+      var overlay = document.getElementById('toast-overlay');
+      var toast = document.getElementById('toast-feedback');
+      overlay.classList.add('visible');
+      toast.classList.add('visible');
+      setTimeout(function(){
+        overlay.classList.remove('visible');
+        toast.classList.remove('visible');
+      }, 3000);
+      overlay.addEventListener('click', function(){
+        overlay.classList.remove('visible');
+        toast.classList.remove('visible');
+      });
+    }
 
     function showCopied() {
       var msg = document.getElementById('copied-msg');

@@ -444,6 +444,12 @@ window.addEventListener('scroll', () => {
   if (isInApp) {
     document.getElementById('inapp-toast').classList.add('visible');
 
+    // Redireciona botões App Store para /download/ (que trata in-app)
+    document.querySelectorAll('a[href*="apps.apple.com"]').forEach(function(a){
+      a.href = '/download/?utm_source=hub&utm_medium=inapp';
+      a.removeAttribute('target');
+    });
+
     document.getElementById('inapp-copy').addEventListener('click', function() {
       var url = 'https://korahealthhub.com.br/';
       if (navigator.clipboard && navigator.clipboard.writeText) {
