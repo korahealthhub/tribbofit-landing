@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Termos de Uso — Kora Health Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0F1F1F;
+      --card:    #1E2126;
+      --card2:   #24292F;
+      --teal:    #3D9E8C;
+      --tealLt:  #52C4AE;
+      --t1:      #FFFBE7;
+      --t2:      rgba(255,251,231,0.60);
+      --t3:      rgba(255,251,231,0.38);
+      --border:  rgba(255,251,231,0.09);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--t1);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Top bar ── */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15,31,31,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .topbar-logo {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+    }
+
+    .topbar-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--t1);
+      letter-spacing: -0.2px;
+    }
+
+    /* ── Layout ── */
+    .page {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* ── Header ── */
+    .doc-header {
+      margin-bottom: 48px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .doc-header-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: rgba(61,158,140,0.12);
+      border: 1px solid rgba(61,158,140,0.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    .doc-title {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--t1);
+      margin-bottom: 6px;
+    }
+
+    .doc-subtitle {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--teal);
+      margin-bottom: 16px;
+    }
+
+    .doc-meta {
+      font-size: 13px;
+      color: var(--t3);
+      font-weight: 400;
+    }
+
+    /* ── Sections ── */
+    .section {
+      margin-bottom: 40px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.1px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 14px;
+    }
+
+    .section-number {
+      display: inline-block;
+      margin-right: 6px;
+      opacity: 0.7;
+    }
+
+    h2 {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--t1);
+      letter-spacing: -0.2px;
+      margin-bottom: 12px;
+      margin-top: 36px;
+    }
+
+    h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--t2);
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: var(--t2);
+      margin-bottom: 14px;
+      font-size: 14px;
+    }
+
+    p:last-child { margin-bottom: 0; }
+
+    ul, ol {
+      padding-left: 20px;
+      color: var(--t2);
+      font-size: 14px;
+      margin-bottom: 14px;
+    }
+
+    li { margin-bottom: 6px; }
+
+    a { color: var(--teal); }
+
+    /* ── Notice box ── */
+    .notice {
+      background: rgba(61,158,140,0.08);
+      border: 1px solid rgba(61,158,140,0.22);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 14px;
+    }
+
+    .notice p {
+      color: rgba(255,251,231,0.75);
+      margin-bottom: 0;
+      font-size: 13px;
+    }
+
+    /* ── Warning box ── */
+    .warning {
+      background: rgba(200,134,26,0.08);
+      border: 1px solid rgba(200,134,26,0.22);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 14px;
+    }
+
+    .warning p {
+      color: rgba(255,251,231,0.75);
+      margin-bottom: 0;
+      font-size: 13px;
+    }
+
+    /* ── Contact ── */
+    .contact-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 22px;
+      margin-top: 8px;
+    }
+
+    .contact-box p {
+      margin-bottom: 4px;
+    }
+
+    .contact-box a {
+      color: var(--teal);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .contact-box a:hover { text-decoration: underline; }
+
+    /* ── Divider ── */
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 40px 0;
+    }
+
+    /* ── TOC ── */
+    .toc {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin-bottom: 40px;
+    }
+
+    .toc-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--t3);
+      margin-bottom: 12px;
+    }
+
+    .toc ol {
+      margin-bottom: 0;
+      padding-left: 18px;
+    }
+
+    .toc li {
+      margin-bottom: 4px;
+    }
+
+    .toc a {
+      color: var(--teal);
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .toc a:hover { text-decoration: underline; }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--t3);
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .page { padding: 32px 16px 60px; }
+      .doc-title { font-size: 22px; }
+      h2 { font-size: 15px; }
+      .topbar { padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <a class="topbar-brand" href="#">
+      <span class="topbar-name">Kora Health Hub</span>
+    </a>
+  </div>
+
+  <div class="page">
+
+    <div class="doc-header">
+      <div class="doc-header-icon">📄</div>
+      <div class="doc-title">Termos de Uso</div>
+      <div class="doc-subtitle">Kora — Health Hub</div>
+      <div class="doc-meta">Última atualização: 26 de agosto de 2026 &nbsp;·&nbsp; Versão 1.0</div>
+    </div>
+
+    <div class="notice">
+      <p>Bem-vindo ao Kora Health Hub ("Kora", "nós", "nosso"). Estes Termos de Uso ("Termos") regulam o acesso e uso do aplicativo Kora Health Hub, disponível nas plataformas iOS e Android ("Aplicativo" ou "Serviço"). Ao criar uma conta ou usar o Aplicativo, você concorda com estes Termos e com nossa <a href="/privacidade/">Política de Privacidade</a>. Se você não concorda, não utilize o Aplicativo.</p>
+    </div>
+
+    <p style="font-size:13px;color:var(--t3);margin-bottom:40px;">O Kora é operado por Roberto Rosa, pessoa física, em processo de formalização como pessoa jurídica. Assim que o CNPJ for emitido, este documento será atualizado com a razão social correspondente.</p>
+
+    <div class="toc">
+      <div class="toc-title">Conteúdo</div>
+      <ol>
+        <li><a href="#s1">O que é o Kora</a></li>
+        <li><a href="#s2">Quem pode usar o Kora</a></li>
+        <li><a href="#s3">Sua conta</a></li>
+        <li><a href="#s4">Planos de assinatura</a></li>
+        <li><a href="#s5">Uso aceitável</a></li>
+        <li><a href="#s6">Propriedade intelectual</a></li>
+        <li><a href="#s7">Limitação de responsabilidade</a></li>
+        <li><a href="#s8">Modificações do serviço e destes Termos</a></li>
+        <li><a href="#s9">Encerramento</a></li>
+        <li><a href="#s10">Disposições gerais</a></li>
+        <li><a href="#s11">Legislação aplicável e foro</a></li>
+        <li><a href="#s12">Contato</a></li>
+      </ol>
+    </div>
+
+    <!-- 1 -->
+    <div class="section" id="s1">
+      <div class="section-title"><span class="section-number">01</span>O que é o Kora</div>
+
+      <p>O Kora é um aplicativo de bem-estar geral que ajuda você a acompanhar e organizar rotinas relacionadas a sono, nutrição, treino, hidratação, humor e disposição, com apoio de um assistente de inteligência artificial ("Coach IA").</p>
+
+      <div class="warning">
+        <p><strong>O Kora não é um dispositivo médico, não presta serviço de saúde, não substitui profissional de saúde (médico, nutricionista, educador físico, psicólogo, ou qualquer outro) e não realiza diagnóstico.</strong> Todo conteúdo gerado pelo Coach IA, incluindo sugestões de treino, nutrição e análises de dados, tem caráter educativo e informativo. Antes de iniciar qualquer programa de exercício, mudança alimentar ou tratar de qualquer questão de saúde, consulte um profissional qualificado.</p>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="section" id="s2">
+      <div class="section-title"><span class="section-number">02</span>Quem pode usar o Kora</div>
+
+      <p>Você precisa ter pelo menos 18 anos de idade para criar uma conta e usar o Aplicativo. Ao se cadastrar, você declara e garante que atende a esse requisito. Se identificarmos que uma conta pertence a uma pessoa com menos de 18 anos, poderemos suspendê-la ou encerrá-la a qualquer momento.</p>
+    </div>
+
+    <!-- 3 -->
+    <div class="section" id="s3">
+      <div class="section-title"><span class="section-number">03</span>Sua conta</div>
+
+      <p>Você é responsável por manter a confidencialidade das credenciais da sua conta e por todas as atividades realizadas nela. Avise-nos imediatamente (<a href="mailto:atendimento.app.kora@gmail.com">atendimento.app.kora@gmail.com</a>) se suspeitar de uso não autorizado da sua conta.</p>
+
+      <p>Você é responsável por manter suas informações de perfil atualizadas e precisas, especialmente aquelas usadas pelo Coach IA e pelos geradores de plano (nível de condicionamento, restrições físicas, equipamento disponível, etc.), já que informações incorretas podem levar a recomendações inadequadas.</p>
+    </div>
+
+    <!-- 4 -->
+    <div class="section" id="s4">
+      <div class="section-title"><span class="section-number">04</span>Planos de assinatura</div>
+
+      <h3>4.1 Free e Premium</h3>
+      <p>O Kora oferece um plano gratuito ("Free"), com acesso limitado a determinadas funcionalidades, e um plano pago ("Premium" ou "Assinatura"), com acesso ampliado. As funcionalidades específicas de cada plano estão descritas dentro do próprio Aplicativo e podem ser atualizadas periodicamente.</p>
+
+      <h3>4.2 Preços e formas de pagamento</h3>
+      <p>Os planos de assinatura Premium disponíveis são: mensal, semestral e anual, com preços exibidos no Aplicativo no momento da contratação. Os preços podem ser ajustados a qualquer momento; alterações não afetam ciclos já pagos, apenas renovações futuras, e você será notificado antes de qualquer aumento entrar em vigor na sua renovação.</p>
+      <p>O pagamento é processado exclusivamente pela Apple App Store ou pelo Google Play Store, conforme a loja de origem da sua conta. O Kora não tem acesso aos dados do seu cartão ou método de pagamento — isso é gerenciado inteiramente pela loja.</p>
+
+      <h3>4.3 Renovação automática</h3>
+      <p>As assinaturas são renovadas automaticamente ao final de cada período (mensal, semestral ou anual), pelo mesmo valor vigente, a menos que você cancele antes da data de renovação. A cobrança da renovação é feita nas 24 horas anteriores ao fim do período vigente.</p>
+
+      <h3>4.4 Cancelamento</h3>
+      <p>Você pode cancelar sua assinatura a qualquer momento através das configurações da sua conta na Apple App Store ou no Google Play Store — não é possível cancelar diretamente pelo Kora, já que a cobrança é gerenciada pela loja. Ao cancelar, você mantém acesso Premium até o fim do período já pago; a renovação automática é interrompida, mas o valor já pago não é reembolsado proporcionalmente, exceto conforme a seção 4.5.</p>
+
+      <h3>4.5 Direito de arrependimento (garantia de 7 dias)</h3>
+      <div class="notice">
+        <p>Em conformidade com o Art. 49 do Código de Defesa do Consumidor, você tem direito à devolução integral do valor pago caso solicite o cancelamento dentro de <strong>7 dias corridos</strong> a partir da data da contratação inicial. Para exercer esse direito, entre em contato pelo <a href="mailto:atendimento.app.kora@gmail.com">atendimento.app.kora@gmail.com</a> ou solicite o reembolso diretamente pela loja (Apple ou Google), conforme as políticas de reembolso de cada uma. Esse direito se aplica apenas à primeira contratação, não a renovações subsequentes.</p>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="section" id="s5">
+      <div class="section-title"><span class="section-number">05</span>Uso aceitável</div>
+
+      <p>Ao usar o Kora, você concorda em não:</p>
+      <ul>
+        <li>Usar o Aplicativo para qualquer finalidade ilegal ou não autorizada;</li>
+        <li>Tentar acessar áreas do sistema, dados de outros usuários, ou infraestrutura do Kora sem autorização;</li>
+        <li>Realizar engenharia reversa, descompilar, ou tentar extrair o código-fonte do Aplicativo;</li>
+        <li>Utilizar o Coach IA para gerar conteúdo prejudicial, ilegal, ou que viole direitos de terceiros;</li>
+        <li>Compartilhar sua conta com terceiros ou revender acesso ao Aplicativo;</li>
+        <li>Utilizar robôs, scripts ou qualquer meio automatizado para acessar o Aplicativo fora do uso normal.</li>
+      </ul>
+      <p>O descumprimento destas regras pode resultar em suspensão ou encerramento da sua conta, sem reembolso, a critério do Kora.</p>
+    </div>
+
+    <!-- 6 -->
+    <div class="section" id="s6">
+      <div class="section-title"><span class="section-number">06</span>Propriedade intelectual</div>
+
+      <p>Todo o conteúdo do Aplicativo — incluindo design, marca, textos, ícones, banco de exercícios e alimentos, e a estrutura do Coach IA — é de propriedade do Kora ou de seus licenciadores, e é protegido por leis de propriedade intelectual. Você recebe uma licença limitada, pessoal, não exclusiva e intransferível para usar o Aplicativo conforme estes Termos — isso não te transfere nenhuma propriedade sobre o Aplicativo ou seu conteúdo.</p>
+
+      <p>Os dados que você insere no Aplicativo (registros de treino, alimentação, sono, humor, fotos de refeição, conversas com o Coach) continuam sendo seus. Usamos esses dados apenas conforme descrito na nossa <a href="/privacidade/">Política de Privacidade</a>.</p>
+    </div>
+
+    <!-- 7 -->
+    <div class="section" id="s7">
+      <div class="section-title"><span class="section-number">07</span>Limitação de responsabilidade</div>
+
+      <p>O Kora é fornecido "como está", sem garantias de qualquer tipo, expressas ou implícitas. Na máxima extensão permitida pela lei brasileira:</p>
+      <ul>
+        <li>Não garantimos que o Aplicativo estará livre de erros, interrupções, ou disponível ininterruptamente;</li>
+        <li>Não somos responsáveis por decisões de saúde, treino ou alimentação tomadas com base em conteúdo do Coach IA ou de qualquer funcionalidade do Aplicativo — essas decisões são de sua exclusiva responsabilidade, e recomendamos sempre consultar um profissional qualificado;</li>
+        <li>Não somos responsáveis por lesões, danos à saúde, ou qualquer prejuízo decorrente do uso incorreto de sugestões de treino ou nutrição fornecidas pelo Aplicativo;</li>
+        <li>Nossa responsabilidade total perante você, em qualquer circunstância, está limitada ao valor pago por você ao Kora nos 12 meses anteriores ao evento que originou a reclamação.</li>
+      </ul>
+      <p>Nada nestes Termos exclui ou limita direitos que não podem ser excluídos ou limitados pelo Código de Defesa do Consumidor.</p>
+    </div>
+
+    <!-- 8 -->
+    <div class="section" id="s8">
+      <div class="section-title"><span class="section-number">08</span>Modificações do serviço e destes Termos</div>
+
+      <p>Podemos modificar, suspender ou descontinuar funcionalidades do Aplicativo a qualquer momento. Também podemos atualizar estes Termos periodicamente; mudanças significativas serão comunicadas dentro do Aplicativo ou por e-mail. O uso continuado do Aplicativo após uma atualização constitui aceitação dos novos Termos.</p>
+    </div>
+
+    <!-- 9 -->
+    <div class="section" id="s9">
+      <div class="section-title"><span class="section-number">09</span>Encerramento</div>
+
+      <p>Você pode encerrar sua conta a qualquer momento pelas configurações do Aplicativo. Podemos suspender ou encerrar sua conta caso identifiquemos violação destes Termos, sem aviso prévio em casos graves, e com aviso prévio razoável nos demais casos.</p>
+    </div>
+
+    <!-- 10 -->
+    <div class="section" id="s10">
+      <div class="section-title"><span class="section-number">10</span>Disposições gerais</div>
+
+      <p>Se qualquer disposição destes Termos for considerada inválida ou inaplicável, as demais disposições permanecem em pleno vigor. A tolerância quanto ao descumprimento de qualquer disposição não constitui renúncia ao direito de exigi-la posteriormente.</p>
+    </div>
+
+    <!-- 11 -->
+    <div class="section" id="s11">
+      <div class="section-title"><span class="section-number">11</span>Legislação aplicável e foro</div>
+
+      <p>Estes Termos são regidos pelas leis da República Federativa do Brasil. Fica eleito o foro da Comarca de São Paulo, SP, para dirimir quaisquer controvérsias decorrentes destes Termos, com renúncia a qualquer outro, por mais privilegiado que seja, ressalvado o direito do consumidor de optar pelo foro de seu domicílio, conforme o Código de Defesa do Consumidor.</p>
+    </div>
+
+    <!-- 12 -->
+    <div class="section" id="s12">
+      <div class="section-title"><span class="section-number">12</span>Contato</div>
+
+      <p>Dúvidas sobre estes Termos podem ser enviadas para:</p>
+
+      <div class="contact-box">
+        <p style="font-size:13px;color:var(--t3);margin-bottom:8px;">E-mail de atendimento</p>
+        <a href="mailto:atendimento.app.kora@gmail.com">atendimento.app.kora@gmail.com</a>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>© 2026 Kora Health Hub · <a href="mailto:atendimento.app.kora@gmail.com" style="color:var(--teal);text-decoration:none;">atendimento.app.kora@gmail.com</a></p>
+      <p style="margin-top:4px;">Última atualização: 26 de agosto de 2026</p>
+    </div>
+
+  </div><!-- /page -->
+
+</body>
+</html>

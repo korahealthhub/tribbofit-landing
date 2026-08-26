@@ -126,7 +126,10 @@ export default function CtaFinalSection() {
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
           <div style={{ fontSize: 12, color: 'var(--kora-grey-500)' }}>© 2026 Kora Health Hub</div>
-          <a href="https://korahealthhub.com.br/privacidade" style={{ fontSize: 12, color: 'var(--kora-grey-500)', textDecoration: 'underline', textUnderlineOffset: 3 }}>Política de Privacidade</a>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <a href="https://korahealthhub.com.br/termos" style={{ fontSize: 12, color: 'var(--kora-grey-500)', textDecoration: 'underline', textUnderlineOffset: 3 }}>Termos de Uso</a>
+            <a href="https://korahealthhub.com.br/privacidade" style={{ fontSize: 12, color: 'var(--kora-grey-500)', textDecoration: 'underline', textUnderlineOffset: 3 }}>Política de Privacidade</a>
+          </div>
         </div>
       </div>
     </section>
