@@ -69,6 +69,37 @@
       letter-spacing: -0.2px;
     }
 
+    /* ── Language toggle ── */
+    .lang-toggle {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      background: var(--card2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 3px;
+    }
+
+    .lang-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: var(--t3);
+      padding: 4px 10px;
+      border-radius: 6px;
+      transition: background 0.15s, color 0.15s;
+      text-transform: uppercase;
+    }
+
+    .lang-btn.active {
+      background: var(--teal);
+      color: #fff;
+    }
+
     /* ── Layout ── */
     .page {
       max-width: 780px;
@@ -278,6 +309,10 @@
       line-height: 1.8;
     }
 
+    /* ── Language content ── */
+    [data-lang] { display: none; }
+    [data-lang].visible { display: block; }
+
     /* ── Responsive ── */
     @media (max-width: 600px) {
       .page { padding: 32px 16px 60px; }
@@ -293,176 +328,373 @@
     <a class="topbar-brand" href="#">
       <span class="topbar-name">Kora Health Hub</span>
     </a>
+    <div class="lang-toggle" role="group" aria-label="Idioma / Language">
+      <button class="lang-btn active" id="btn-pt" onclick="setLang('pt')" aria-pressed="true">PT</button>
+      <button class="lang-btn" id="btn-en" onclick="setLang('en')" aria-pressed="false">EN</button>
+    </div>
   </div>
 
   <div class="page">
 
-    <div class="doc-header">
-      <div class="doc-header-icon">📄</div>
-      <div class="doc-title">Termos de Uso</div>
-      <div class="doc-subtitle">Kora — Health Hub</div>
-      <div class="doc-meta">Última atualização: 26 de agosto de 2026 &nbsp;·&nbsp; Versão 1.0</div>
-    </div>
+    <!-- ═══════════════════════════════════════════ PT-BR ═══ -->
+    <div data-lang="pt" class="visible">
 
-    <div class="notice">
-      <p>Bem-vindo ao Kora Health Hub ("Kora", "nós", "nosso"). Estes Termos de Uso ("Termos") regulam o acesso e uso do aplicativo Kora Health Hub, disponível nas plataformas iOS e Android ("Aplicativo" ou "Serviço"). Ao criar uma conta ou usar o Aplicativo, você concorda com estes Termos e com nossa <a href="/privacidade/">Política de Privacidade</a>. Se você não concorda, não utilize o Aplicativo.</p>
-    </div>
-
-    <p style="font-size:13px;color:var(--t3);margin-bottom:40px;">O Kora é operado por Roberto Rosa, pessoa física, em processo de formalização como pessoa jurídica. Assim que o CNPJ for emitido, este documento será atualizado com a razão social correspondente.</p>
-
-    <div class="toc">
-      <div class="toc-title">Conteúdo</div>
-      <ol>
-        <li><a href="#s1">O que é o Kora</a></li>
-        <li><a href="#s2">Quem pode usar o Kora</a></li>
-        <li><a href="#s3">Sua conta</a></li>
-        <li><a href="#s4">Planos de assinatura</a></li>
-        <li><a href="#s5">Uso aceitável</a></li>
-        <li><a href="#s6">Propriedade intelectual</a></li>
-        <li><a href="#s7">Limitação de responsabilidade</a></li>
-        <li><a href="#s8">Modificações do serviço e destes Termos</a></li>
-        <li><a href="#s9">Encerramento</a></li>
-        <li><a href="#s10">Disposições gerais</a></li>
-        <li><a href="#s11">Legislação aplicável e foro</a></li>
-        <li><a href="#s12">Contato</a></li>
-      </ol>
-    </div>
-
-    <!-- 1 -->
-    <div class="section" id="s1">
-      <div class="section-title"><span class="section-number">01</span>O que é o Kora</div>
-
-      <p>O Kora é um aplicativo de bem-estar geral que ajuda você a acompanhar e organizar rotinas relacionadas a sono, nutrição, treino, hidratação, humor e disposição, com apoio de um assistente de inteligência artificial ("Coach IA").</p>
-
-      <div class="warning">
-        <p><strong>O Kora não é um dispositivo médico, não presta serviço de saúde, não substitui profissional de saúde (médico, nutricionista, educador físico, psicólogo, ou qualquer outro) e não realiza diagnóstico.</strong> Todo conteúdo gerado pelo Coach IA, incluindo sugestões de treino, nutrição e análises de dados, tem caráter educativo e informativo. Antes de iniciar qualquer programa de exercício, mudança alimentar ou tratar de qualquer questão de saúde, consulte um profissional qualificado.</p>
+      <div class="doc-header">
+        <div class="doc-header-icon">📄</div>
+        <div class="doc-title">Termos de Uso</div>
+        <div class="doc-subtitle">Kora — Health Hub</div>
+        <div class="doc-meta">Última atualização: 26 de agosto de 2026 &nbsp;·&nbsp; Versão 1.0</div>
       </div>
-    </div>
 
-    <!-- 2 -->
-    <div class="section" id="s2">
-      <div class="section-title"><span class="section-number">02</span>Quem pode usar o Kora</div>
-
-      <p>Você precisa ter pelo menos 18 anos de idade para criar uma conta e usar o Aplicativo. Ao se cadastrar, você declara e garante que atende a esse requisito. Se identificarmos que uma conta pertence a uma pessoa com menos de 18 anos, poderemos suspendê-la ou encerrá-la a qualquer momento.</p>
-    </div>
-
-    <!-- 3 -->
-    <div class="section" id="s3">
-      <div class="section-title"><span class="section-number">03</span>Sua conta</div>
-
-      <p>Você é responsável por manter a confidencialidade das credenciais da sua conta e por todas as atividades realizadas nela. Avise-nos imediatamente (<a href="mailto:atendimento.app.kora@gmail.com">atendimento.app.kora@gmail.com</a>) se suspeitar de uso não autorizado da sua conta.</p>
-
-      <p>Você é responsável por manter suas informações de perfil atualizadas e precisas, especialmente aquelas usadas pelo Coach IA e pelos geradores de plano (nível de condicionamento, restrições físicas, equipamento disponível, etc.), já que informações incorretas podem levar a recomendações inadequadas.</p>
-    </div>
-
-    <!-- 4 -->
-    <div class="section" id="s4">
-      <div class="section-title"><span class="section-number">04</span>Planos de assinatura</div>
-
-      <h3>4.1 Free e Premium</h3>
-      <p>O Kora oferece um plano gratuito ("Free"), com acesso limitado a determinadas funcionalidades, e um plano pago ("Premium" ou "Assinatura"), com acesso ampliado. As funcionalidades específicas de cada plano estão descritas dentro do próprio Aplicativo e podem ser atualizadas periodicamente.</p>
-
-      <h3>4.2 Preços e formas de pagamento</h3>
-      <p>Os planos de assinatura Premium disponíveis são: mensal, semestral e anual, com preços exibidos no Aplicativo no momento da contratação. Os preços podem ser ajustados a qualquer momento; alterações não afetam ciclos já pagos, apenas renovações futuras, e você será notificado antes de qualquer aumento entrar em vigor na sua renovação.</p>
-      <p>O pagamento é processado exclusivamente pela Apple App Store ou pelo Google Play Store, conforme a loja de origem da sua conta. O Kora não tem acesso aos dados do seu cartão ou método de pagamento — isso é gerenciado inteiramente pela loja.</p>
-
-      <h3>4.3 Renovação automática</h3>
-      <p>As assinaturas são renovadas automaticamente ao final de cada período (mensal, semestral ou anual), pelo mesmo valor vigente, a menos que você cancele antes da data de renovação. A cobrança da renovação é feita nas 24 horas anteriores ao fim do período vigente.</p>
-
-      <h3>4.4 Cancelamento</h3>
-      <p>Você pode cancelar sua assinatura a qualquer momento através das configurações da sua conta na Apple App Store ou no Google Play Store — não é possível cancelar diretamente pelo Kora, já que a cobrança é gerenciada pela loja. Ao cancelar, você mantém acesso Premium até o fim do período já pago; a renovação automática é interrompida, mas o valor já pago não é reembolsado proporcionalmente, exceto conforme a seção 4.5.</p>
-
-      <h3>4.5 Direito de arrependimento (garantia de 7 dias)</h3>
       <div class="notice">
-        <p>Em conformidade com o Art. 49 do Código de Defesa do Consumidor, você tem direito à devolução integral do valor pago caso solicite o cancelamento dentro de <strong>7 dias corridos</strong> a partir da data da contratação inicial. Para exercer esse direito, entre em contato pelo <a href="mailto:atendimento.app.kora@gmail.com">atendimento.app.kora@gmail.com</a> ou solicite o reembolso diretamente pela loja (Apple ou Google), conforme as políticas de reembolso de cada uma. Esse direito se aplica apenas à primeira contratação, não a renovações subsequentes.</p>
+        <p>Bem-vindo ao Kora Health Hub ("Kora", "nós", "nosso"). Estes Termos de Uso ("Termos") regulam o acesso e uso do aplicativo Kora Health Hub, disponível nas plataformas iOS e Android ("Aplicativo" ou "Serviço"). Ao criar uma conta ou usar o Aplicativo, você concorda com estes Termos e com nossa <a href="/privacidade/">Política de Privacidade</a>. Se você não concorda, não utilize o Aplicativo.</p>
       </div>
-    </div>
 
-    <!-- 5 -->
-    <div class="section" id="s5">
-      <div class="section-title"><span class="section-number">05</span>Uso aceitável</div>
+      <p style="font-size:13px;color:var(--t3);margin-bottom:40px;">O Kora é operado por Roberto Rosa, pessoa física, em processo de formalização como pessoa jurídica. Assim que o CNPJ for emitido, este documento será atualizado com a razão social correspondente.</p>
 
-      <p>Ao usar o Kora, você concorda em não:</p>
-      <ul>
-        <li>Usar o Aplicativo para qualquer finalidade ilegal ou não autorizada;</li>
-        <li>Tentar acessar áreas do sistema, dados de outros usuários, ou infraestrutura do Kora sem autorização;</li>
-        <li>Realizar engenharia reversa, descompilar, ou tentar extrair o código-fonte do Aplicativo;</li>
-        <li>Utilizar o Coach IA para gerar conteúdo prejudicial, ilegal, ou que viole direitos de terceiros;</li>
-        <li>Compartilhar sua conta com terceiros ou revender acesso ao Aplicativo;</li>
-        <li>Utilizar robôs, scripts ou qualquer meio automatizado para acessar o Aplicativo fora do uso normal.</li>
-      </ul>
-      <p>O descumprimento destas regras pode resultar em suspensão ou encerramento da sua conta, sem reembolso, a critério do Kora.</p>
-    </div>
-
-    <!-- 6 -->
-    <div class="section" id="s6">
-      <div class="section-title"><span class="section-number">06</span>Propriedade intelectual</div>
-
-      <p>Todo o conteúdo do Aplicativo — incluindo design, marca, textos, ícones, banco de exercícios e alimentos, e a estrutura do Coach IA — é de propriedade do Kora ou de seus licenciadores, e é protegido por leis de propriedade intelectual. Você recebe uma licença limitada, pessoal, não exclusiva e intransferível para usar o Aplicativo conforme estes Termos — isso não te transfere nenhuma propriedade sobre o Aplicativo ou seu conteúdo.</p>
-
-      <p>Os dados que você insere no Aplicativo (registros de treino, alimentação, sono, humor, fotos de refeição, conversas com o Coach) continuam sendo seus. Usamos esses dados apenas conforme descrito na nossa <a href="/privacidade/">Política de Privacidade</a>.</p>
-    </div>
-
-    <!-- 7 -->
-    <div class="section" id="s7">
-      <div class="section-title"><span class="section-number">07</span>Limitação de responsabilidade</div>
-
-      <p>O Kora é fornecido "como está", sem garantias de qualquer tipo, expressas ou implícitas. Na máxima extensão permitida pela lei brasileira:</p>
-      <ul>
-        <li>Não garantimos que o Aplicativo estará livre de erros, interrupções, ou disponível ininterruptamente;</li>
-        <li>Não somos responsáveis por decisões de saúde, treino ou alimentação tomadas com base em conteúdo do Coach IA ou de qualquer funcionalidade do Aplicativo — essas decisões são de sua exclusiva responsabilidade, e recomendamos sempre consultar um profissional qualificado;</li>
-        <li>Não somos responsáveis por lesões, danos à saúde, ou qualquer prejuízo decorrente do uso incorreto de sugestões de treino ou nutrição fornecidas pelo Aplicativo;</li>
-        <li>Nossa responsabilidade total perante você, em qualquer circunstância, está limitada ao valor pago por você ao Kora nos 12 meses anteriores ao evento que originou a reclamação.</li>
-      </ul>
-      <p>Nada nestes Termos exclui ou limita direitos que não podem ser excluídos ou limitados pelo Código de Defesa do Consumidor.</p>
-    </div>
-
-    <!-- 8 -->
-    <div class="section" id="s8">
-      <div class="section-title"><span class="section-number">08</span>Modificações do serviço e destes Termos</div>
-
-      <p>Podemos modificar, suspender ou descontinuar funcionalidades do Aplicativo a qualquer momento. Também podemos atualizar estes Termos periodicamente; mudanças significativas serão comunicadas dentro do Aplicativo ou por e-mail. O uso continuado do Aplicativo após uma atualização constitui aceitação dos novos Termos.</p>
-    </div>
-
-    <!-- 9 -->
-    <div class="section" id="s9">
-      <div class="section-title"><span class="section-number">09</span>Encerramento</div>
-
-      <p>Você pode encerrar sua conta a qualquer momento pelas configurações do Aplicativo. Podemos suspender ou encerrar sua conta caso identifiquemos violação destes Termos, sem aviso prévio em casos graves, e com aviso prévio razoável nos demais casos.</p>
-    </div>
-
-    <!-- 10 -->
-    <div class="section" id="s10">
-      <div class="section-title"><span class="section-number">10</span>Disposições gerais</div>
-
-      <p>Se qualquer disposição destes Termos for considerada inválida ou inaplicável, as demais disposições permanecem em pleno vigor. A tolerância quanto ao descumprimento de qualquer disposição não constitui renúncia ao direito de exigi-la posteriormente.</p>
-    </div>
-
-    <!-- 11 -->
-    <div class="section" id="s11">
-      <div class="section-title"><span class="section-number">11</span>Legislação aplicável e foro</div>
-
-      <p>Estes Termos são regidos pelas leis da República Federativa do Brasil. Fica eleito o foro da Comarca de São Paulo, SP, para dirimir quaisquer controvérsias decorrentes destes Termos, com renúncia a qualquer outro, por mais privilegiado que seja, ressalvado o direito do consumidor de optar pelo foro de seu domicílio, conforme o Código de Defesa do Consumidor.</p>
-    </div>
-
-    <!-- 12 -->
-    <div class="section" id="s12">
-      <div class="section-title"><span class="section-number">12</span>Contato</div>
-
-      <p>Dúvidas sobre estes Termos podem ser enviadas para:</p>
-
-      <div class="contact-box">
-        <p style="font-size:13px;color:var(--t3);margin-bottom:8px;">E-mail de atendimento</p>
-        <a href="mailto:atendimento.app.kora@gmail.com">atendimento.app.kora@gmail.com</a>
+      <div class="toc">
+        <div class="toc-title">Conteúdo</div>
+        <ol>
+          <li><a href="#pt-1">O que é o Kora</a></li>
+          <li><a href="#pt-2">Quem pode usar o Kora</a></li>
+          <li><a href="#pt-3">Sua conta</a></li>
+          <li><a href="#pt-4">Planos de assinatura</a></li>
+          <li><a href="#pt-5">Uso aceitável</a></li>
+          <li><a href="#pt-6">Propriedade intelectual</a></li>
+          <li><a href="#pt-7">Limitação de responsabilidade</a></li>
+          <li><a href="#pt-8">Modificações do serviço e destes Termos</a></li>
+          <li><a href="#pt-9">Encerramento</a></li>
+          <li><a href="#pt-10">Disposições gerais</a></li>
+          <li><a href="#pt-11">Legislação aplicável e foro</a></li>
+          <li><a href="#pt-12">Contato</a></li>
+        </ol>
       </div>
-    </div>
 
-    <div class="footer">
-      <p>© 2026 Kora Health Hub · <a href="mailto:atendimento.app.kora@gmail.com" style="color:var(--teal);text-decoration:none;">atendimento.app.kora@gmail.com</a></p>
-      <p style="margin-top:4px;">Última atualização: 26 de agosto de 2026</p>
-    </div>
+      <!-- 1 -->
+      <div class="section" id="pt-1">
+        <div class="section-title"><span class="section-number">01</span>O que é o Kora</div>
+
+        <p>O Kora é um aplicativo de bem-estar geral que ajuda você a acompanhar e organizar rotinas relacionadas a sono, nutrição, treino, hidratação, humor e disposição, com apoio de um assistente de inteligência artificial ("Coach IA").</p>
+
+        <div class="warning">
+          <p><strong>O Kora não é um dispositivo médico, não presta serviço de saúde, não substitui profissional de saúde (médico, nutricionista, educador físico, psicólogo, ou qualquer outro) e não realiza diagnóstico.</strong> Todo conteúdo gerado pelo Coach IA, incluindo sugestões de treino, nutrição e análises de dados, tem caráter educativo e informativo. Antes de iniciar qualquer programa de exercício, mudança alimentar ou tratar de qualquer questão de saúde, consulte um profissional qualificado.</p>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="section" id="pt-2">
+        <div class="section-title"><span class="section-number">02</span>Quem pode usar o Kora</div>
+
+        <p>Você precisa ter pelo menos 18 anos de idade para criar uma conta e usar o Aplicativo. Ao se cadastrar, você declara e garante que atende a esse requisito. Se identificarmos que uma conta pertence a uma pessoa com menos de 18 anos, poderemos suspendê-la ou encerrá-la a qualquer momento.</p>
+      </div>
+
+      <!-- 3 -->
+      <div class="section" id="pt-3">
+        <div class="section-title"><span class="section-number">03</span>Sua conta</div>
+
+        <p>Você é responsável por manter a confidencialidade das credenciais da sua conta e por todas as atividades realizadas nela. Avise-nos imediatamente (<a href="mailto:atendimento.app.kora@gmail.com">atendimento.app.kora@gmail.com</a>) se suspeitar de uso não autorizado da sua conta.</p>
+
+        <p>Você é responsável por manter suas informações de perfil atualizadas e precisas, especialmente aquelas usadas pelo Coach IA e pelos geradores de plano (nível de condicionamento, restrições físicas, equipamento disponível, etc.), já que informações incorretas podem levar a recomendações inadequadas.</p>
+      </div>
+
+      <!-- 4 -->
+      <div class="section" id="pt-4">
+        <div class="section-title"><span class="section-number">04</span>Planos de assinatura</div>
+
+        <h3>4.1 Free e Premium</h3>
+        <p>O Kora oferece um plano gratuito ("Free"), com acesso limitado a determinadas funcionalidades, e um plano pago ("Premium" ou "Assinatura"), com acesso ampliado. As funcionalidades específicas de cada plano estão descritas dentro do próprio Aplicativo e podem ser atualizadas periodicamente.</p>
+
+        <h3>4.2 Preços e formas de pagamento</h3>
+        <p>Os planos de assinatura Premium disponíveis são: mensal, semestral e anual, com preços exibidos no Aplicativo no momento da contratação. Os preços podem ser ajustados a qualquer momento; alterações não afetam ciclos já pagos, apenas renovações futuras, e você será notificado antes de qualquer aumento entrar em vigor na sua renovação.</p>
+        <p>O pagamento é processado exclusivamente pela Apple App Store ou pelo Google Play Store, conforme a loja de origem da sua conta. O Kora não tem acesso aos dados do seu cartão ou método de pagamento — isso é gerenciado inteiramente pela loja.</p>
+
+        <h3>4.3 Renovação automática</h3>
+        <p>As assinaturas são renovadas automaticamente ao final de cada período (mensal, semestral ou anual), pelo mesmo valor vigente, a menos que você cancele antes da data de renovação. A cobrança da renovação é feita nas 24 horas anteriores ao fim do período vigente.</p>
+
+        <h3>4.4 Cancelamento</h3>
+        <p>Você pode cancelar sua assinatura a qualquer momento através das configurações da sua conta na Apple App Store ou no Google Play Store — não é possível cancelar diretamente pelo Kora, já que a cobrança é gerenciada pela loja. Ao cancelar, você mantém acesso Premium até o fim do período já pago; a renovação automática é interrompida, mas o valor já pago não é reembolsado proporcionalmente, exceto conforme a seção 4.5.</p>
+
+        <h3>4.5 Direito de arrependimento (garantia de 7 dias)</h3>
+        <div class="notice">
+          <p>Em conformidade com o Art. 49 do Código de Defesa do Consumidor, você tem direito à devolução integral do valor pago caso solicite o cancelamento dentro de <strong>7 dias corridos</strong> a partir da data da contratação inicial. Para exercer esse direito, entre em contato pelo <a href="mailto:atendimento.app.kora@gmail.com">atendimento.app.kora@gmail.com</a> ou solicite o reembolso diretamente pela loja (Apple ou Google), conforme as políticas de reembolso de cada uma. Esse direito se aplica apenas à primeira contratação, não a renovações subsequentes.</p>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="section" id="pt-5">
+        <div class="section-title"><span class="section-number">05</span>Uso aceitável</div>
+
+        <p>Ao usar o Kora, você concorda em não:</p>
+        <ul>
+          <li>Usar o Aplicativo para qualquer finalidade ilegal ou não autorizada;</li>
+          <li>Tentar acessar áreas do sistema, dados de outros usuários, ou infraestrutura do Kora sem autorização;</li>
+          <li>Realizar engenharia reversa, descompilar, ou tentar extrair o código-fonte do Aplicativo;</li>
+          <li>Utilizar o Coach IA para gerar conteúdo prejudicial, ilegal, ou que viole direitos de terceiros;</li>
+          <li>Compartilhar sua conta com terceiros ou revender acesso ao Aplicativo;</li>
+          <li>Utilizar robôs, scripts ou qualquer meio automatizado para acessar o Aplicativo fora do uso normal.</li>
+        </ul>
+        <p>O descumprimento destas regras pode resultar em suspensão ou encerramento da sua conta, sem reembolso, a critério do Kora.</p>
+      </div>
+
+      <!-- 6 -->
+      <div class="section" id="pt-6">
+        <div class="section-title"><span class="section-number">06</span>Propriedade intelectual</div>
+
+        <p>Todo o conteúdo do Aplicativo — incluindo design, marca, textos, ícones, banco de exercícios e alimentos, e a estrutura do Coach IA — é de propriedade do Kora ou de seus licenciadores, e é protegido por leis de propriedade intelectual. Você recebe uma licença limitada, pessoal, não exclusiva e intransferível para usar o Aplicativo conforme estes Termos — isso não te transfere nenhuma propriedade sobre o Aplicativo ou seu conteúdo.</p>
+
+        <p>Os dados que você insere no Aplicativo (registros de treino, alimentação, sono, humor, fotos de refeição, conversas com o Coach) continuam sendo seus. Usamos esses dados apenas conforme descrito na nossa <a href="/privacidade/">Política de Privacidade</a>.</p>
+      </div>
+
+      <!-- 7 -->
+      <div class="section" id="pt-7">
+        <div class="section-title"><span class="section-number">07</span>Limitação de responsabilidade</div>
+
+        <p>O Kora é fornecido "como está", sem garantias de qualquer tipo, expressas ou implícitas. Na máxima extensão permitida pela lei brasileira:</p>
+        <ul>
+          <li>Não garantimos que o Aplicativo estará livre de erros, interrupções, ou disponível ininterruptamente;</li>
+          <li>Não somos responsáveis por decisões de saúde, treino ou alimentação tomadas com base em conteúdo do Coach IA ou de qualquer funcionalidade do Aplicativo — essas decisões são de sua exclusiva responsabilidade, e recomendamos sempre consultar um profissional qualificado;</li>
+          <li>Não somos responsáveis por lesões, danos à saúde, ou qualquer prejuízo decorrente do uso incorreto de sugestões de treino ou nutrição fornecidas pelo Aplicativo;</li>
+          <li>Nossa responsabilidade total perante você, em qualquer circunstância, está limitada ao valor pago por você ao Kora nos 12 meses anteriores ao evento que originou a reclamação.</li>
+        </ul>
+        <p>Nada nestes Termos exclui ou limita direitos que não podem ser excluídos ou limitados pelo Código de Defesa do Consumidor.</p>
+      </div>
+
+      <!-- 8 -->
+      <div class="section" id="pt-8">
+        <div class="section-title"><span class="section-number">08</span>Modificações do serviço e destes Termos</div>
+
+        <p>Podemos modificar, suspender ou descontinuar funcionalidades do Aplicativo a qualquer momento. Também podemos atualizar estes Termos periodicamente; mudanças significativas serão comunicadas dentro do Aplicativo ou por e-mail. O uso continuado do Aplicativo após uma atualização constitui aceitação dos novos Termos.</p>
+      </div>
+
+      <!-- 9 -->
+      <div class="section" id="pt-9">
+        <div class="section-title"><span class="section-number">09</span>Encerramento</div>
+
+        <p>Você pode encerrar sua conta a qualquer momento pelas configurações do Aplicativo. Podemos suspender ou encerrar sua conta caso identifiquemos violação destes Termos, sem aviso prévio em casos graves, e com aviso prévio razoável nos demais casos.</p>
+      </div>
+
+      <!-- 10 -->
+      <div class="section" id="pt-10">
+        <div class="section-title"><span class="section-number">10</span>Disposições gerais</div>
+
+        <p>Se qualquer disposição destes Termos for considerada inválida ou inaplicável, as demais disposições permanecem em pleno vigor. A tolerância quanto ao descumprimento de qualquer disposição não constitui renúncia ao direito de exigi-la posteriormente.</p>
+      </div>
+
+      <!-- 11 -->
+      <div class="section" id="pt-11">
+        <div class="section-title"><span class="section-number">11</span>Legislação aplicável e foro</div>
+
+        <p>Estes Termos são regidos pelas leis da República Federativa do Brasil. Fica eleito o foro da Comarca de São Paulo, SP, para dirimir quaisquer controvérsias decorrentes destes Termos, com renúncia a qualquer outro, por mais privilegiado que seja, ressalvado o direito do consumidor de optar pelo foro de seu domicílio, conforme o Código de Defesa do Consumidor.</p>
+      </div>
+
+      <!-- 12 -->
+      <div class="section" id="pt-12">
+        <div class="section-title"><span class="section-number">12</span>Contato</div>
+
+        <p>Dúvidas sobre estes Termos podem ser enviadas para:</p>
+
+        <div class="contact-box">
+          <p style="font-size:13px;color:var(--t3);margin-bottom:8px;">E-mail de atendimento</p>
+          <a href="mailto:atendimento.app.kora@gmail.com">atendimento.app.kora@gmail.com</a>
+        </div>
+
+        <p style="margin-top:16px;">Este documento é publicado em português e inglês. Em caso de divergência entre as versões em português e inglês deste documento, a versão em português prevalece.</p>
+      </div>
+
+      <div class="footer">
+        <p>© 2026 Kora Health Hub · <a href="mailto:atendimento.app.kora@gmail.com" style="color:var(--teal);text-decoration:none;">atendimento.app.kora@gmail.com</a></p>
+        <p style="margin-top:4px;">Última atualização: 26 de agosto de 2026</p>
+      </div>
+
+    </div><!-- /pt -->
+
+
+    <!-- ═══════════════════════════════════════════ EN ═══ -->
+    <div data-lang="en">
+
+      <div class="doc-header">
+        <div class="doc-header-icon">📄</div>
+        <div class="doc-title">Terms of Use</div>
+        <div class="doc-subtitle">Kora — Health Hub</div>
+        <div class="doc-meta">Last updated: August 26, 2026 &nbsp;·&nbsp; Version 1.0</div>
+      </div>
+
+      <div class="notice">
+        <p>Welcome to Kora Health Hub ("Kora," "we," "our"). These Terms of Use ("Terms") govern access to and use of the Kora Health Hub app, available on iOS and Android ("App" or "Service"). By creating an account or using the App, you agree to these Terms and to our <a href="/privacidade/">Privacy Policy</a>. If you do not agree, do not use the App.</p>
+      </div>
+
+      <p style="font-size:13px;color:var(--t3);margin-bottom:40px;">Kora is operated by Roberto Rosa, an individual, in the process of formalizing as a legal entity. Once the corresponding company registration (CNPJ) is issued, this document will be updated with the corresponding legal entity name.</p>
+
+      <div class="toc">
+        <div class="toc-title">Contents</div>
+        <ol>
+          <li><a href="#en-1">What Kora is</a></li>
+          <li><a href="#en-2">Who can use Kora</a></li>
+          <li><a href="#en-3">Your account</a></li>
+          <li><a href="#en-4">Subscription plans</a></li>
+          <li><a href="#en-5">Acceptable use</a></li>
+          <li><a href="#en-6">Intellectual property</a></li>
+          <li><a href="#en-7">Limitation of liability</a></li>
+          <li><a href="#en-8">Service and Terms modifications</a></li>
+          <li><a href="#en-9">Termination</a></li>
+          <li><a href="#en-10">General provisions</a></li>
+          <li><a href="#en-11">Governing law and venue</a></li>
+          <li><a href="#en-12">Contact</a></li>
+        </ol>
+      </div>
+
+      <!-- 1 -->
+      <div class="section" id="en-1">
+        <div class="section-title"><span class="section-number">01</span>What Kora is</div>
+
+        <p>Kora is a general wellness app that helps you track and organize routines related to sleep, nutrition, workouts, hydration, mood, and energy, supported by an artificial intelligence assistant ("AI Coach").</p>
+
+        <div class="warning">
+          <p><strong>Kora is not a medical device, does not provide healthcare services, does not replace a healthcare professional (physician, dietitian, fitness trainer, psychologist, or any other), and does not perform diagnoses.</strong> All content generated by the AI Coach, including workout suggestions, nutrition guidance, and data analysis, is educational and informational in nature. Before starting any exercise program, dietary change, or addressing any health issue, consult a qualified professional.</p>
+        </div>
+      </div>
+
+      <!-- 2 -->
+      <div class="section" id="en-2">
+        <div class="section-title"><span class="section-number">02</span>Who can use Kora</div>
+
+        <p>You must be at least 18 years old to create an account and use the App. By registering, you represent and warrant that you meet this requirement. If we identify that an account belongs to a person under 18, we may suspend or terminate it at any time.</p>
+      </div>
+
+      <!-- 3 -->
+      <div class="section" id="en-3">
+        <div class="section-title"><span class="section-number">03</span>Your account</div>
+
+        <p>You are responsible for maintaining the confidentiality of your account credentials and for all activities carried out under your account. Notify us immediately (<a href="mailto:atendimento.app.kora@gmail.com">atendimento.app.kora@gmail.com</a>) if you suspect unauthorized use of your account.</p>
+
+        <p>You are responsible for keeping your profile information up to date and accurate, especially the information used by the AI Coach and the plan generators (fitness level, physical restrictions, available equipment, etc.), since incorrect information may lead to inadequate recommendations.</p>
+      </div>
+
+      <!-- 4 -->
+      <div class="section" id="en-4">
+        <div class="section-title"><span class="section-number">04</span>Subscription plans</div>
+
+        <h3>4.1 Free and Premium</h3>
+        <p>Kora offers a free plan ("Free"), with limited access to certain features, and a paid plan ("Premium" or "Subscription"), with expanded access. The specific features of each plan are described within the App itself and may be updated periodically.</p>
+
+        <h3>4.2 Pricing and payment methods</h3>
+        <p>The available Premium subscription plans are: monthly, semi-annual, and annual, with prices displayed in the App at the time of purchase. Prices may be adjusted at any time; changes do not affect cycles already paid for, only future renewals, and you will be notified before any increase takes effect on your renewal.</p>
+        <p>Payment is processed exclusively by the Apple App Store or Google Play Store, depending on the store your account originates from. Kora does not have access to your card details or payment method — this is managed entirely by the store.</p>
+
+        <h3>4.3 Automatic renewal</h3>
+        <p>Subscriptions renew automatically at the end of each period (monthly, semi-annual, or annual), at the then-current price, unless you cancel before the renewal date. Renewal charges are made within the 24 hours before the end of the current period.</p>
+
+        <h3>4.4 Cancellation</h3>
+        <p>You can cancel your subscription at any time through your account settings in the Apple App Store or Google Play Store — cancellation cannot be done directly through Kora, since billing is managed by the store. When you cancel, you retain Premium access until the end of the period already paid for; automatic renewal is stopped, but the amount already paid is not refunded on a pro-rata basis, except as set out in section 4.5.</p>
+
+        <h3>4.5 Right of withdrawal (7-day guarantee)</h3>
+        <div class="notice">
+          <p>In accordance with Article 49 of Brazil's Consumer Protection Code, you are entitled to a full refund of the amount paid if you request cancellation within <strong>7 calendar days</strong> of your initial subscription date. To exercise this right, contact us at <a href="mailto:atendimento.app.kora@gmail.com">atendimento.app.kora@gmail.com</a> or request a refund directly through the store (Apple or Google), according to each one's refund policies. This right applies only to the initial subscription, not to subsequent renewals.</p>
+        </div>
+      </div>
+
+      <!-- 5 -->
+      <div class="section" id="en-5">
+        <div class="section-title"><span class="section-number">05</span>Acceptable use</div>
+
+        <p>By using Kora, you agree not to:</p>
+        <ul>
+          <li>Use the App for any illegal or unauthorized purpose;</li>
+          <li>Attempt to access system areas, other users' data, or Kora's infrastructure without authorization;</li>
+          <li>Reverse engineer, decompile, or attempt to extract the App's source code;</li>
+          <li>Use the AI Coach to generate harmful or illegal content, or content that violates third-party rights;</li>
+          <li>Share your account with third parties or resell access to the App;</li>
+          <li>Use bots, scripts, or any automated means to access the App outside of normal use.</li>
+        </ul>
+        <p>Failure to comply with these rules may result in suspension or termination of your account, without refund, at Kora's discretion.</p>
+      </div>
+
+      <!-- 6 -->
+      <div class="section" id="en-6">
+        <div class="section-title"><span class="section-number">06</span>Intellectual property</div>
+
+        <p>All content of the App — including design, brand, text, icons, the exercise and food database, and the AI Coach's structure — is owned by Kora or its licensors, and is protected by intellectual property laws. You are granted a limited, personal, non-exclusive, non-transferable license to use the App in accordance with these Terms — this does not transfer any ownership of the App or its content to you.</p>
+
+        <p>The data you enter into the App (workout logs, food, sleep, mood, meal photos, conversations with the Coach) remains yours. We use this data only as described in our <a href="/privacidade/">Privacy Policy</a>.</p>
+      </div>
+
+      <!-- 7 -->
+      <div class="section" id="en-7">
+        <div class="section-title"><span class="section-number">07</span>Limitation of liability</div>
+
+        <p>Kora is provided "as is," without warranties of any kind, express or implied. To the maximum extent permitted by Brazilian law:</p>
+        <ul>
+          <li>We do not guarantee that the App will be free of errors, interruptions, or available uninterruptedly;</li>
+          <li>We are not responsible for health, workout, or nutrition decisions made based on content from the AI Coach or any feature of the App — such decisions are your sole responsibility, and we always recommend consulting a qualified professional;</li>
+          <li>We are not responsible for injuries, harm to health, or any damage resulting from incorrect use of workout or nutrition suggestions provided by the App;</li>
+          <li>Our total liability to you, under any circumstances, is limited to the amount you paid to Kora in the 12 months prior to the event giving rise to the claim.</li>
+        </ul>
+        <p>Nothing in these Terms excludes or limits rights that cannot be excluded or limited under Brazil's Consumer Protection Code.</p>
+      </div>
+
+      <!-- 8 -->
+      <div class="section" id="en-8">
+        <div class="section-title"><span class="section-number">08</span>Service and Terms modifications</div>
+
+        <p>We may modify, suspend, or discontinue features of the App at any time. We may also update these Terms periodically; significant changes will be communicated within the App or by email. Continued use of the App after an update constitutes acceptance of the new Terms.</p>
+      </div>
+
+      <!-- 9 -->
+      <div class="section" id="en-9">
+        <div class="section-title"><span class="section-number">09</span>Termination</div>
+
+        <p>You may terminate your account at any time through the App's settings. We may suspend or terminate your account if we identify a violation of these Terms, without prior notice in serious cases, and with reasonable prior notice in other cases.</p>
+      </div>
+
+      <!-- 10 -->
+      <div class="section" id="en-10">
+        <div class="section-title"><span class="section-number">10</span>General provisions</div>
+
+        <p>If any provision of these Terms is deemed invalid or unenforceable, the remaining provisions remain in full force and effect. Tolerance of any breach of a provision does not constitute a waiver of the right to enforce it later.</p>
+      </div>
+
+      <!-- 11 -->
+      <div class="section" id="en-11">
+        <div class="section-title"><span class="section-number">11</span>Governing law and venue</div>
+
+        <p>These Terms are governed by the laws of the Federative Republic of Brazil. The courts of the Judicial District of São Paulo, SP, are hereby elected to settle any disputes arising from these Terms, to the exclusion of any other, however privileged, without prejudice to the consumer's right to choose the venue of their domicile, as provided under Brazil's Consumer Protection Code.</p>
+      </div>
+
+      <!-- 12 -->
+      <div class="section" id="en-12">
+        <div class="section-title"><span class="section-number">12</span>Contact</div>
+
+        <p>Questions about these Terms can be sent to:</p>
+
+        <div class="contact-box">
+          <p style="font-size:13px;color:var(--t3);margin-bottom:8px;">Support email</p>
+          <a href="mailto:atendimento.app.kora@gmail.com">atendimento.app.kora@gmail.com</a>
+        </div>
+
+        <p style="margin-top:16px;">This document is published in Portuguese and English. In case of discrepancy between the Portuguese and English versions of this document, the Portuguese version shall prevail.</p>
+      </div>
+
+      <div class="footer">
+        <p>© 2026 Kora Health Hub · <a href="mailto:atendimento.app.kora@gmail.com" style="color:var(--teal);text-decoration:none;">atendimento.app.kora@gmail.com</a></p>
+        <p style="margin-top:4px;">Last updated: August 26, 2026</p>
+      </div>
+
+    </div><!-- /en -->
 
   </div><!-- /page -->
+
+  <script>
+    function setLang(lang) {
+      document.querySelectorAll('[data-lang]').forEach(function(el) {
+        el.classList.toggle('visible', el.getAttribute('data-lang') === lang);
+      });
+      document.getElementById('btn-pt').classList.toggle('active', lang === 'pt');
+      document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+      document.getElementById('btn-pt').setAttribute('aria-pressed', lang === 'pt');
+      document.getElementById('btn-en').setAttribute('aria-pressed', lang === 'en');
+      document.documentElement.lang = lang === 'pt' ? 'pt-BR' : 'en';
+    }
+  </script>
 
 </body>
 </html>
