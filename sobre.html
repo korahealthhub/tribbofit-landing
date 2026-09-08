@@ -21,14 +21,14 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kora | Seu App de Saúde</title>
+<title>Tribbo Fit | Seu App de Saúde</title>
 <meta name="description" content="Rotina de saúde completa com Coach IA. iOS e Android.">
-<meta property="og:title" content="Kora | Seu App de Saúde">
+<meta property="og:title" content="Tribbo Fit | Seu App de Saúde">
 <meta property="og:description" content="Rotina de saúde completa com Coach IA. iOS e Android.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="./og-image.png">
-<meta property="og:image:alt" content="Kora — App de saúde que organiza seus planos em um só lugar">
-<meta property="og:url" content="https://korahealthhub.github.io/kora-landing">
+<meta property="og:image:alt" content="Tribbo Fit — App de saúde que organiza seus planos em um só lugar">
+<meta property="og:url" content="https://tribbofit.com.br/sobre.html">
 <link rel="icon" href="./logo-k.png">
 
 <!-- Fonts: Manrope (igual ao sonarhealth.co) + DM Mono (precisão nos números) -->
@@ -59,9 +59,9 @@ button{cursor:pointer}
   --bg:         #0A1A18;
   --bg2:        #0C1E1B;
   --cream:      #F2EDE3;
-  --teal:       #3D9E8C;
-  --teal-l:     #52C5B0;
-  --teal-d:     #2D7A6C;
+  --teal:       #E2F408;
+  --teal-l:     #EDFB6B;
+  --teal-d:     #A8B806;
   --amber:      #C8861A;
   --text:       #F5F0E6;
   --text-dim:   rgba(245,240,230,0.52);
@@ -77,7 +77,7 @@ button{cursor:pointer}
   --n-hidrat:   #38BDF8;
   --n-disp:     #34D399;
   --n-humor:    #F472B6;
-  --border:     rgba(61,158,140,0.12);
+  --border:     rgba(226,244,8,0.12);
   --border-l:   rgba(245,240,230,0.07);
   --px:         80px;
   --max:        1100px;
@@ -163,8 +163,8 @@ nav.scrolled{
   transition:all .2s ease;
 }
 .nav-social-link:hover{
-  border-color:rgba(61,158,140,0.5);
-  background:rgba(61,158,140,0.1);
+  border-color:rgba(226,244,8,0.5);
+  background:rgba(226,244,8,0.1);
   color:#fff;
   transform:translateY(-2px);
 }
@@ -207,7 +207,7 @@ nav.scrolled{
   position:absolute;
   right:6%;top:50%;transform:translateY(-50%);
   width:460px;height:580px;
-  background:radial-gradient(ellipse,rgba(61,158,140,0.2) 0%,transparent 68%);
+  background:radial-gradient(ellipse,rgba(226,244,8,0.2) 0%,transparent 68%);
   filter:blur(72px);border-radius:50%;pointer-events:none;
   animation:glow-pulse 6s ease-in-out infinite;
   will-change:transform,opacity;
@@ -255,7 +255,7 @@ nav.scrolled{
   bottom:-18px;left:50%;
   transform:translateX(-50%);
   width:50%;height:22px;
-  background:radial-gradient(ellipse at center,rgba(61,158,140,0.55) 0%,transparent 70%);
+  background:radial-gradient(ellipse at center,rgba(226,244,8,0.55) 0%,transparent 70%);
   filter:blur(16px);
   border-radius:50%;
   pointer-events:none;
@@ -281,8 +281,8 @@ nav.scrolled{
 /* Badge */
 .badge{
   display:inline-flex;align-items:center;gap:7px;
-  background:rgba(61,158,140,0.1);
-  border:1px solid rgba(61,158,140,0.22);
+  background:rgba(226,244,8,0.1);
+  border:1px solid rgba(226,244,8,0.22);
   border-radius:100px;
   padding:5px 14px;
   font-size:11px;font-weight:500;
@@ -321,9 +321,9 @@ nav.scrolled{
   top:-72px;left:-4px;
   box-shadow:
     0 0 4px 2px rgba(255,255,255,1),
-    0 0 14px 5px rgba(94,207,184,0.9),
-    0 0 30px 10px rgba(61,158,140,0.5),
-    0 0 50px 18px rgba(61,158,140,0.2);
+    0 0 14px 5px rgba(237,251,107,0.9),
+    0 0 30px 10px rgba(226,244,8,0.5),
+    0 0 50px 18px rgba(226,244,8,0.2);
 }
 @keyframes orbitSpin{
   from{transform:rotate(0deg)}
@@ -368,7 +368,7 @@ nav.scrolled{
 @media(max-width:900px){.hero-cta-wrap{align-items:center}}
 .hero-cta{
   display:inline-flex;align-items:center;gap:10px;
-  background:var(--teal);color:#fff;
+  background:var(--teal);color:#0A0A0A;
   font-size:16px;font-weight:500;
   padding:17px 38px;border-radius:100px;
   transition:all .25s cubic-bezier(.16,1,.3,1);
@@ -388,7 +388,7 @@ nav.scrolled{
   overflow:hidden;
   border-top:1px solid var(--border);
   border-bottom:1px solid var(--border);
-  background:rgba(61,158,140,0.03);
+  background:rgba(226,244,8,0.03);
   padding:14px 0;
 }
 .ticker-inner{
@@ -411,7 +411,7 @@ nav.scrolled{
   padding:120px var(--px);
   background:var(--bg);
   border-top:1px solid transparent;
-  border-image:linear-gradient(to right,transparent 0%,rgba(61,158,140,0.35) 30%,rgba(61,158,140,0.35) 70%,transparent 100%) 1;
+  border-image:linear-gradient(to right,transparent 0%,rgba(226,244,8,0.35) 30%,rgba(226,244,8,0.35) 70%,transparent 100%) 1;
 }
 .tension-inner{
   max-width:var(--max);margin:0 auto;
@@ -471,7 +471,7 @@ nav.scrolled{
 /* Individual card */
 .t-card{
   background:rgba(12,30,26,0.85);
-  border:1px solid rgba(61,158,140,0.1);
+  border:1px solid rgba(226,244,8,0.1);
   border-left:2px solid var(--teal);
   border-radius:18px;
   padding:32px 28px 36px;
@@ -481,7 +481,7 @@ nav.scrolled{
 }
 .t-card:hover{
   transform:translateY(-6px);
-  border-color:rgba(61,158,140,0.28);
+  border-color:rgba(226,244,8,0.28);
   background:rgba(15,36,32,0.95);
 }
 
@@ -559,7 +559,7 @@ nav.scrolled{
 .steps{
   background:var(--bg2);
   border-top:1px solid transparent;
-  border-image:linear-gradient(to right,transparent 0%,rgba(61,158,140,0.35) 30%,rgba(61,158,140,0.35) 70%,transparent 100%) 1;
+  border-image:linear-gradient(to right,transparent 0%,rgba(226,244,8,0.35) 30%,rgba(226,244,8,0.35) 70%,transparent 100%) 1;
   padding:100px 0 120px;
   overflow:hidden;
   position:relative;
@@ -570,7 +570,7 @@ nav.scrolled{
   top:50%;left:50%;
   transform:translate(-50%,-50%);
   width:900px;height:500px;
-  background:radial-gradient(ellipse,rgba(61,158,140,0.07) 0%,transparent 70%);
+  background:radial-gradient(ellipse,rgba(226,244,8,0.07) 0%,transparent 70%);
   pointer-events:none;
   z-index:0;
 }
@@ -652,7 +652,7 @@ nav.scrolled{
   max-width:560px;
   margin:0 auto;
   background:rgba(12,30,26,0.9);
-  border:1px solid rgba(61,158,140,0.14);
+  border:1px solid rgba(226,244,8,0.14);
   border-left:3px solid var(--teal);
   border-radius:20px;
   padding:96px 44px 44px;
@@ -689,7 +689,7 @@ nav.scrolled{
 }
 .sp-seg{
   height:3px;width:44px;border-radius:3px;
-  background:rgba(61,158,140,0.18);
+  background:rgba(226,244,8,0.18);
   cursor:pointer;position:relative;overflow:hidden;
   border:none;padding:0;flex-shrink:0;
   transition:background .3s;
@@ -813,7 +813,7 @@ nav.scrolled{
   background:var(--bg);
   padding:52px var(--px);
   border-top:1px solid transparent;
-  border-image:linear-gradient(to right,transparent 0%,rgba(61,158,140,0.35) 30%,rgba(61,158,140,0.35) 70%,transparent 100%) 1;
+  border-image:linear-gradient(to right,transparent 0%,rgba(226,244,8,0.35) 30%,rgba(226,244,8,0.35) 70%,transparent 100%) 1;
 }
 .stats-strip-inner{
   max-width:var(--max);margin:0 auto;
@@ -832,7 +832,7 @@ nav.scrolled{
 }
 .stat-divider{
   width:1px;height:52px;flex-shrink:0;
-  background:linear-gradient(to bottom,transparent,rgba(61,158,140,0.3),transparent);
+  background:linear-gradient(to bottom,transparent,rgba(226,244,8,0.3),transparent);
 }
 @media(max-width:600px){
   .stats-strip-inner{gap:32px}
@@ -841,8 +841,8 @@ nav.scrolled{
 
 .chart-header{
   display:inline-flex;align-items:center;gap:8px;
-  background:rgba(61,158,140,0.08);
-  border:1px solid rgba(61,158,140,0.2);
+  background:rgba(226,244,8,0.08);
+  border:1px solid rgba(226,244,8,0.2);
   border-radius:100px;
   padding:7px 18px;
   font-family:'Manrope',sans-serif;
@@ -862,7 +862,7 @@ nav.scrolled{
 .score-sci{
   background:var(--bg);
   border-top:1px solid transparent;
-  border-image:linear-gradient(to right,transparent 0%,rgba(61,158,140,0.35) 30%,rgba(61,158,140,0.35) 70%,transparent 100%) 1;
+  border-image:linear-gradient(to right,transparent 0%,rgba(226,244,8,0.35) 30%,rgba(226,244,8,0.35) 70%,transparent 100%) 1;
   padding:120px var(--px);
   position:relative;
   overflow:hidden;
@@ -883,7 +883,7 @@ nav.scrolled{
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
   width:440px;height:440px;
-  background:radial-gradient(ellipse,rgba(61,158,140,0.09) 0%,transparent 70%);
+  background:radial-gradient(ellipse,rgba(226,244,8,0.09) 0%,transparent 70%);
   pointer-events:none;
 }
 .radar-svg{ width:100%;max-width:480px;overflow:visible; }
@@ -938,7 +938,7 @@ nav.scrolled{
   text-align:right;
   padding-right:20px;
   padding-top:3px;
-  border-right:2px solid rgba(61,158,140,0.3);
+  border-right:2px solid rgba(226,244,8,0.3);
   display:flex;flex-direction:column;align-items:flex-end;gap:5px;
 }
 .sci-pilar-stat-sub{
@@ -980,7 +980,7 @@ nav.scrolled{
 .coach-s{
   background:var(--bg);
   border-top:1px solid transparent;
-  border-image:linear-gradient(to right,transparent 0%,rgba(61,158,140,0.35) 30%,rgba(61,158,140,0.35) 70%,transparent 100%) 1;
+  border-image:linear-gradient(to right,transparent 0%,rgba(226,244,8,0.35) 30%,rgba(226,244,8,0.35) 70%,transparent 100%) 1;
   padding:120px var(--px);
 }
 .coach-grid{
@@ -1009,7 +1009,7 @@ nav.scrolled{
   padding:18px 22px;
   border-bottom:1px solid var(--border);
   display:flex;align-items:center;gap:10px;
-  background:rgba(61,158,140,0.04);
+  background:rgba(226,244,8,0.04);
 }
 .coach-av{
   width:36px;height:36px;border-radius:50%;
@@ -1018,7 +1018,7 @@ nav.scrolled{
 }
 .coach-av svg{
   width:18px;height:18px;
-  stroke:#fff;fill:none;
+  stroke:#0A0A0A;fill:none;
   stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
 }
 .coach-name{font-size:14px;font-weight:600;color:var(--text)}
@@ -1044,8 +1044,8 @@ nav.scrolled{
 }
 .bubble.u{
   align-self:flex-end;
-  background:rgba(61,158,140,0.15);
-  border:1px solid rgba(61,158,140,0.22);
+  background:rgba(226,244,8,0.15);
+  border:1px solid rgba(226,244,8,0.22);
   color:var(--text);
   border-radius:16px 16px 4px 16px;
 }
@@ -1118,7 +1118,7 @@ nav.scrolled{
   display:flex;align-items:center;gap:10px;
   padding:14px 18px;
   border-top:1px solid var(--border);
-  background:rgba(61,158,140,0.02);
+  background:rgba(226,244,8,0.02);
 }
 .chat-inp{
   flex:1;
@@ -1132,7 +1132,7 @@ nav.scrolled{
   transition:border-color .2s;
   cursor:default;
 }
-.chat-inp:focus{ border-color:rgba(61,158,140,0.35); }
+.chat-inp:focus{ border-color:rgba(226,244,8,0.35); }
 .chat-send{
   flex-shrink:0;
   width:36px;height:36px;border-radius:50%;
@@ -1142,15 +1142,15 @@ nav.scrolled{
   transition:background .2s,transform .2s;
 }
 .chat-send:hover{ background:var(--teal-l);transform:scale(1.08); }
-.chat-send svg{ width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
+.chat-send svg{ width:16px;height:16px;stroke:#0A0A0A;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
 .chat-plan-ref{
   display:block;
   font-family:'Manrope',sans-serif;
   font-size:12px;font-weight:600;
   letter-spacing:.04em;
   color:var(--teal-l);
-  background:rgba(61,158,140,0.08);
-  border:1px solid rgba(61,158,140,0.2);
+  background:rgba(226,244,8,0.08);
+  border:1px solid rgba(226,244,8,0.2);
   border-radius:7px;
   padding:7px 12px;
   margin-bottom:12px;
@@ -1179,7 +1179,7 @@ nav.scrolled{
 .waitlist{
   background:#0C1E1B;
   border-top:1px solid transparent;
-  border-image:linear-gradient(to right,transparent 0%,rgba(61,158,140,0.35) 30%,rgba(61,158,140,0.35) 70%,transparent 100%) 1;
+  border-image:linear-gradient(to right,transparent 0%,rgba(226,244,8,0.35) 30%,rgba(226,244,8,0.35) 70%,transparent 100%) 1;
   padding:120px var(--px) 140px;
   text-align:center;
   position:relative;overflow:hidden;
@@ -1188,7 +1188,7 @@ nav.scrolled{
   position:absolute;top:50%;left:50%;
   transform:translate(-50%,-50%);
   width:900px;height:550px;
-  background:radial-gradient(ellipse,rgba(61,158,140,0.11) 0%,transparent 68%);
+  background:radial-gradient(ellipse,rgba(226,244,8,0.11) 0%,transparent 68%);
   filter:blur(80px);border-radius:50%;
   pointer-events:none;
   animation:breathe 10s ease-in-out infinite;
@@ -1233,7 +1233,7 @@ nav.scrolled{
 @media(max-width:768px){.wl-benefits{grid-template-columns:1fr}}
 .wl-benefit{
   background:rgba(14,32,28,0.92);
-  border:1px solid rgba(61,158,140,0.12);
+  border:1px solid rgba(226,244,8,0.12);
   border-top:2px solid var(--teal);
   border-radius:16px;
   padding:32px 28px;
@@ -1264,7 +1264,7 @@ nav.scrolled{
 }
 .wl-prog-bar{
   height:4px;
-  background:rgba(61,158,140,0.12);
+  background:rgba(226,244,8,0.12);
   border-radius:999px;
   overflow:hidden;
 }
@@ -1289,7 +1289,7 @@ nav.scrolled{
 .wl-field{
   width:100%;
   background:rgba(14,32,28,0.92);
-  border:1px solid rgba(61,158,140,0.2);
+  border:1px solid rgba(226,244,8,0.2);
   border-radius:12px;
   padding:16px 20px;
   color:var(--text);
@@ -1302,7 +1302,7 @@ nav.scrolled{
 .wl-field:focus{
   border-color:var(--teal);
   outline:none;
-  box-shadow:0 0 0 3px rgba(61,158,140,0.1);
+  box-shadow:0 0 0 3px rgba(226,244,8,0.1);
 }
 .wl-field::placeholder{ color:rgba(245,240,230,0.32);font-family:'Manrope',sans-serif; }
 .wl-select{
@@ -1322,9 +1322,9 @@ nav.scrolled{
   padding:2px;overflow:hidden;
   margin-top:8px;
   box-shadow:
-    0 0 0 1px rgba(61,158,140,0.35),
-    0 0 22px rgba(61,158,140,0.25),
-    0 0 48px rgba(61,158,140,0.1);
+    0 0 0 1px rgba(226,244,8,0.35),
+    0 0 22px rgba(226,244,8,0.25),
+    0 0 48px rgba(226,244,8,0.1);
   animation:btnGlow 2.8s ease-in-out infinite;
 }
 .wl-btn-wrap::before{
@@ -1336,11 +1336,11 @@ nav.scrolled{
   background:conic-gradient(from 0deg,
     transparent 0%,
     transparent 52%,
-    rgba(94,207,184,0.06) 62%,
-    rgba(94,207,184,0.65) 75%,
+    rgba(237,251,107,0.06) 62%,
+    rgba(237,251,107,0.65) 75%,
     #C8F5ED 80%,
-    rgba(94,207,184,0.65) 85%,
-    rgba(94,207,184,0.06) 92%,
+    rgba(237,251,107,0.65) 85%,
+    rgba(237,251,107,0.06) 92%,
     transparent 100%
   );
   animation:beamSpin 2s linear infinite;
@@ -1351,19 +1351,19 @@ nav.scrolled{
 }
 @keyframes btnGlow{
   0%,100%{
-    box-shadow:0 0 0 1px rgba(61,158,140,0.35),0 0 22px rgba(61,158,140,0.25),0 0 48px rgba(61,158,140,0.1);
+    box-shadow:0 0 0 1px rgba(226,244,8,0.35),0 0 22px rgba(226,244,8,0.25),0 0 48px rgba(226,244,8,0.1);
   }
   50%{
-    box-shadow:0 0 0 1px rgba(94,207,184,0.55),0 0 32px rgba(61,158,140,0.45),0 0 60px rgba(61,158,140,0.18);
+    box-shadow:0 0 0 1px rgba(237,251,107,0.55),0 0 32px rgba(226,244,8,0.45),0 0 60px rgba(226,244,8,0.18);
   }
 }
 .wl-btn-wrap:hover{
   animation:none;
-  box-shadow:0 0 0 2px rgba(94,207,184,0.7),0 0 36px rgba(61,158,140,0.55),0 12px 28px rgba(0,0,0,0.2);
+  box-shadow:0 0 0 2px rgba(237,251,107,0.7),0 0 36px rgba(226,244,8,0.55),0 12px 28px rgba(0,0,0,0.2);
 }
 .wl-btn2{
   width:100%;
-  background:var(--teal);color:#ffffff;
+  background:var(--teal);color:#0A0A0A;
   font-family:'Manrope',sans-serif;
   font-weight:700;font-size:16px;
   letter-spacing:.02em;
@@ -1454,7 +1454,7 @@ nav.scrolled{
 .wl-gauge-fill{
   height:100%;width:0;border-radius:100px;
   background:linear-gradient(90deg,var(--teal) 0%,#5ECFB8 40%,var(--amber) 100%);
-  box-shadow:0 0 22px rgba(200,134,26,0.55),0 0 8px rgba(61,158,140,0.4);
+  box-shadow:0 0 22px rgba(200,134,26,0.55),0 0 8px rgba(226,244,8,0.4);
   transition:width 1.8s cubic-bezier(.4,0,.2,1);
   position:relative;
 }
@@ -1516,9 +1516,9 @@ nav.scrolled{
   margin:48px auto 0;max-width:480px;
   padding:28px 28px 24px;
   border-radius:20px;
-  border:1px solid rgba(61,158,140,0.22);
+  border:1px solid rgba(226,244,8,0.22);
   background:rgba(10,26,24,0.55);
-  box-shadow:0 0 48px rgba(61,158,140,0.07),0 0 0 1px rgba(200,134,26,0.06);
+  box-shadow:0 0 48px rgba(226,244,8,0.07),0 0 0 1px rgba(200,134,26,0.06);
   text-align:left;
 }
 .wl-form-badge{
@@ -1527,8 +1527,8 @@ nav.scrolled{
   font-size:11px;font-weight:600;
   letter-spacing:.1em;text-transform:uppercase;
   color:var(--teal-l);
-  background:rgba(61,158,140,0.08);
-  border:1px solid rgba(61,158,140,0.2);
+  background:rgba(226,244,8,0.08);
+  border:1px solid rgba(226,244,8,0.2);
   border-radius:100px;padding:5px 14px;
   margin-bottom:22px;
 }
@@ -1544,7 +1544,7 @@ nav.scrolled{
   padding:72px var(--px);
   background:var(--bg2);
   border-top:1px solid transparent;
-  border-image:linear-gradient(to right,transparent 0%,rgba(61,158,140,0.35) 30%,rgba(61,158,140,0.35) 70%,transparent 100%) 1;
+  border-image:linear-gradient(to right,transparent 0%,rgba(226,244,8,0.35) 30%,rgba(226,244,8,0.35) 70%,transparent 100%) 1;
   text-align:center;
 }
 .mid-cta-text{
@@ -1590,9 +1590,9 @@ footer{
   text-decoration:none;
 }
 .nav-dl-ios,.nav-dl-android{
-  background:linear-gradient(135deg,#3DAA85,#5DCAA5);
-  color:#fff;
-  border:1px solid rgba(93,202,165,0.3);
+  background:linear-gradient(135deg,#B5C904,#EDFB6B);
+  color:#0A0A0A;
+  border:1px solid rgba(237,251,107,0.3);
   box-shadow:0 3px 12px rgba(61,170,133,0.22);
 }
 .nav-dl-ios:hover,.nav-dl-android:hover{box-shadow:0 5px 18px rgba(61,170,133,0.38);transform:translateY(-1px)}
@@ -1604,7 +1604,7 @@ footer{
   flex-direction:column;gap:10px;
   padding:14px 22px 28px;
   background:linear-gradient(to top,rgba(10,26,24,0.98),rgba(10,26,24,0.92));
-  border-top:1px solid rgba(61,158,140,0.18);
+  border-top:1px solid rgba(226,244,8,0.18);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
 }
 @media(max-width:768px){.mob-dl-bar{display:flex}}
@@ -1613,8 +1613,8 @@ footer{
   padding:14px 16px;border-radius:100px;
   font-family:'Manrope',sans-serif;font-size:15px;font-weight:700;
   letter-spacing:.02em;text-decoration:none;
-  background:linear-gradient(135deg,#3DAA85,#5DCAA5);
-  color:#fff;border:1px solid rgba(93,202,165,0.3);
+  background:linear-gradient(135deg,#B5C904,#EDFB6B);
+  color:#0A0A0A;border:1px solid rgba(237,251,107,0.3);
   box-shadow:0 4px 16px rgba(61,170,133,0.25);
   transition:box-shadow .2s,transform .18s;
 }
@@ -1629,7 +1629,7 @@ footer{
 <!-- ─── Nav ───────────────────────────────────────────────────── -->
 <nav id="nav">
   <div class="nav-brand">
-    <img src="./nome-kora.png" class="nav-name" alt="Kora">
+    <img src="./nome-kora.png" class="nav-name" alt="Tribbo Fit">
   </div>
   <div class="nav-dl-btns">
     <a href="https://apps.apple.com/br/app/kora-health-hub/id6769632514" class="nav-dl-btn nav-dl-ios" target="_blank" rel="noopener" onclick="gtag('event','click_appstore',{'event_category':'conversion','event_label':'app_store_ios'});ttq.track('ClickButton',{contents:[{content_id:'app_store_ios',content_type:'app',content_name:'Kora iOS App Store'}]});">
@@ -1675,7 +1675,7 @@ footer{
     <div class="hero-text">
       <div class="hero-brand sr d1">
         <div class="hero-k-wrap">
-          <img src="./logo-k.png" class="hero-brand-k" alt="Kora">
+          <img src="./logo-k.png" class="hero-brand-k" alt="Tribbo Fit">
           <div class="hero-k-orbit-ring">
             <span class="hero-k-star"></span>
           </div>
@@ -1697,7 +1697,7 @@ footer{
       <div class="phone-scene">
         <div class="phone-scroll-rot" id="phone-scroll">
           <div class="phone-tilt" id="phone-tilt">
-            <img src="./3D_home_app.PNG" class="phone-img" alt="Kora app">
+            <img src="./3D_home_app.PNG" class="phone-img" alt="Tribbo app">
           </div>
         </div>
         <div class="phone-shadow" id="phone-shadow"></div>
@@ -1716,7 +1716,7 @@ footer{
     <span class="ticker-item"><span>✦</span> Hidratação</span>
     <span class="ticker-item"><span>✦</span> Disposição</span>
     <span class="ticker-item"><span>✦</span> Humor</span>
-    <span class="ticker-item"><span>✦</span> Kora Score</span>
+    <span class="ticker-item"><span>✦</span> Tribbo Score</span>
     <span class="ticker-item"><span>✦</span> Coach IA</span>
     <span class="ticker-item"><span>✦</span> Sono</span>
     <span class="ticker-item"><span>✦</span> Alimentação</span>
@@ -1724,7 +1724,7 @@ footer{
     <span class="ticker-item"><span>✦</span> Hidratação</span>
     <span class="ticker-item"><span>✦</span> Disposição</span>
     <span class="ticker-item"><span>✦</span> Humor</span>
-    <span class="ticker-item"><span>✦</span> Kora Score</span>
+    <span class="ticker-item"><span>✦</span> Tribbo Score</span>
     <span class="ticker-item"><span>✦</span> Coach IA</span>
   </div>
 </div>
@@ -1735,7 +1735,7 @@ footer{
 
     <div class="tension-head">
       <h2 class="tension-a sr">Você se identifica?</h2>
-      <p class="tension-b sr d1">Se algum desses cenários parece familiar, o Kora foi feito para você.</p>
+      <p class="tension-b sr d1">Se algum desses cenários parece familiar, o Tribbo foi feito para você.</p>
     </div>
 
     <div class="tension-cards">
@@ -1831,7 +1831,7 @@ footer{
 <!-- ─── O que você recebe (marquee) ──────────────────────────── -->
 <section class="steps">
   <div class="steps-head">
-    <h2 class="steps-title sr d1">O que o Kora faz por você.</h2>
+    <h2 class="steps-title sr d1">O que o Tribbo faz por você.</h2>
   </div>
 
   <div class="sp-wrap">
@@ -1870,7 +1870,7 @@ footer{
 
         <div class="sp-card">
           <div class="sp-inner sp-img-inner">
-            <img src="./korascore.png" class="sp-screenshot" alt="Tela do Kora Score">
+            <img src="./korascore.png" class="sp-screenshot" alt="Tela do Tribbo Score">
           </div>
         </div>
 
@@ -1919,20 +1919,20 @@ footer{
         </defs>
 
         <!-- Grid hexagons -->
-        <polygon points="250,190 302,220 302,280 250,310 198,280 198,220" stroke="rgba(61,158,140,0.18)" stroke-width="1" fill="none" filter="drop-shadow(0 0 2px rgba(61,158,140,0.22))"/>
-        <polygon points="250,130 354,190 354,310 250,370 146,310 146,190" stroke="rgba(61,158,140,0.18)" stroke-width="1" fill="none" filter="drop-shadow(0 0 2px rgba(61,158,140,0.22))"/>
-        <polygon points="250,70 406,160 406,340 250,430 94,340 94,160"   stroke="rgba(61,158,140,0.18)" stroke-width="1" fill="none" filter="drop-shadow(0 0 2px rgba(61,158,140,0.22))"/>
+        <polygon points="250,190 302,220 302,280 250,310 198,280 198,220" stroke="rgba(226,244,8,0.18)" stroke-width="1" fill="none" filter="drop-shadow(0 0 2px rgba(226,244,8,0.22))"/>
+        <polygon points="250,130 354,190 354,310 250,370 146,310 146,190" stroke="rgba(226,244,8,0.18)" stroke-width="1" fill="none" filter="drop-shadow(0 0 2px rgba(226,244,8,0.22))"/>
+        <polygon points="250,70 406,160 406,340 250,430 94,340 94,160"   stroke="rgba(226,244,8,0.18)" stroke-width="1" fill="none" filter="drop-shadow(0 0 2px rgba(226,244,8,0.22))"/>
 
         <!-- Ghost target (100% ideal) -->
         <polygon points="250,70 406,160 406,340 250,430 94,340 94,160" stroke="rgba(82,197,176,0.18)" stroke-width="1.5" stroke-dasharray="5 4" fill="rgba(82,197,176,0.025)"/>
 
         <!-- Axis lines -->
-        <line x1="250" y1="250" x2="250" y2="70"  stroke="rgba(61,158,140,0.15)" stroke-width="1"/>
-        <line x1="250" y1="250" x2="406" y2="160" stroke="rgba(61,158,140,0.15)" stroke-width="1"/>
-        <line x1="250" y1="250" x2="406" y2="340" stroke="rgba(61,158,140,0.15)" stroke-width="1"/>
-        <line x1="250" y1="250" x2="250" y2="430" stroke="rgba(61,158,140,0.15)" stroke-width="1"/>
-        <line x1="250" y1="250" x2="94"  y2="340" stroke="rgba(61,158,140,0.15)" stroke-width="1"/>
-        <line x1="250" y1="250" x2="94"  y2="160" stroke="rgba(61,158,140,0.15)" stroke-width="1"/>
+        <line x1="250" y1="250" x2="250" y2="70"  stroke="rgba(226,244,8,0.15)" stroke-width="1"/>
+        <line x1="250" y1="250" x2="406" y2="160" stroke="rgba(226,244,8,0.15)" stroke-width="1"/>
+        <line x1="250" y1="250" x2="406" y2="340" stroke="rgba(226,244,8,0.15)" stroke-width="1"/>
+        <line x1="250" y1="250" x2="250" y2="430" stroke="rgba(226,244,8,0.15)" stroke-width="1"/>
+        <line x1="250" y1="250" x2="94"  y2="340" stroke="rgba(226,244,8,0.15)" stroke-width="1"/>
+        <line x1="250" y1="250" x2="94"  y2="160" stroke="rgba(226,244,8,0.15)" stroke-width="1"/>
 
         <!-- Filled area (animates in on scroll) -->
         <polygon class="radar-area"
@@ -1940,20 +1940,20 @@ footer{
           fill="url(#radarFill)" stroke="rgba(82,197,176,0.5)" stroke-width="1.5"/>
 
         <!-- Neon axis glow -->
-        <line x1="250" y1="250" x2="250" y2="70"  stroke="#3D9E8C" stroke-width="1.5" filter="drop-shadow(0 0 4px rgba(61,158,140,0.8))"/>
-        <line x1="250" y1="250" x2="406" y2="160" stroke="#3D9E8C" stroke-width="1.5" filter="drop-shadow(0 0 4px rgba(61,158,140,0.8))"/>
-        <line x1="250" y1="250" x2="406" y2="340" stroke="#3D9E8C" stroke-width="1.5" filter="drop-shadow(0 0 4px rgba(61,158,140,0.8))"/>
-        <line x1="250" y1="250" x2="250" y2="430" stroke="#3D9E8C" stroke-width="1.5" filter="drop-shadow(0 0 4px rgba(61,158,140,0.8))"/>
-        <line x1="250" y1="250" x2="94"  y2="340" stroke="#3D9E8C" stroke-width="1.5" filter="drop-shadow(0 0 4px rgba(61,158,140,0.8))"/>
-        <line x1="250" y1="250" x2="94"  y2="160" stroke="#3D9E8C" stroke-width="1.5" filter="drop-shadow(0 0 4px rgba(61,158,140,0.8))"/>
+        <line x1="250" y1="250" x2="250" y2="70"  stroke="#E2F408" stroke-width="1.5" filter="drop-shadow(0 0 4px rgba(226,244,8,0.8))"/>
+        <line x1="250" y1="250" x2="406" y2="160" stroke="#E2F408" stroke-width="1.5" filter="drop-shadow(0 0 4px rgba(226,244,8,0.8))"/>
+        <line x1="250" y1="250" x2="406" y2="340" stroke="#E2F408" stroke-width="1.5" filter="drop-shadow(0 0 4px rgba(226,244,8,0.8))"/>
+        <line x1="250" y1="250" x2="250" y2="430" stroke="#E2F408" stroke-width="1.5" filter="drop-shadow(0 0 4px rgba(226,244,8,0.8))"/>
+        <line x1="250" y1="250" x2="94"  y2="340" stroke="#E2F408" stroke-width="1.5" filter="drop-shadow(0 0 4px rgba(226,244,8,0.8))"/>
+        <line x1="250" y1="250" x2="94"  y2="160" stroke="#E2F408" stroke-width="1.5" filter="drop-shadow(0 0 4px rgba(226,244,8,0.8))"/>
 
         <!-- Pulse lines (light travelling outward) -->
-        <line class="pulse-line" x1="250" y1="250" x2="250" y2="70"  stroke="#52C5B0" stroke-width="2" stroke-dasharray="20 200" stroke-dashoffset="220" filter="drop-shadow(0 0 6px #52C5B0)" style="animation-delay:0s"/>
-        <line class="pulse-line" x1="250" y1="250" x2="406" y2="160" stroke="#52C5B0" stroke-width="2" stroke-dasharray="20 200" stroke-dashoffset="220" filter="drop-shadow(0 0 6px #52C5B0)" style="animation-delay:.5s"/>
-        <line class="pulse-line" x1="250" y1="250" x2="406" y2="340" stroke="#52C5B0" stroke-width="2" stroke-dasharray="20 200" stroke-dashoffset="220" filter="drop-shadow(0 0 6px #52C5B0)" style="animation-delay:1s"/>
-        <line class="pulse-line" x1="250" y1="250" x2="250" y2="430" stroke="#52C5B0" stroke-width="2" stroke-dasharray="20 200" stroke-dashoffset="220" filter="drop-shadow(0 0 6px #52C5B0)" style="animation-delay:1.5s"/>
-        <line class="pulse-line" x1="250" y1="250" x2="94"  y2="340" stroke="#52C5B0" stroke-width="2" stroke-dasharray="20 200" stroke-dashoffset="220" filter="drop-shadow(0 0 6px #52C5B0)" style="animation-delay:2s"/>
-        <line class="pulse-line" x1="250" y1="250" x2="94"  y2="160" stroke="#52C5B0" stroke-width="2" stroke-dasharray="20 200" stroke-dashoffset="220" filter="drop-shadow(0 0 6px #52C5B0)" style="animation-delay:2.5s"/>
+        <line class="pulse-line" x1="250" y1="250" x2="250" y2="70"  stroke="#EDFB6B" stroke-width="2" stroke-dasharray="20 200" stroke-dashoffset="220" filter="drop-shadow(0 0 6px #EDFB6B)" style="animation-delay:0s"/>
+        <line class="pulse-line" x1="250" y1="250" x2="406" y2="160" stroke="#EDFB6B" stroke-width="2" stroke-dasharray="20 200" stroke-dashoffset="220" filter="drop-shadow(0 0 6px #EDFB6B)" style="animation-delay:.5s"/>
+        <line class="pulse-line" x1="250" y1="250" x2="406" y2="340" stroke="#EDFB6B" stroke-width="2" stroke-dasharray="20 200" stroke-dashoffset="220" filter="drop-shadow(0 0 6px #EDFB6B)" style="animation-delay:1s"/>
+        <line class="pulse-line" x1="250" y1="250" x2="250" y2="430" stroke="#EDFB6B" stroke-width="2" stroke-dasharray="20 200" stroke-dashoffset="220" filter="drop-shadow(0 0 6px #EDFB6B)" style="animation-delay:1.5s"/>
+        <line class="pulse-line" x1="250" y1="250" x2="94"  y2="340" stroke="#EDFB6B" stroke-width="2" stroke-dasharray="20 200" stroke-dashoffset="220" filter="drop-shadow(0 0 6px #EDFB6B)" style="animation-delay:2s"/>
+        <line class="pulse-line" x1="250" y1="250" x2="94"  y2="160" stroke="#EDFB6B" stroke-width="2" stroke-dasharray="20 200" stroke-dashoffset="220" filter="drop-shadow(0 0 6px #EDFB6B)" style="animation-delay:2.5s"/>
 
         <!-- Vertex nodes (neon por pilar) -->
         <!-- Sono → violeta -->
@@ -1976,8 +1976,8 @@ footer{
         <circle cx="164" cy="200" r="3.5" fill="#F472B6"/>
 
         <!-- Central node -->
-        <circle cx="250" cy="250" r="8" fill="rgba(61,158,140,0.2)" stroke="#3D9E8C" stroke-width="1.5" filter="drop-shadow(0 0 10px #3D9E8C)"/>
-        <circle cx="250" cy="250" r="4" fill="#3D9E8C"/>
+        <circle cx="250" cy="250" r="8" fill="rgba(226,244,8,0.2)" stroke="#E2F408" stroke-width="1.5" filter="drop-shadow(0 0 10px #E2F408)"/>
+        <circle cx="250" cy="250" r="4" fill="#E2F408"/>
 
         <!-- Labels + percentuais -->
         <text x="250" y="36"  text-anchor="middle" font-family="Manrope,sans-serif" font-size="11" font-weight="500" fill="rgba(255,251,231,0.6)" letter-spacing="0.05em">SONO</text>
@@ -2039,9 +2039,9 @@ footer{
 
     <!-- Coluna de texto científico -->
     <div class="score-sci-text">
-      <span class="sci-label sr">Ciência por trás do Kora</span>
+      <span class="sci-label sr">Ciência por trás do Tribbo</span>
       <h2 class="sci-h2 sr d1">Você sabia?</h2>
-      <p class="sci-sub sr d2">Estudos científicos mostram que resultado sustentável vem do equilíbrio entre todos os pilares. O Kora monitora os seis — todo dia.</p>
+      <p class="sci-sub sr d2">Estudos científicos mostram que resultado sustentável vem do equilíbrio entre todos os pilares. O Tribbo monitora os seis — todo dia.</p>
 
       <div class="sci-pillars sr d3">
 
@@ -2131,7 +2131,7 @@ footer{
       <p class="s-pre sr" style="font-size:14px;color:var(--teal-l);font-weight:700;">Coach IA</p>
       <h2 class="s-h2 sr d1">Seu especialista disponível a qualquer hora.</h2>
       <p class="coach-desc sr d2">
-        Não é um chatbot genérico. O Coach Kora conhece seu plano, sua rotina e seu score — e responde com contexto real sobre a sua vida.
+        Não é um chatbot genérico. O Tribbo Coach conhece seu plano, sua rotina e seu score — e responde com contexto real sobre a sua vida.
       </p>
     </div>
 
@@ -2144,7 +2144,7 @@ footer{
           </svg>
         </div>
         <div>
-          <div class="coach-name">Coach Kora</div>
+          <div class="coach-name">Tribbo Coach</div>
           <div class="coach-status">
             <span class="status-dot"></span>
             Online agora
@@ -2229,7 +2229,7 @@ footer{
     <a href="./termos" class="foot-link">Termos</a>
     <a href="./privacidade" class="foot-link">Privacidade</a>
     <a href="mailto:atendimento.app.kora@gmail.com" class="foot-link">atendimento.app.kora@gmail.com</a>
-    <span class="foot-link">© 2026 Kora Health Hub</span>
+    <span class="foot-link">© 2026 Tribbo Fit</span>
   </div>
 </footer>
 
@@ -2430,7 +2430,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     maxSpeed:   0.25,
     minOpacity: 0.15,
     maxOpacity: 0.6,
-    color:      '61, 158, 140',
+    color:      '226, 244, 8',
     fadeSpeed:  0.001,
   };
 

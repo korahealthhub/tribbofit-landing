@@ -25,7 +25,7 @@ export default function ParaQuemSection() {
         <div className="paraquem-card" style={{ background: 'var(--kora-ink-900)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 'var(--radius-lg)', padding: 26 }}>
           <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 18, textTransform: 'uppercase', letterSpacing: '-0.03em', marginBottom: 6, color: '#fff', whiteSpace: 'nowrap' }}>Tenho plano de treino e dieta</div>
           <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.55)', lineHeight: 1.55, margin: '0 0 18px' }}>
-            Traga seus planos para o Kora e acompanhe tudo em um só lugar.
+            Traga seus planos para o Tribbo e acompanhe tudo em um só lugar.
           </p>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {[
@@ -40,7 +40,7 @@ export default function ParaQuemSection() {
               }}>
                 <div style={{
                   width: 20, height: 20, borderRadius: '50%', flexShrink: 0,
-                  background: '#5DCAA5',
+                  background: '#EDFB6B',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   marginTop: 2,
                 }}>
@@ -58,7 +58,7 @@ export default function ParaQuemSection() {
         <div className="paraquem-card" style={{ background: 'var(--kora-ink-900)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 'var(--radius-lg)', padding: 26 }}>
           <div style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: 20, textTransform: 'uppercase', letterSpacing: '-0.01em', marginBottom: 6, color: '#fff' }}>Quero começar do zero</div>
           <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.55)', lineHeight: 1.55, margin: '0 0 18px' }}>
-            Conte seus objetivos e sua rotina. O Kora ajuda você a criar seus planos e saber o que fazer todos os dias.
+            Conte seus objetivos e sua rotina. O Tribbo ajuda você a criar seus planos e saber o que fazer todos os dias.
           </p>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {[
@@ -73,7 +73,7 @@ export default function ParaQuemSection() {
               }}>
                 <div style={{
                   width: 20, height: 20, borderRadius: '50%', flexShrink: 0,
-                  background: '#5DCAA5',
+                  background: '#EDFB6B',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   marginTop: 2,
                 }}>

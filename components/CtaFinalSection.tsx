@@ -9,8 +9,8 @@ import { useDownloadUrl } from '@/hooks/useDownloadUrl';
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const faqs = [
-  { q: 'É grátis mesmo?', a: 'Sim. O Kora está 100% gratuito agora. Algumas features premium chegam em breve, mas tudo que está disponível hoje é grátis.' },
-  { q: 'Preciso ter personal ou nutricionista?', a: 'Não. O Kora funciona para quem tem plano profissional e quer centralizá-lo, e para quem não tem nada e quer criar uma rotina do zero.' },
+  { q: 'É grátis mesmo?', a: 'Sim. O Tribbo está 100% gratuito agora. Algumas features premium chegam em breve, mas tudo que está disponível hoje é grátis.' },
+  { q: 'Preciso ter personal ou nutricionista?', a: 'Não. O Tribbo funciona para quem tem plano profissional e quer centralizá-lo, e para quem não tem nada e quer criar uma rotina do zero.' },
   { q: 'Funciona para treino em casa?', a: 'Sim. O app tem exercícios para academia, casa e peso do corpo. Você escolhe de acordo com o que tem disponível no dia.' },
   { q: 'Funciona para iniciante?', a: 'Sim. Foi feito para quem está começando agora e para quem já treina mas não consegue manter a constância.' },
   { q: 'Como o Coach IA funciona?', a: 'O Coach IA tira dúvidas sobre treino, alimentação e hábitos, registra suas refeições por foto ou mensagem e envia lembretes inteligentes para não deixar você esquecer nada.' },
@@ -71,7 +71,7 @@ export default function CtaFinalSection() {
 
   return (
     <section ref={ref} style={{ position: 'relative', padding: '64px 24px 100px', overflow: 'hidden', background: 'var(--kora-cream-100)', color: 'var(--kora-ink-900)' }}>
-      <div className="cta-glow" style={{ position: 'absolute', bottom: '-140px', left: '50%', transform: 'translateX(-50%)', width: 520, height: 520, background: 'radial-gradient(circle,color-mix(in srgb,#3D9E8C 22%,transparent),transparent 65%)', pointerEvents: 'none' }} />
+      <div className="cta-glow" style={{ position: 'absolute', bottom: '-140px', left: '50%', transform: 'translateX(-50%)', width: 520, height: 520, background: 'radial-gradient(circle,color-mix(in srgb,#E2F408 22%,transparent),transparent 65%)', pointerEvents: 'none' }} />
 
       <div className="cta-inner" style={{ position: 'relative', textAlign: 'center' }}>
         <h2 className="cta-final-h2" style={{ fontFamily: 'var(--font-display)', fontSize: 32, lineHeight: 0.98, fontWeight: 800, letterSpacing: '-0.02em', textTransform: 'uppercase', margin: '0 0 22px', textWrap: 'balance' } as React.CSSProperties}>
@@ -106,7 +106,7 @@ export default function CtaFinalSection() {
         <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 20, lineHeight: 1.05, fontWeight: 800, letterSpacing: '-0.01em', textTransform: 'uppercase', margin: '0 0 10px', color: '#fff' }}>Quero receber meu diagnóstico</h3>
         <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.55, margin: '0 auto 20px', maxWidth: 300 }}>Descubra grátis quantas calorias você deve comer por dia. Leva 2 minutos.</p>
         <a
-          href="https://korahealthhub.com.br/calculadora/"
+          href="https://tribbofit.com.br/calculadora/"
           style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8, background: 'transparent', color: '#fff', fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: 13, letterSpacing: '0.06em', textTransform: 'uppercase', padding: '13px 24px', borderRadius: 'var(--radius-pill)', border: '1px solid rgba(255,255,255,0.22)', transition: 'background var(--dur-fast)' }}
           onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.08)')}
           onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
@@ -121,14 +121,14 @@ export default function CtaFinalSection() {
 
       <div style={{ marginTop: 44, paddingTop: 24, borderTop: '1px solid var(--kora-cream-300)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-          <img src={`${BASE}/uploads/app-icon.jpg`} alt="Kora" style={{ width: 24, height: 24, borderRadius: 8, objectFit: 'cover' }} />
-          <img src={`${BASE}/uploads/kora-wordmark.png`} alt="Kora" style={{ height: 11, objectFit: 'contain', filter: 'brightness(0)', opacity: 0.82 }} />
+          <img src={`${BASE}/uploads/app-icon.jpg`} alt="Tribbo Fit" style={{ width: 24, height: 24, borderRadius: 8, objectFit: 'cover' }} />
+          <img src={`${BASE}/uploads/kora-wordmark.png`} alt="Tribbo Fit" style={{ height: 11, objectFit: 'contain', filter: 'brightness(0)', opacity: 0.82 }} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
-          <div style={{ fontSize: 12, color: 'var(--kora-grey-500)' }}>© 2026 Kora Health Hub</div>
+          <div style={{ fontSize: 12, color: 'var(--kora-grey-500)' }}>© 2026 Tribbo Fit</div>
           <div style={{ display: 'flex', gap: 10 }}>
-            <a href="https://korahealthhub.com.br/termos" style={{ fontSize: 12, color: 'var(--kora-grey-500)', textDecoration: 'underline', textUnderlineOffset: 3 }}>Termos de Uso</a>
-            <a href="https://korahealthhub.com.br/privacidade" style={{ fontSize: 12, color: 'var(--kora-grey-500)', textDecoration: 'underline', textUnderlineOffset: 3 }}>Política de Privacidade</a>
+            <a href="https://tribbofit.com.br/termos" style={{ fontSize: 12, color: 'var(--kora-grey-500)', textDecoration: 'underline', textUnderlineOffset: 3 }}>Termos de Uso</a>
+            <a href="https://tribbofit.com.br/privacidade" style={{ fontSize: 12, color: 'var(--kora-grey-500)', textDecoration: 'underline', textUnderlineOffset: 3 }}>Política de Privacidade</a>
           </div>
         </div>
       </div>

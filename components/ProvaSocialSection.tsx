@@ -14,7 +14,7 @@ const reviews = [
   { name: 'Bianca', title: 'Simplesmente insano!',            text: 'App resolveu todas as dores de cabeça que envolvem o mundo da academia e alimentação.' },
   { name: 'Monica', title: 'Aplicativo excelente',            text: 'Consigo manter minha rotina com mais facilidade. E o mais legal é poder participar da construção das novas versões e melhorias.' },
   { name: 'Carla',  title: 'Muito bom o app',                 text: 'Ansiosa aguardando pela versão que conecta com profissionais e outros usuários.' },
-  { name: 'Roberto Rosa', title: 'Larguei 9 anos de banco pelo Kora', text: 'Porque eu também não conseguia manter uma rotina e não encontrei nenhum app que resolvesse isso de verdade.', badge: 'Fundador' },
+  { name: 'Roberto Rosa', title: 'Larguei 9 anos de banco pelo Tribbo', text: 'Porque eu também não conseguia manter uma rotina e não encontrei nenhum app que resolvesse isso de verdade.', badge: 'Fundador' },
   { name: 'Thiago', title: 'Curti o app!', text: 'Muito bom para treino e acompanhamento de carga, tem algumas melhorias que solicitei, mas nada que me impactou de usar e ter resultados.' },
 ];
 

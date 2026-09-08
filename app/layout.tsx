@@ -20,7 +20,7 @@ const hanken = Hanken_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: 'Kora Health Hub: Pare de recomeçar toda segunda.',
+  title: 'Tribbo Fit: Pare de recomeçar toda segunda.',
   description:
     'Treino, alimentação, sono e hábitos em um lugar só. Com um Coach IA que não deixa você parar.',
 };

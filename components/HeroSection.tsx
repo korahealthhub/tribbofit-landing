@@ -110,7 +110,7 @@ export default function HeroSection() {
       {/* 1. Base dark wash */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'rgba(10,25,32,0.52)', pointerEvents: 'none' }} />
       {/* 2. Teal tint at top (brand identity) */}
-      <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(160deg, rgba(61,158,140,0.14) 0%, transparent 50%)', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(160deg, rgba(226,244,8,0.14) 0%, transparent 50%)', pointerEvents: 'none' }} />
       {/* 3. Bottom fade to next section */}
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 160, zIndex: 1, background: 'linear-gradient(to bottom, transparent, var(--kora-cream-100))', pointerEvents: 'none' }} />
 
@@ -120,12 +120,12 @@ export default function HeroSection() {
         {/* Eyebrow / logo row */}
         <div className="hero-eyebrow" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '52px 24px 0', marginBottom: 28 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <img src={`${BASE}/uploads/app-icon.jpg`} alt="Kora" style={{ width: 30, height: 30, borderRadius: 8, objectFit: 'cover' }} />
-            <img src={`${BASE}/uploads/nome-kora.jpg`} alt="Kora" style={{ height: 13, objectFit: 'contain', mixBlendMode: 'screen', filter: 'brightness(1.4)' }} />
+            <img src={`${BASE}/uploads/app-icon.jpg`} alt="Tribbo Fit" style={{ width: 30, height: 30, borderRadius: 8, objectFit: 'cover' }} />
+            <img src={`${BASE}/uploads/nome-kora.jpg`} alt="Tribbo Fit" style={{ height: 13, objectFit: 'contain', mixBlendMode: 'screen', filter: 'brightness(1.4)' }} />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             {[
-              { href: 'https://korahealthhub.com.br', label: 'Início', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg> },
+              { href: 'https://tribbofit.com.br', label: 'Início', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg> },
               { href: 'https://www.instagram.com/meu.kora/', label: 'Instagram', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="0.5" fill="#fff" stroke="none"/></svg> },
               { href: 'https://www.tiktok.com/@meu.kora?lang=pt-BR', label: 'TikTok', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" stroke="none"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.17 8.17 0 0 0 4.78 1.52V6.75a4.85 4.85 0 0 1-1.01-.06z"/></svg> },
             ].map(({ href, label, icon }) => (
@@ -206,7 +206,7 @@ export default function HeroSection() {
           <div ref={mockupRef} className="hero-mockup" style={{ marginTop: 32, display: 'flex', justifyContent: 'center' }}>
             <img
               src={`${BASE}/uploads/iphone-mockup.png`}
-              alt="Kora app"
+              alt="Tribbo app"
               style={{
                 width: '88%',
                 maxWidth: 320,

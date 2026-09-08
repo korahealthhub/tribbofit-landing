@@ -235,7 +235,7 @@ export default function FeaturesSection() {
             tagColor: '#FB923C',
             tag: 'TREINO',
             h3: 'Treine do seu jeito. Onde você estiver.',
-            desc: 'Na academia, em casa ou usando apenas o peso do corpo. O Kora adapta seu treino à sua rotina, aos equipamentos disponíveis e ao seu objetivo.',
+            desc: 'Na academia, em casa ou usando apenas o peso do corpo. O Tribbo adapta seu treino à sua rotina, aos equipamentos disponíveis e ao seu objetivo.',
             grad: 'rgba(251,146,60,0.14)',
             photos: [
               { src: `${BASE}/uploads/treino-academia.jpg`, label: 'Academia' },
@@ -285,7 +285,7 @@ export default function FeaturesSection() {
           },
           {
             src: '',
-            tagColor: '#5DCAA5',
+            tagColor: '#EDFB6B',
             tag: 'COACH IA',
             belowVideo: `${BASE}/uploads/coach-ia`,
             coachFeatures: [
@@ -313,7 +313,7 @@ export default function FeaturesSection() {
             photos: [] as { src: string; label: string }[],
             h3: 'Registre refeições em segundos',
             desc: 'Só tira uma foto do prato. O Coach IA identifica os alimentos, estima as porções e registra por você.',
-            grad: 'rgba(61,158,140,0.14)',
+            grad: 'rgba(226,244,8,0.14)',
           },
         ].map((f) => (
           <div key={f.tag} className="feat-block">
@@ -332,7 +332,7 @@ export default function FeaturesSection() {
             ) : (
               <div className="feat-block-img" style={{
                 borderRadius: 'var(--radius-xl)', overflow: 'hidden',
-                background: `linear-gradient(160deg,${f.grad},rgba(61,158,140,0.05))`,
+                background: `linear-gradient(160deg,${f.grad},rgba(226,244,8,0.05))`,
                 border: '1px solid var(--kora-cream-300)',
                 aspectRatio: '20/23', position: 'relative',
               }}>
@@ -384,8 +384,8 @@ export default function FeaturesSection() {
                       }}>
                         <div style={{
                           width: 36, height: 36, borderRadius: 10, flexShrink: 0,
-                          background: 'rgba(61,158,140,0.10)',
-                          border: '1px solid rgba(61,158,140,0.18)',
+                          background: 'rgba(226,244,8,0.10)',
+                          border: '1px solid rgba(226,244,8,0.18)',
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           fontSize: 16,
                         }}>

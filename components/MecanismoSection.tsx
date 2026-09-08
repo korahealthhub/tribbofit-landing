@@ -87,7 +87,7 @@ export default function MecanismoSection() {
       ref={ref}
       style={{ position: 'relative', padding: '64px 24px', overflow: 'hidden', background: 'var(--kora-cream-100)', color: 'var(--kora-ink-900)' }}
     >
-      <div className="mec-glow" style={{ position: 'absolute', top: '40%', left: '50%', transform: 'translateX(-50%)', width: 460, height: 460, background: 'radial-gradient(circle,color-mix(in srgb,#3D9E8C 13%,transparent),transparent 65%)', pointerEvents: 'none' }} />
+      <div className="mec-glow" style={{ position: 'absolute', top: '40%', left: '50%', transform: 'translateX(-50%)', width: 460, height: 460, background: 'radial-gradient(circle,color-mix(in srgb,#E2F408 13%,transparent),transparent 65%)', pointerEvents: 'none' }} />
 
       <div className="mec-inner" style={{ position: 'relative' }}>
         <div className="mec-header">
@@ -96,7 +96,7 @@ export default function MecanismoSection() {
             Ecossistema de saúde integrada, no seu bolso.
           </h2>
           <p style={{ fontSize: 15, color: 'var(--kora-grey-500)', margin: '0 0 32px', maxWidth: 360, lineHeight: 1.6 }}>
-            Você não falha por falta de disciplina. Falha porque trata treino, dieta e sono como projetos separados. O Kora conecta os 6 pilares da sua saúde num Score diário de 0 a 100.
+            Você não falha por falta de disciplina. Falha porque trata treino, dieta e sono como projetos separados. O Tribbo conecta os 6 pilares da sua saúde num Score diário de 0 a 100.
           </p>
         </div>
 

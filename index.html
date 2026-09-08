@@ -22,14 +22,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="facebook-domain-verification" content="63kts6lozamyc8w2w7fjaeabnfelve" />
-<title>Kora | Seu App de Saúde</title>
+<title>Tribbo Fit | Seu App de Saúde</title>
 <meta name="description" content="Rotina de saúde completa com Coach IA. iOS e Android.">
-<meta property="og:title" content="Kora | Seu App de Saúde">
+<meta property="og:title" content="Tribbo Fit | Seu App de Saúde">
 <meta property="og:description" content="Rotina de saúde completa com Coach IA. iOS e Android.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="./og-image.png">
-<meta property="og:image:alt" content="Kora — App de saúde que organiza seus planos em um só lugar">
-<meta property="og:url" content="https://korahealthhub.github.io/kora-landing">
+<meta property="og:image:alt" content="Tribbo Fit — App de saúde que organiza seus planos em um só lugar">
+<meta property="og:url" content="https://tribbofit.com.br">
 <meta name="apple-itunes-app" content="app-id=6769632514">
 <link rel="icon" href="./logo-k.png">
 
@@ -51,9 +51,9 @@ button{cursor:pointer}
   --bg:         #0A1A18;
   --bg2:        #0C1E1B;
   --cream:      #F2EDE3;
-  --teal:       #3D9E8C;
-  --teal-l:     #52C5B0;
-  --teal-d:     #2D7A6C;
+  --teal:       #E2F408;
+  --teal-l:     #EDFB6B;
+  --teal-d:     #A8B806;
   --amber:      #C8861A;
   --text:       #F5F0E6;
   --text-dim:   rgba(245,240,230,0.52);
@@ -62,7 +62,7 @@ button{cursor:pointer}
   --cr-dim:     rgba(17,30,28,0.58);
   --cr-faint:   rgba(17,30,28,0.3);
   --red:        #E05252;
-  --border:     rgba(61,158,140,0.12);
+  --border:     rgba(226,244,8,0.12);
   --border-l:   rgba(245,240,230,0.07);
   --px:         80px;
   --max:        1100px;
@@ -112,8 +112,8 @@ nav.scrolled{
   transition:all .2s ease;
 }
 .nav-social-link:hover{
-  border-color:rgba(61,158,140,0.5);
-  background:rgba(61,158,140,0.1);
+  border-color:rgba(226,244,8,0.5);
+  background:rgba(226,244,8,0.1);
   color:#fff;
   transform:translateY(-2px);
 }
@@ -150,9 +150,9 @@ nav.scrolled{
 }
 .entry-btn:hover{transform:translateY(-2px)}
 
-.entry-btn-primary{
-  background:linear-gradient(135deg,#3DAA85,#5DCAA5);
-  border-color:rgba(93,202,165,0.3);
+.entry-btn-primary{ color:#0A0A0A;
+  background:linear-gradient(135deg,#B5C904,#EDFB6B);
+  border-color:rgba(237,251,107,0.3);
   box-shadow:0 6px 24px rgba(61,170,133,0.28);
 }
 .entry-btn-primary:hover{
@@ -275,7 +275,7 @@ footer{
 .inapp-toast{
   position:fixed;bottom:0;left:0;right:0;z-index:200;
   background:rgba(10,26,24,0.96);
-  border-top:1px solid rgba(93,202,165,0.25);
+  border-top:1px solid rgba(237,251,107,0.25);
   backdrop-filter:blur(16px);
   -webkit-backdrop-filter:blur(16px);
   padding:16px 20px;
@@ -289,16 +289,16 @@ footer{
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .inapp-toast.visible{display:flex}
 .inapp-toast-text{font-size:14px;color:rgba(245,240,230,0.75);line-height:1.5}
-.inapp-toast-text strong{color:#5DCAA5}
+.inapp-toast-text strong{color:#EDFB6B}
 .inapp-toast-btn{
   display:inline-flex;align-items:center;gap:6px;
   padding:10px 20px;border-radius:50px;
-  background:rgba(93,202,165,0.15);border:1px solid rgba(93,202,165,0.3);
-  color:#5DCAA5;font-size:13px;font-weight:700;cursor:pointer;
+  background:rgba(237,251,107,0.15);border:1px solid rgba(237,251,107,0.3);
+  color:#EDFB6B;font-size:13px;font-weight:700;cursor:pointer;
   transition:background .18s;
 }
-.inapp-toast-btn:hover{background:rgba(93,202,165,0.25)}
-.inapp-toast-copied{font-size:12px;color:#5DCAA5;opacity:0;transition:opacity .3s}
+.inapp-toast-btn:hover{background:rgba(237,251,107,0.25)}
+.inapp-toast-copied{font-size:12px;color:#EDFB6B;opacity:0;transition:opacity .3s}
 .inapp-toast-copied.show{opacity:1}
 </style>
 </head>
@@ -306,7 +306,7 @@ footer{
 
 <nav id="nav">
   <div class="nav-brand">
-    <img src="./nome-kora.png" class="nav-name" alt="Kora">
+    <img src="./nome-kora.png" class="nav-name" alt="Tribbo Fit">
   </div>
   <div class="nav-social">
     <a href="https://www.instagram.com/meu.kora?igsh=cW5rdjFxc2lzNXA3" class="nav-social-link" target="_blank" rel="noopener" aria-label="Instagram">
@@ -383,7 +383,7 @@ footer{
     </a>
 
     <!-- Botão 5 — Guia -->
-    <a href="https://korahealthhub.com.br/guia/" class="entry-btn entry-btn-secondary">
+    <a href="https://tribbofit.com.br/guia/" class="entry-btn entry-btn-secondary">
       <span class="entry-btn-icon">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
@@ -418,7 +418,7 @@ footer{
     <a href="./termos" class="foot-link">Termos</a>
     <a href="./privacidade" class="foot-link">Privacidade</a>
     <a href="mailto:atendimento.app.kora@gmail.com" class="foot-link">atendimento.app.kora@gmail.com</a>
-    <span class="foot-link">© 2026 Kora Health Hub</span>
+    <span class="foot-link">© 2026 Tribbo Fit</span>
   </div>
 </footer>
 
@@ -452,7 +452,7 @@ window.addEventListener('scroll', () => {
     });
 
     document.getElementById('inapp-copy').addEventListener('click', function() {
-      var url = 'https://korahealthhub.com.br/';
+      var url = 'https://tribbofit.com.br/';
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(url).then(showCopied);
       } else {

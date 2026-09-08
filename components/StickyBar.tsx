@@ -26,9 +26,9 @@ export default function StickyBar() {
   return (
     <div ref={barRef} style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 440, background: 'var(--kora-ink-900)', borderTop: '1px solid rgba(255,255,255,0.08)', padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', zIndex: 100 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        <img src={`${BASE}/uploads/app-icon.jpg`} alt="Kora" style={{ width: 36, height: 36, borderRadius: 9, objectFit: 'cover' }} />
+        <img src={`${BASE}/uploads/app-icon.jpg`} alt="Tribbo Fit" style={{ width: 36, height: 36, borderRadius: 9, objectFit: 'cover' }} />
         <div>
-          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 14, color: 'var(--kora-cream-100)', letterSpacing: '-0.01em' }}>Kora</div>
+          <div style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 14, color: 'var(--kora-cream-100)', letterSpacing: '-0.01em' }}>Tribbo</div>
         </div>
       </div>
       <a
