@@ -31,7 +31,7 @@
 <meta property="og:image:alt" content="Tribbo Fit — App de saúde que organiza seus planos em um só lugar">
 <meta property="og:url" content="https://tribbofit.com.br">
 <meta name="apple-itunes-app" content="app-id=6769632514">
-<link rel="icon" href="./logo-k.png">
+<link rel="icon" href="./app-icon-tribbo.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -72,7 +72,10 @@ button{cursor:pointer}
 /* ─── Base ───────────────────────────────────────────────────── */
 body{
   font-family:'Manrope',system-ui,sans-serif;
-  background:var(--bg);
+  background:linear-gradient(180deg,#07161B 0%,#081417 30%,#061114 60%,#000000 100%) no-repeat;
+  background-color:#000000;
+  background-attachment:fixed;
+  min-height:100vh;
   color:var(--text);
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
@@ -208,7 +211,8 @@ nav.scrolled{
   color:#fff;
 }
 .entry-btn-primary .entry-btn-icon{
-  background:rgba(255,255,255,0.18);
+  background:rgba(10,10,10,0.10);
+  color:#0A0A0A;
 }
 
 .entry-btn-body{
@@ -232,8 +236,11 @@ nav.scrolled{
   margin-top:4px;
   display:block;
 }
+.entry-btn-primary .entry-btn-label{
+  color:#0A0A0A;
+}
 .entry-btn-primary .entry-btn-caption{
-  color:rgba(255,255,255,0.70);
+  color:rgba(10,10,10,0.70);
 }
 
 /* ─── Divisor ────────────────────────────────────────────────── */
@@ -306,7 +313,7 @@ footer{
 
 <nav id="nav">
   <div class="nav-brand">
-    <img src="./nome-kora.png" class="nav-name" alt="Tribbo Fit">
+    <img src="./nome-branco.png" class="nav-name" alt="Tribbo Fit">
   </div>
   <div class="nav-social">
     <a href="https://www.instagram.com/meu.kora?igsh=cW5rdjFxc2lzNXA3" class="nav-social-link" target="_blank" rel="noopener" aria-label="Instagram">

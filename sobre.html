@@ -29,7 +29,7 @@
 <meta property="og:image" content="./og-image.png">
 <meta property="og:image:alt" content="Tribbo Fit — App de saúde que organiza seus planos em um só lugar">
 <meta property="og:url" content="https://tribbofit.com.br/sobre.html">
-<link rel="icon" href="./logo-k.png">
+<link rel="icon" href="./app-icon-tribbo.png">
 
 <!-- Fonts: Manrope (igual ao sonarhealth.co) + DM Mono (precisão nos números) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -87,7 +87,10 @@ button{cursor:pointer}
 /* ─── Base ───────────────────────────────────────────────────── */
 body{
   font-family:'Manrope',system-ui,sans-serif;
-  background:var(--bg);
+  background:linear-gradient(180deg,#07161B 0%,#081417 30%,#061114 60%,#000000 100%) no-repeat;
+  background-color:#000000;
+  background-attachment:fixed;
+  min-height:100vh;
   color:var(--text);
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
@@ -1629,7 +1632,7 @@ footer{
 <!-- ─── Nav ───────────────────────────────────────────────────── -->
 <nav id="nav">
   <div class="nav-brand">
-    <img src="./nome-kora.png" class="nav-name" alt="Tribbo Fit">
+    <img src="./nome-branco.png" class="nav-name" alt="Tribbo Fit">
   </div>
   <div class="nav-dl-btns">
     <a href="https://apps.apple.com/br/app/kora-health-hub/id6769632514" class="nav-dl-btn nav-dl-ios" target="_blank" rel="noopener" onclick="gtag('event','click_appstore',{'event_category':'conversion','event_label':'app_store_ios'});ttq.track('ClickButton',{contents:[{content_id:'app_store_ios',content_type:'app',content_name:'Kora iOS App Store'}]});">
@@ -1675,7 +1678,7 @@ footer{
     <div class="hero-text">
       <div class="hero-brand sr d1">
         <div class="hero-k-wrap">
-          <img src="./logo-k.png" class="hero-brand-k" alt="Tribbo Fit">
+          <img src="./app-icon-tribbo.png" class="hero-brand-k" alt="Tribbo Fit">
           <div class="hero-k-orbit-ring">
             <span class="hero-k-star"></span>
           </div>
