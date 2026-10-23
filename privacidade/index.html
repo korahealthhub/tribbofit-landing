@@ -342,7 +342,7 @@
         <div class="doc-header-icon">🔒</div>
         <div class="doc-title">Política de Privacidade</div>
         <div class="doc-subtitle">Tribbo Fit</div>
-        <div class="doc-meta">Última atualização: 26 de agosto de 2026 &nbsp;·&nbsp; Versão 2.1</div>
+        <div class="doc-meta">Última atualização: 23 de outubro de 2026 &nbsp;·&nbsp; Versão 2.2</div>
       </div>
 
       <div class="notice">
@@ -363,7 +363,10 @@
           <li><a href="#pt-9">Menores de idade</a></li>
           <li><a href="#pt-10">Notificações push</a></li>
           <li><a href="#pt-11">Inteligência Artificial</a></li>
-          <li><a href="#pt-12">Contato</a></li>
+          <li><a href="#pt-12">Grupo VIP de assinantes (WhatsApp)</a></li>
+          <li><a href="#pt-13">Como você conheceu o Tribbo</a></li>
+          <li><a href="#pt-14">Medição de anúncios e rastreamento (iPhone)</a></li>
+          <li><a href="#pt-15">Contato</a></li>
         </ol>
       </div>
 
@@ -402,7 +405,7 @@
         <p>Se você enviar arquivos PDF de planos nutricionais ou de treino, esses arquivos são processados por Inteligência Artificial para extração estruturada das informações. Após o processamento, o conteúdo extraído é armazenado no seu perfil. Os arquivos brutos não são armazenados permanentemente.</p>
 
         <h2>Dados de uso e diagnóstico</h2>
-        <p>Coletamos dados de erros e comportamento do app por meio do Sentry (veja seção 3) para identificar e corrigir falhas técnicas. Esses dados não incluem dados de saúde.</p>
+        <p>Coletamos dados de erros pelo Sentry e dados de uso do app pelo PostHog (veja a seção 3), para corrigir falhas e melhorar o app. O que cada um recebe está descrito na seção 3.</p>
       </div>
 
       <!-- 2 -->
@@ -428,37 +431,46 @@
       <div class="section" id="pt-3">
         <div class="section-title"><span class="section-number">03</span>Compartilhamento com terceiros</div>
 
-        <p>Compartilhamos dados apenas com os seguintes prestadores de serviço, estritamente para operar o aplicativo:</p>
+        <p>Compartilhamos dados apenas com os prestadores de serviço abaixo, cada um só com o necessário para a sua função. Não vendemos dados. <strong>Nenhum dado de saúde vai para a Meta. Para o PostHog não vão peso, altura, medidas, condições de saúde, dores, restrições, nomes de alimentos ou exercícios, sono, humor nem respostas do check-in</strong> (veja o item PostHog).</p>
 
         <h3>Supabase</h3>
-        <p>Banco de dados, autenticação e armazenamento de arquivos. Servidores localizados em <strong>sa-east-1 (São Paulo, Brasil)</strong>. Seus dados de saúde ficam em território nacional. <a href="https://supabase.com/privacy" target="_blank" rel="noopener">Política de privacidade do Supabase</a>.</p>
+        <p>Banco de dados, autenticação, armazenamento de arquivos e as rotinas agendadas do app (como o resumo semanal). Recebe todos os dados do app, inclusive os de saúde, para guardá-los e fazer o app funcionar. Servidores em <strong>sa-east-1 (São Paulo, Brasil)</strong>. <a href="https://supabase.com/privacy" target="_blank" rel="noopener">Política de privacidade do Supabase</a>.</p>
 
-        <h3>Anthropic / Claude API</h3>
-        <p>Usada pelo Coach IA para gerar insights personalizados de saúde e pelo processamento de planos nutricionais enviados por PDF. Quando você interage com o Coach ou envia um plano, dados relevantes do seu perfil de saúde são transmitidos à API da Anthropic para geração da resposta. A Anthropic não usa esses dados para treinar modelos. <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener">Política de privacidade da Anthropic</a>.</p>
-
-        <h3>Apple (Sign In with Apple)</h3>
-        <p>Se você usar o login com Apple, a Apple autentica sua identidade e nos repassa nome e e-mail conforme as permissões que você autorizar. <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">Política de privacidade da Apple</a>.</p>
-
-        <h3>Google (Sign In with Google)</h3>
-        <p>Se você usar o login com Google, o Google autentica sua identidade e nos repassa nome e e-mail. <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Política de privacidade do Google</a>.</p>
-
-        <h3>Expo / EAS (Expo Application Services)</h3>
-        <p>Plataforma usada para compilação, distribuição e atualizações over-the-air do aplicativo. Pode processar metadados técnicos do app. <a href="https://expo.dev/privacy" target="_blank" rel="noopener">Política de privacidade da Expo</a>.</p>
-
-        <h3>Sentry</h3>
-        <p>Monitoramento de erros e desempenho. Captura stack traces, informações do dispositivo e dados de sessão anonimizados. Não captura dados de saúde. <a href="https://sentry.io/privacy/" target="_blank" rel="noopener">Política de privacidade do Sentry</a>.</p>
-
-        <h3>GitHub Actions</h3>
-        <p>Utilizado para execução de rotinas automatizadas no servidor (envio de insights diários e resumos semanais). Não armazena dados de usuários além dos necessários para a execução das tarefas agendadas.</p>
+        <h3>Anthropic (Claude)</h3>
+        <p>Inteligência artificial do Coach, do resumo semanal, do registro de refeições por foto ou texto e da leitura de planos enviados (PDF ou foto). Recebe os dados de saúde necessários para cada resposta (por exemplo, check-ins, refeições, treinos, peso e metas) ou a imagem e o arquivo enviados. A Anthropic não usa esses dados para treinar modelos. <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener">Política de privacidade da Anthropic</a>.</p>
 
         <h3>RevenueCat</h3>
-        <p>Utilizamos o RevenueCat para gerenciar assinaturas e validar compras realizadas dentro do aplicativo. O RevenueCat recebe um identificador da sua conta Tribbo (não seu nome ou e-mail diretamente) e informações sobre o status da sua assinatura (plano ativo, data de expiração, histórico de renovação). Essas informações são usadas exclusivamente para liberar ou revogar seu acesso às funcionalidades Premium. <a href="https://www.revenuecat.com/privacy" target="_blank" rel="noopener">Política de privacidade do RevenueCat</a>.</p>
+        <p>Gestão das assinaturas. Recebe o identificador da sua conta Tribbo e o status da assinatura (plano, datas, renovação), para liberar ou retirar o acesso Premium. No Android, também recebe identificadores do aparelho e repassa à Meta os eventos de compra, para medir anúncios. Não recebe dados de saúde. <a href="https://www.revenuecat.com/privacy" target="_blank" rel="noopener">Política de privacidade do RevenueCat</a>.</p>
 
-        <h3>Apple App Store / Google Play Store (processamento de pagamento)</h3>
-        <p>Assinaturas do Tribbo são processadas exclusivamente pela Apple ou pelo Google, conforme a loja de origem da sua conta. Não temos acesso aos dados do seu cartão ou método de pagamento — isso é gerenciado inteiramente pela loja, sujeito às políticas de privacidade da Apple e do Google.</p>
+        <h3>Apple App Store e Google Play</h3>
+        <p>Processam o pagamento das assinaturas. Não temos acesso aos dados do seu cartão ou forma de pagamento.</p>
 
-        <div class="warning">
-          <p><strong>Transferências internacionais:</strong> A Anthropic (EUA) e o Sentry (EUA) processam dados fora do Brasil. Essas transferências ocorrem sob cláusulas contratuais padrão e são necessárias para o funcionamento das funcionalidades de IA e monitoramento de erros.</p>
+        <h3>Apple e Google (login)</h3>
+        <p>Se você entrar com Apple ou Google, eles confirmam sua identidade e nos repassam nome e e-mail, conforme o que você autorizar. <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">Política de privacidade da Apple</a> · <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Política de privacidade do Google</a>.</p>
+
+        <h3>Meta (SDK do Facebook)</h3>
+        <p>Medição de anúncios. Recebe eventos do app (instalação, abertura, cadastro, fim do cadastro inicial, tela de assinatura vista, início e conclusão de assinatura, com o valor do plano) e, no iPhone só se você permitir o rastreamento, o identificador de publicidade do aparelho. <strong>Não recebe nenhum dado de saúde</strong>, nem respostas do questionário. Veja a seção 14. <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">Política de privacidade da Meta</a>.</p>
+
+        <h3>PostHog</h3>
+        <p>Análise de uso do app, para entender o que funciona e melhorar as telas. Recebe o identificador da conta e o e-mail; idade, gênero, objetivo e nível de treino; as escolhas do cadastro que não são de saúde (por exemplo, quantas refeições por dia, onde você come, orçamento e como conheceu o Tribbo); e eventos de uso, como telas abertas, botões tocados e ações concluídas. Alguns eventos levam números de uso sem identificar o que foi: calorias de uma refeição registrada, número de copos de água do dia, duração e calorias estimadas de um treino e a nota de alimentação do check-in. <strong>Não recebe</strong> peso, altura, medidas, condições de saúde, dores, restrições alimentares, nomes de alimentos ou de exercícios, sono, humor nem as respostas do check-in. <a href="https://posthog.com/privacy" target="_blank" rel="noopener">Política de privacidade do PostHog</a>.</p>
+
+        <h3>Sentry</h3>
+        <p>Monitoramento de erros. Recebe o identificador e o e-mail da conta, para sabermos de quem é o erro, e dados técnicos do aparelho e do erro. Não enviamos dados de saúde ao Sentry. <a href="https://sentry.io/privacy/" target="_blank" rel="noopener">Política de privacidade do Sentry</a>.</p>
+
+        <h3>Resend</h3>
+        <p>Envio de e-mails do app, como aviso do fim do período grátis, confirmação de exclusão de conta e respostas ao seu contato. Recebe seu nome, seu e-mail e o texto do e-mail. <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener">Política de privacidade do Resend</a>.</p>
+
+        <h3>Expo (EAS)</h3>
+        <p>Compilação, distribuição e atualizações do app, e envio das notificações push. Recebe dados técnicos do app e, nas notificações enviadas pelo servidor (como o resumo semanal), o token do aparelho e o texto da notificação. <a href="https://expo.dev/privacy" target="_blank" rel="noopener">Política de privacidade da Expo</a>.</p>
+
+        <h3>Apple Push Notification service e Firebase Cloud Messaging (Google)</h3>
+        <p>Entregam as notificações no iPhone e no Android. Recebem o token do aparelho e o texto da notificação.</p>
+
+        <h3>Open Food Facts</h3>
+        <p>Base aberta de produtos usada quando você lê um código de barras. Recebe só o número do código de barras, enviado pelo nosso servidor, sem nenhum dado seu. <a href="https://world.openfoodfacts.org/privacy" target="_blank" rel="noopener">Política de privacidade do Open Food Facts</a>.</p>
+
+        <div class="notice">
+          <p><strong>Transferências internacionais:</strong> Anthropic, RevenueCat, Meta, PostHog, Sentry, Resend e Expo processam dados fora do Brasil (principalmente nos EUA). Essas transferências são necessárias para o funcionamento do app e seguem as garantias contratuais de cada prestador, conforme a LGPD.</p>
         </div>
       </div>
 
@@ -592,7 +604,44 @@
 
       <!-- 12 -->
       <div class="section" id="pt-12">
-        <div class="section-title"><span class="section-number">12</span>Contato e encarregado de dados</div>
+        <div class="section-title"><span class="section-number">12</span>Grupo VIP de assinantes (WhatsApp)</div>
+
+        <p>Depois de assinar, você pode escolher entrar no Grupo VIP de assinantes, com contato direto com o fundador, novidades em primeira mão e brindes nos desafios. A participação é opcional e só acontece se você informar seu WhatsApp e marcar a caixa "Quero receber o convite pelo WhatsApp".</p>
+
+        <h3>O que guardamos</h3>
+        <ul>
+          <li>O número de WhatsApp que você informou</li>
+          <li>A data e a hora em que você marcou a caixa, o texto exato que aceitou e o local do app onde aceitou</li>
+        </ul>
+
+        <h3>Para que usamos</h3>
+        <p>Só para te enviar o convite do grupo e falar com você sobre o Grupo VIP. Seu número não é usado para anúncios, não é enviado à Meta para fins de publicidade nem a ferramentas de análise de uso, e não é vendido nem cedido a ninguém. Ao entrar no grupo, seu número fica visível para os outros participantes, como em qualquer grupo do WhatsApp, e o uso do WhatsApp segue a política de privacidade do próprio WhatsApp.</p>
+
+        <h3>Como sair</h3>
+        <p>Você pode sair do grupo a qualquer momento direto no WhatsApp. Para que a gente apague seu número e não te chame mais, escreva para <a href="mailto:atendimento.app.kora@gmail.com" style="color:var(--teal)">atendimento.app.kora@gmail.com</a> ou avise no próprio WhatsApp. Ao registrar a sua saída, apagamos o número e guardamos apenas a data em que você saiu. Se você excluir sua conta, esses dados também são apagados.</p>
+      </div>
+
+      <!-- 13 -->
+      <div class="section" id="pt-13">
+        <div class="section-title"><span class="section-number">13</span>Como você conheceu o Tribbo</div>
+
+        <p>No cadastro, perguntamos como você conheceu o Tribbo (por exemplo, Instagram, TikTok, indicação, anúncio, busca na loja ou YouTube). A resposta fica no seu perfil e também vai, junto com o identificador da sua conta, para a nossa ferramenta de análise de uso do app (PostHog). Usamos essa informação apenas de forma agregada, para entender quais canais trazem pessoas ao Tribbo. Não é um dado de saúde e não é compartilhada para fins publicitários.</p>
+      </div>
+
+      <!-- 14 -->
+      <div class="section" id="pt-14">
+        <div class="section-title"><span class="section-number">14</span>Medição de anúncios e permissão de rastreamento (iPhone)</div>
+
+        <p>Usamos o SDK da Meta (Facebook) para medir se os nossos anúncios trazem pessoas ao Tribbo. Ele registra eventos do app como instalação, cadastro, conclusão do cadastro inicial, visualização da tela de assinatura e início e conclusão de assinatura. Nenhum dado de saúde é enviado: treinos, refeições, peso, sono e as respostas do questionário nunca vão para a Meta.</p>
+
+        <p>No iPhone, antes da tela de assinatura, mostramos uma explicação e o iOS pede a sua permissão de rastreamento (App Tracking Transparency). Se você permitir, o identificador de publicidade do aparelho pode ser usado para relacionar a sua instalação ao anúncio que você viu. Se não permitir, esse identificador não é usado e o app funciona normalmente, sem nenhuma diferença nas funcionalidades.</p>
+
+        <p>Registramos se você permitiu ou não, na nossa ferramenta de análise de uso. Você pode mudar a escolha quando quiser em Ajustes do iPhone → Privacidade e Segurança → Rastreamento. No Android, o identificador de publicidade segue as configurações de anúncios do seu aparelho.</p>
+      </div>
+
+      <!-- 15 -->
+      <div class="section" id="pt-15">
+        <div class="section-title"><span class="section-number">15</span>Contato e encarregado de dados</div>
 
         <p>Para dúvidas, exercício de direitos, solicitações de exclusão ou qualquer questão relacionada à privacidade, entre em contato:</p>
 
@@ -609,7 +658,7 @@
 
       <div class="footer">
         <p>© 2026 Tribbo Fit · <a href="mailto:atendimento.app.kora@gmail.com" style="color:var(--teal);text-decoration:none;">atendimento.app.kora@gmail.com</a></p>
-        <p style="margin-top:4px;">Última atualização: 26 de agosto de 2026</p>
+        <p style="margin-top:4px;">Última atualização: 23 de outubro de 2026</p>
       </div>
 
     </div><!-- /pt -->
@@ -622,7 +671,7 @@
         <div class="doc-header-icon">🔒</div>
         <div class="doc-title">Privacy Policy</div>
         <div class="doc-subtitle">Tribbo Fit</div>
-        <div class="doc-meta">Last updated: August 26, 2026 &nbsp;·&nbsp; Version 2.1</div>
+        <div class="doc-meta">Last updated: October 23, 2026 &nbsp;·&nbsp; Version 2.2</div>
       </div>
 
       <div class="notice">
@@ -643,7 +692,10 @@
           <li><a href="#en-9">Minors</a></li>
           <li><a href="#en-10">Push notifications</a></li>
           <li><a href="#en-11">Artificial Intelligence</a></li>
-          <li><a href="#en-12">Contact</a></li>
+          <li><a href="#en-12">Subscribers' VIP Group (WhatsApp)</a></li>
+          <li><a href="#en-13">How you found Tribbo</a></li>
+          <li><a href="#en-14">Ad measurement and tracking (iPhone)</a></li>
+          <li><a href="#en-15">Contact</a></li>
         </ol>
       </div>
 
@@ -682,7 +734,7 @@
         <p>If you upload PDF files of nutrition or workout plans, these files are processed by Artificial Intelligence for structured data extraction. After processing, the extracted content is stored in your profile. Raw files are not permanently stored.</p>
 
         <h2>Usage and diagnostic data</h2>
-        <p>We collect error and app behavior data via Sentry (see section 3) to identify and fix technical issues. This data does not include health data.</p>
+        <p>We collect error data via Sentry and app usage data via PostHog (see section 3) to fix issues and improve the app. What each one receives is described in section 3.</p>
       </div>
 
       <!-- 2 -->
@@ -708,37 +760,46 @@
       <div class="section" id="en-3">
         <div class="section-title"><span class="section-number">03</span>Third-party sharing</div>
 
-        <p>We share data only with the following service providers, strictly to operate the application:</p>
+        <p>We share data only with the service providers below, each one only with what it needs for its purpose. We do not sell data. <strong>No health data goes to Meta. PostHog does not receive weight, height, body measurements, health conditions, pain, restrictions, food or exercise names, sleep, mood or check-in answers</strong> (see the PostHog item).</p>
 
         <h3>Supabase</h3>
-        <p>Database, authentication, and file storage. Servers located in <strong>sa-east-1 (São Paulo, Brazil)</strong>. Your health data stays within Brazil. <a href="https://supabase.com/privacy" target="_blank" rel="noopener">Supabase Privacy Policy</a>.</p>
+        <p>Database, authentication, file storage and the app's scheduled routines (such as the weekly summary). Receives all app data, including health data, to store it and run the app. Servers in <strong>sa-east-1 (São Paulo, Brazil)</strong>. <a href="https://supabase.com/privacy" target="_blank" rel="noopener">Supabase privacy policy</a>.</p>
 
-        <h3>Anthropic / Claude API</h3>
-        <p>Used by the AI Coach to generate personalized health insights and to process nutritional plans uploaded as PDFs. When you interact with the Coach or upload a plan, relevant health profile data is transmitted to Anthropic's API to generate a response. Anthropic does not use this data to train models. <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener">Anthropic Privacy Policy</a>.</p>
-
-        <h3>Apple (Sign In with Apple)</h3>
-        <p>If you use Apple login, Apple authenticates your identity and forwards name and email according to the permissions you grant. <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">Apple Privacy Policy</a>.</p>
-
-        <h3>Google (Sign In with Google)</h3>
-        <p>If you use Google login, Google authenticates your identity and forwards name and email. <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy Policy</a>.</p>
-
-        <h3>Expo / EAS (Expo Application Services)</h3>
-        <p>Platform used for app compilation, distribution, and over-the-air updates. May process technical app metadata. <a href="https://expo.dev/privacy" target="_blank" rel="noopener">Expo Privacy Policy</a>.</p>
-
-        <h3>Sentry</h3>
-        <p>Error and performance monitoring. Captures stack traces, device information, and anonymized session data. Does not capture health data. <a href="https://sentry.io/privacy/" target="_blank" rel="noopener">Sentry Privacy Policy</a>.</p>
-
-        <h3>GitHub Actions</h3>
-        <p>Used for automated server-side routines (daily health insights and weekly summaries). Does not store user data beyond what is needed to execute the scheduled tasks.</p>
+        <h3>Anthropic (Claude)</h3>
+        <p>Artificial intelligence for the Coach, the weekly summary, logging meals by photo or text and reading uploaded plans (PDF or photo). Receives the health data needed for each answer (for example, check-ins, meals, workouts, weight and goals) or the image and file you send. Anthropic does not use this data to train models. <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener">Anthropic privacy policy</a>.</p>
 
         <h3>RevenueCat</h3>
-        <p>We use RevenueCat to manage subscriptions and validate in-app purchases. RevenueCat receives an identifier for your Tribbo account (not your name or email directly) and information about your subscription status (active plan, expiration date, renewal history). This information is used exclusively to grant or revoke access to Premium features. <a href="https://www.revenuecat.com/privacy" target="_blank" rel="noopener">RevenueCat Privacy Policy</a>.</p>
+        <p>Subscription management. Receives your Tribbo account identifier and subscription status (plan, dates, renewal) to grant or remove Premium access. On Android, it also receives device identifiers and forwards purchase events to Meta for ad measurement. It does not receive health data. <a href="https://www.revenuecat.com/privacy" target="_blank" rel="noopener">RevenueCat privacy policy</a>.</p>
 
-        <h3>Apple App Store / Google Play Store (payment processing)</h3>
-        <p>Tribbo subscriptions are processed exclusively by Apple or Google, depending on the store your account originates from. We do not have access to your card details or payment method — this is managed entirely by the store, subject to Apple's and Google's privacy policies.</p>
+        <h3>Apple App Store and Google Play</h3>
+        <p>Process subscription payments. We have no access to your card or payment method.</p>
 
-        <div class="warning">
-          <p><strong>International transfers:</strong> Anthropic (US) and Sentry (US) process data outside Brazil. These transfers occur under standard contractual clauses and are necessary for AI features and error monitoring to function.</p>
+        <h3>Apple and Google (sign-in)</h3>
+        <p>If you sign in with Apple or Google, they confirm your identity and send us your name and email, as you authorize. <a href="https://www.apple.com/legal/privacy/" target="_blank" rel="noopener">Apple privacy policy</a> · <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google privacy policy</a>.</p>
+
+        <h3>Meta (Facebook SDK)</h3>
+        <p>Ad measurement. Receives app events (install, open, sign-up, completion of the initial questionnaire, subscription screen viewed, subscription started and completed, with the plan value) and, on iPhone only if you allow tracking, the device advertising identifier. <strong>It does not receive any health data</strong> or questionnaire answers. See section 14. <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">Meta privacy policy</a>.</p>
+
+        <h3>PostHog</h3>
+        <p>App usage analytics, to understand what works and improve the screens. Receives the account identifier and email; age, gender, goal and training level; non-health sign-up choices (for example, meals per day, where you eat, budget and how you found Tribbo); and usage events, such as screens opened, buttons tapped and actions completed. Some events carry usage numbers without identifying what was logged: calories of a logged meal, number of glasses of water in the day, duration and estimated calories of a workout and the check-in nutrition score. <strong>It does not receive</strong> weight, height, body measurements, health conditions, pain, food restrictions, food or exercise names, sleep, mood or check-in answers. <a href="https://posthog.com/privacy" target="_blank" rel="noopener">PostHog privacy policy</a>.</p>
+
+        <h3>Sentry</h3>
+        <p>Error monitoring. Receives the account identifier and email, so we know whose error it is, plus technical device and error data. We do not send health data to Sentry. <a href="https://sentry.io/privacy/" target="_blank" rel="noopener">Sentry privacy policy</a>.</p>
+
+        <h3>Resend</h3>
+        <p>Sending app emails, such as the free trial ending notice, account deletion confirmation and replies to your messages. Receives your name, your email and the email text. <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener">Resend privacy policy</a>.</p>
+
+        <h3>Expo (EAS)</h3>
+        <p>Building, distributing and updating the app, and sending push notifications. Receives technical app data and, for notifications sent by the server (such as the weekly summary), the device token and the notification text. <a href="https://expo.dev/privacy" target="_blank" rel="noopener">Expo privacy policy</a>.</p>
+
+        <h3>Apple Push Notification service and Firebase Cloud Messaging (Google)</h3>
+        <p>Deliver notifications on iPhone and Android. Receive the device token and the notification text.</p>
+
+        <h3>Open Food Facts</h3>
+        <p>Open product database used when you scan a barcode. Receives only the barcode number, sent by our server, with no data about you. <a href="https://world.openfoodfacts.org/privacy" target="_blank" rel="noopener">Open Food Facts privacy policy</a>.</p>
+
+        <div class="notice">
+          <p><strong>International transfers:</strong> Anthropic, RevenueCat, Meta, PostHog, Sentry, Resend and Expo process data outside Brazil (mainly in the US). These transfers are necessary for the app to work and follow each provider's contractual safeguards, in accordance with the LGPD.</p>
         </div>
       </div>
 
@@ -872,7 +933,44 @@
 
       <!-- 12 -->
       <div class="section" id="en-12">
-        <div class="section-title"><span class="section-number">12</span>Contact</div>
+        <div class="section-title"><span class="section-number">12</span>Subscribers' VIP Group (WhatsApp)</div>
+
+        <p>After subscribing, you may choose to join the Subscribers' VIP Group, with direct contact with the founder, early news and prizes in challenges. Joining is optional and only happens if you enter your WhatsApp number and check the box "Quero receber o convite pelo WhatsApp" ("I want to receive the invitation on WhatsApp").</p>
+
+        <h3>What we store</h3>
+        <ul>
+          <li>The WhatsApp number you entered</li>
+          <li>The date and time you checked the box, the exact text you accepted and the place in the app where you accepted it</li>
+        </ul>
+
+        <h3>What we use it for</h3>
+        <p>Only to send you the group invitation and to talk to you about the VIP Group. Your number is not used for advertising, is not sent to Meta for advertising purposes or to usage analytics tools, and is not sold or shared with anyone. Once you join the group, your number is visible to the other members, as in any WhatsApp group, and your use of WhatsApp is subject to WhatsApp's own privacy policy.</p>
+
+        <h3>How to leave</h3>
+        <p>You can leave the group at any time directly in WhatsApp. To have your number deleted and stop being contacted, write to <a href="mailto:atendimento.app.kora@gmail.com" style="color:var(--teal)">atendimento.app.kora@gmail.com</a> or let us know on WhatsApp. When we record that you left, we delete the number and keep only the date you left. If you delete your account, this data is deleted as well.</p>
+      </div>
+
+      <!-- 13 -->
+      <div class="section" id="en-13">
+        <div class="section-title"><span class="section-number">13</span>How you found Tribbo</div>
+
+        <p>During sign-up, we ask how you found Tribbo (for example, Instagram, TikTok, a referral, an ad, a store search or YouTube). The answer is stored in your profile and is also sent, together with your account identifier, to our app usage analytics tool (PostHog). We only use this information in aggregate, to understand which channels bring people to Tribbo. It is not health data and is not shared for advertising purposes.</p>
+      </div>
+
+      <!-- 14 -->
+      <div class="section" id="en-14">
+        <div class="section-title"><span class="section-number">14</span>Ad measurement and tracking permission (iPhone)</div>
+
+        <p>We use the Meta (Facebook) SDK to measure whether our ads bring people to Tribbo. It records app events such as install, sign-up, completion of the initial questionnaire, viewing the subscription screen and starting and completing a subscription. No health data is sent: workouts, meals, weight, sleep and questionnaire answers never go to Meta.</p>
+
+        <p>On iPhone, before the subscription screen, we show an explanation and iOS asks for your tracking permission (App Tracking Transparency). If you allow it, the device's advertising identifier may be used to link your install to the ad you saw. If you don't, that identifier is not used and the app works normally, with no difference in features.</p>
+
+        <p>We record whether you allowed it or not in our usage analytics tool. You can change your choice at any time in iPhone Settings → Privacy &amp; Security → Tracking. On Android, the advertising identifier follows your device's ad settings.</p>
+      </div>
+
+      <!-- 15 -->
+      <div class="section" id="en-15">
+        <div class="section-title"><span class="section-number">15</span>Contact and data protection officer</div>
 
         <p>For questions, exercising rights, deletion requests, or any privacy-related matter, please contact us:</p>
 
@@ -889,7 +987,7 @@
 
       <div class="footer">
         <p>© 2026 Tribbo Fit · <a href="mailto:atendimento.app.kora@gmail.com" style="color:var(--teal);text-decoration:none;">atendimento.app.kora@gmail.com</a></p>
-        <p style="margin-top:4px;">Last updated: August 26, 2026</p>
+        <p style="margin-top:4px;">Last updated: October 23, 2026</p>
       </div>
 
     </div><!-- /en -->
