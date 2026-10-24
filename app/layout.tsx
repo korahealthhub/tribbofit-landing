@@ -54,6 +54,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             `,
           }}
         />
+
+        {/* Faixa de cookies + Meta Pixel (só após aceite). Arquivo na raiz do domínio, fora do basePath. */}
+        <Script src="/consent.js" strategy="afterInteractive" />
       </body>
     </html>
   );

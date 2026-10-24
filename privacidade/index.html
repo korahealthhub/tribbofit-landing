@@ -242,6 +242,19 @@
       margin-top: 8px;
     }
 
+    .consent-btn {
+      background: rgba(226,244,8,0.12);
+      border: 1px solid rgba(226,244,8,0.3);
+      border-radius: 50px;
+      color: var(--tealLt);
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 18px;
+    }
+    .consent-btn:hover { background: rgba(226,244,8,0.2); }
+
     .contact-box p {
       margin-bottom: 4px;
     }
@@ -320,6 +333,8 @@
       .topbar { padding: 0 16px; }
     }
   </style>
+<!-- Faixa de cookies + Meta Pixel (só após aceite) -->
+<script src="/consent.js" defer></script>
 </head>
 <body>
 
@@ -342,7 +357,7 @@
         <div class="doc-header-icon">🔒</div>
         <div class="doc-title">Política de Privacidade</div>
         <div class="doc-subtitle">Tribbo Fit</div>
-        <div class="doc-meta">Última atualização: 23 de outubro de 2026 &nbsp;·&nbsp; Versão 2.2</div>
+        <div class="doc-meta">Última atualização: 23 de outubro de 2026 &nbsp;·&nbsp; Versão 2.3</div>
       </div>
 
       <div class="notice">
@@ -365,7 +380,7 @@
           <li><a href="#pt-11">Inteligência Artificial</a></li>
           <li><a href="#pt-12">Grupo VIP de assinantes (WhatsApp)</a></li>
           <li><a href="#pt-13">Como você conheceu o Tribbo</a></li>
-          <li><a href="#pt-14">Medição de anúncios e rastreamento (iPhone)</a></li>
+          <li><a href="#pt-14">Medição de anúncios e rastreamento (app e site)</a></li>
           <li><a href="#pt-15">Contato</a></li>
         </ol>
       </div>
@@ -450,6 +465,9 @@
 
         <h3>Meta (SDK do Facebook)</h3>
         <p>Medição de anúncios. Recebe eventos do app (instalação, abertura, cadastro, fim do cadastro inicial, tela de assinatura vista, início e conclusão de assinatura, com o valor do plano) e, no iPhone só se você permitir o rastreamento, o identificador de publicidade do aparelho. <strong>Não recebe nenhum dado de saúde</strong>, nem respostas do questionário. Veja a seção 14. <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">Política de privacidade da Meta</a>.</p>
+
+        <h3>Meta Pixel (site tribbofit.com.br)</h3>
+        <p>Medição de anúncios no site. <strong>Só é carregado se você tocar em "Aceitar" na faixa de cookies.</strong> Recebe as páginas visitadas, o toque nos botões da App Store ou do Google Play (com a loja escolhida), dados técnicos do navegador, o endereço IP e o cookie da Meta (_fbp). <strong>Não recebe dados de saúde, e-mail nem telefone</strong>, nem nada do que você digita na calculadora. Se você recusar, o pixel não é carregado. Para mudar a escolha, veja a seção 14. <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">Política de privacidade da Meta</a>.</p>
 
         <h3>PostHog</h3>
         <p>Análise de uso do app, para entender o que funciona e melhorar as telas. Recebe o identificador da conta e o e-mail; idade, gênero, objetivo e nível de treino; as escolhas do cadastro que não são de saúde (por exemplo, quantas refeições por dia, onde você come, orçamento e como conheceu o Tribbo); e eventos de uso, como telas abertas, botões tocados e ações concluídas. Alguns eventos levam números de uso sem identificar o que foi: calorias de uma refeição registrada, número de copos de água do dia, duração e calorias estimadas de um treino e a nota de alimentação do check-in. <strong>Não recebe</strong> peso, altura, medidas, condições de saúde, dores, restrições alimentares, nomes de alimentos ou de exercícios, sono, humor nem as respostas do check-in. <a href="https://posthog.com/privacy" target="_blank" rel="noopener">Política de privacidade do PostHog</a>.</p>
@@ -630,13 +648,19 @@
 
       <!-- 14 -->
       <div class="section" id="pt-14">
-        <div class="section-title"><span class="section-number">14</span>Medição de anúncios e permissão de rastreamento (iPhone)</div>
+        <div class="section-title"><span class="section-number">14</span>Medição de anúncios e rastreamento (app e site)</div>
 
+        <h3>No app</h3>
         <p>Usamos o SDK da Meta (Facebook) para medir se os nossos anúncios trazem pessoas ao Tribbo. Ele registra eventos do app como instalação, cadastro, conclusão do cadastro inicial, visualização da tela de assinatura e início e conclusão de assinatura. Nenhum dado de saúde é enviado: treinos, refeições, peso, sono e as respostas do questionário nunca vão para a Meta.</p>
 
         <p>No iPhone, antes da tela de assinatura, mostramos uma explicação e o iOS pede a sua permissão de rastreamento (App Tracking Transparency). Se você permitir, o identificador de publicidade do aparelho pode ser usado para relacionar a sua instalação ao anúncio que você viu. Se não permitir, esse identificador não é usado e o app funciona normalmente, sem nenhuma diferença nas funcionalidades.</p>
 
         <p>Registramos se você permitiu ou não, na nossa ferramenta de análise de uso. Você pode mudar a escolha quando quiser em Ajustes do iPhone → Privacidade e Segurança → Rastreamento. No Android, o identificador de publicidade segue as configurações de anúncios do seu aparelho.</p>
+
+        <h3>No site (Meta Pixel)</h3>
+        <p>No site tribbofit.com.br, inclusive nos links curtos como /tt e /ig, usamos o Meta Pixel para saber quais anúncios trazem visitas e quantas pessoas tocam nos botões da App Store e do Google Play. Ele só é carregado se você tocar em "Aceitar" na faixa de cookies. Se você tocar em "Recusar" ou não escolher nada, o pixel não é carregado e o site funciona normalmente. Nos links curtos, que levam direto para a loja, o pixel só é carregado se você já tiver aceitado antes neste navegador. Nenhum dado de saúde, e-mail ou telefone vai para a Meta.</p>
+        <p>A sua escolha fica salva no seu navegador. Para mudar, toque no botão abaixo: a faixa aparece de novo e, se você tinha aceitado, os cookies da Meta deste site são apagados. Limpar os dados do site no navegador também apaga a escolha.</p>
+        <p><button type="button" class="consent-btn" onclick="tribboConsent.reset()">Mudar minha escolha de cookies</button></p>
       </div>
 
       <!-- 15 -->
@@ -671,7 +695,7 @@
         <div class="doc-header-icon">🔒</div>
         <div class="doc-title">Privacy Policy</div>
         <div class="doc-subtitle">Tribbo Fit</div>
-        <div class="doc-meta">Last updated: October 23, 2026 &nbsp;·&nbsp; Version 2.2</div>
+        <div class="doc-meta">Last updated: October 23, 2026 &nbsp;·&nbsp; Version 2.3</div>
       </div>
 
       <div class="notice">
@@ -694,7 +718,7 @@
           <li><a href="#en-11">Artificial Intelligence</a></li>
           <li><a href="#en-12">Subscribers' VIP Group (WhatsApp)</a></li>
           <li><a href="#en-13">How you found Tribbo</a></li>
-          <li><a href="#en-14">Ad measurement and tracking (iPhone)</a></li>
+          <li><a href="#en-14">Ad measurement and tracking (app and website)</a></li>
           <li><a href="#en-15">Contact</a></li>
         </ol>
       </div>
@@ -779,6 +803,9 @@
 
         <h3>Meta (Facebook SDK)</h3>
         <p>Ad measurement. Receives app events (install, open, sign-up, completion of the initial questionnaire, subscription screen viewed, subscription started and completed, with the plan value) and, on iPhone only if you allow tracking, the device advertising identifier. <strong>It does not receive any health data</strong> or questionnaire answers. See section 14. <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">Meta privacy policy</a>.</p>
+
+        <h3>Meta Pixel (tribbofit.com.br website)</h3>
+        <p>Ad measurement on the website. <strong>It only loads if you tap "Aceitar" (Accept) on the cookie banner.</strong> Receives the pages you visit, taps on the App Store or Google Play buttons (with the store chosen), technical browser data, your IP address and the Meta cookie (_fbp). <strong>It does not receive health data, email or phone number</strong>, or anything you type into the calculator. If you decline, the pixel is not loaded. To change your choice, see section 14. <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">Meta privacy policy</a>.</p>
 
         <h3>PostHog</h3>
         <p>App usage analytics, to understand what works and improve the screens. Receives the account identifier and email; age, gender, goal and training level; non-health sign-up choices (for example, meals per day, where you eat, budget and how you found Tribbo); and usage events, such as screens opened, buttons tapped and actions completed. Some events carry usage numbers without identifying what was logged: calories of a logged meal, number of glasses of water in the day, duration and estimated calories of a workout and the check-in nutrition score. <strong>It does not receive</strong> weight, height, body measurements, health conditions, pain, food restrictions, food or exercise names, sleep, mood or check-in answers. <a href="https://posthog.com/privacy" target="_blank" rel="noopener">PostHog privacy policy</a>.</p>
@@ -959,13 +986,19 @@
 
       <!-- 14 -->
       <div class="section" id="en-14">
-        <div class="section-title"><span class="section-number">14</span>Ad measurement and tracking permission (iPhone)</div>
+        <div class="section-title"><span class="section-number">14</span>Ad measurement and tracking (app and website)</div>
 
+        <h3>In the app</h3>
         <p>We use the Meta (Facebook) SDK to measure whether our ads bring people to Tribbo. It records app events such as install, sign-up, completion of the initial questionnaire, viewing the subscription screen and starting and completing a subscription. No health data is sent: workouts, meals, weight, sleep and questionnaire answers never go to Meta.</p>
 
         <p>On iPhone, before the subscription screen, we show an explanation and iOS asks for your tracking permission (App Tracking Transparency). If you allow it, the device's advertising identifier may be used to link your install to the ad you saw. If you don't, that identifier is not used and the app works normally, with no difference in features.</p>
 
         <p>We record whether you allowed it or not in our usage analytics tool. You can change your choice at any time in iPhone Settings → Privacy &amp; Security → Tracking. On Android, the advertising identifier follows your device's ad settings.</p>
+
+        <h3>On the website (Meta Pixel)</h3>
+        <p>On the tribbofit.com.br website, including short links such as /tt and /ig, we use the Meta Pixel to learn which ads bring visits and how many people tap the App Store and Google Play buttons. It only loads if you tap "Aceitar" (Accept) on the cookie banner. If you tap "Recusar" (Decline) or make no choice, the pixel is not loaded and the website works normally. On short links, which go straight to the store, the pixel only loads if you have already accepted in this browser. No health data, email or phone number goes to Meta.</p>
+        <p>Your choice is saved in your browser. To change it, tap the button below: the banner shows up again and, if you had accepted, this website's Meta cookies are deleted. Clearing the website's data in your browser also clears your choice.</p>
+        <p><button type="button" class="consent-btn" onclick="tribboConsent.reset()">Change my cookie choice</button></p>
       </div>
 
       <!-- 15 -->

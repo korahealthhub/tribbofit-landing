@@ -52,7 +52,23 @@
     contents: [{ content_id: eventLabel, content_type: 'app', content_name: 'Kora TikTok Smart Link - ' + eventLabel }]
   });
 
-  window.location.replace(destination);
+  // Meta Pixel (Pixel Tribbofit): só se a pessoa já aceitou os cookies no site.
+  // Sem escolha ou com recusa, redireciona na hora; com aceite, espera no máximo 300 ms.
+  var metaConsent = false;
+  try { metaConsent = localStorage.getItem('tribbo_consent') === 'accepted'; } catch (e) {}
+  if (metaConsent) {
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('set', 'autoConfig', false, '975639901668813');
+    fbq('init', '975639901668813');
+    fbq('track', 'PageView');
+    setTimeout(function () { window.location.replace(destination); }, 300);
+  } else {
+    window.location.replace(destination);
+  }
 </script>
 </body>
 </html>
