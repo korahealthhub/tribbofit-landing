@@ -1,21 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- Google Analytics GA4 -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-9YWGCSWEBJ"></script>
+<!-- GA4 e TikTok: aqui só as filas, nada é carregado nem enviado.
+     /consent.js carrega os dois depois do aceite de cookies. -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-9YWGCSWEBJ');
-</script>
-
-<!-- TikTok Pixel -->
-<script>
 !function (w, d, t) {
   w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
-  ttq.load('D8Q75PRC77U8IPSBJ8TG');
-  ttq.page();
 }(window, document, 'ttq');
 </script>
 
@@ -215,6 +209,8 @@ body.is-inapp .dl-btn-ios-inapp .dl-btn-caption{color:rgba(10,10,10,0.6)}
 </style>
 <!-- Faixa de cookies + Meta Pixel (só após aceite); faixa só no in-app, fora dele a página redireciona -->
 <script src="/consent.js" data-banner="inapp-only" defer></script>
+<!-- Origem (utm_* da URL) → App Store / Google Play, e contagem do clique sem cookie -->
+<script src="/js/origem.js" defer></script>
 </head>
 <body>
 
@@ -254,7 +250,7 @@ body.is-inapp .dl-btn-ios-inapp .dl-btn-caption{color:rgba(10,10,10,0.6)}
 
   <!-- iOS -->
   <a id="btn-ios" href="https://apps.apple.com/br/app/kora-health-hub/id6769632514"
-     class="dl-btn"
+     class="dl-btn" data-origem-sem-contagem
      target="_blank" rel="noopener"
      onclick="gtag('event','click_appstore',{'event_category':'conversion','event_label':'app_store_ios'});ttq.track('ClickButton',{contents:[{content_id:'app_store_ios',content_type:'app',content_name:'Kora iOS App Store'}]});">
     <span class="dl-btn-icon">
@@ -270,7 +266,7 @@ body.is-inapp .dl-btn-ios-inapp .dl-btn-caption{color:rgba(10,10,10,0.6)}
 
   <!-- Android -->
   <a href="https://play.google.com/store/apps/details?id=com.usekoraapp.health"
-     class="dl-btn"
+     class="dl-btn" data-origem-sem-contagem
      target="_blank" rel="noopener"
      onclick="gtag('event','click_googleplay',{'event_category':'conversion','event_label':'google_play_android'});ttq.track('ClickButton',{contents:[{content_id:'google_play_android',content_type:'app',content_name:'Kora Android Google Play'}]});">
     <span class="dl-btn-icon">
@@ -285,7 +281,7 @@ body.is-inapp .dl-btn-ios-inapp .dl-btn-caption{color:rgba(10,10,10,0.6)}
   </a>
 
   <!-- Desktop -->
-  <a href="/" class="dl-btn">
+  <a id="btn-site" href="/" class="dl-btn">
     <span class="dl-btn-icon">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"/>
@@ -301,43 +297,17 @@ body.is-inapp .dl-btn-ios-inapp .dl-btn-caption{color:rgba(10,10,10,0.6)}
 </div>
 
 <script>
+  // Parte que roda na hora: o /consent.js (deferido) olha a classe is-inapp para mostrar a faixa.
   var ua = navigator.userAgent || '';
-  var isIOS     = /iPhone|iPad|iPod/i.test(ua);
-  var isAndroid = /Android/i.test(ua);
-
-  // Detecta in-app browsers (Instagram, Facebook, TikTok, Threads, Snapchat)
   var isInApp = /Instagram|FBAN|FBAV|musical_ly|TikTok|BytedanceWebview|Snapchat|Threads/i.test(ua);
   var isInstagram = /Instagram/i.test(ua);
   var isTikTok = /musical_ly|TikTok|BytedanceWebview/i.test(ua);
 
-  var storeUrl = 'https://apps.apple.com/br/app/kora-health-hub/id6769632514';
-  var pageUrl = window.location.href;
-
-  var destination = isIOS
-    ? storeUrl
-    : isAndroid
-    ? 'https://play.google.com/store/apps/details?id=com.usekoraapp.health'
-    : '/';
-
-  var eventLabel = isIOS
-    ? 'app_store_ios'
-    : isAndroid
-    ? 'google_play_android'
-    : 'desktop';
-
-  gtag('event', 'smart_link_redirect', {
-    'event_category': 'conversion',
-    'event_label': eventLabel,
-    'is_inapp': isInApp ? 'yes' : 'no'
-  });
-
-  ttq.track('ClickButton', {
-    contents: [{
-      content_id: eventLabel,
-      content_type: 'app',
-      content_name: 'Kora Smart Link - ' + eventLabel
-    }]
-  });
+  // Link para colar no Safari/Chrome: mesma origem + r=1 (não conta o clique de novo).
+  function copyUrl() {
+    var O = window.TribboOrigem;
+    return 'https://tribbofit.com.br/download/' + (O ? '?' + O.utmQuery() + '&r=1' : '');
+  }
 
   if (isInApp) {
     // In-app browser: mostra botões em vez de redirecionar
@@ -365,56 +335,64 @@ body.is-inapp .dl-btn-ios-inapp .dl-btn-caption{color:rgba(10,10,10,0.6)}
       btnIos.querySelector('.dl-btn-caption').textContent = 'Toque para copiar o link';
       btnIos.addEventListener('click', function(e) {
         e.preventDefault();
-        copyAndShowToast('https://tribbofit.com.br/download/');
+        copyAndShowToast(copyUrl());
       });
     }
 
     // Botão copiar link do banner
     document.getElementById('copy-link').addEventListener('click', function() {
-      copyAndShowToast('https://tribbofit.com.br/download/');
+      copyAndShowToast(copyUrl());
+    });
+  }
+
+  function copyAndShowToast(url) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(showToast);
+    } else {
+      var input = document.createElement('input');
+      input.value = url;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
+      showToast();
+    }
+  }
+
+  function showToast() {
+    var overlay = document.getElementById('toast-overlay');
+    var toast = document.getElementById('toast-feedback');
+    overlay.classList.add('visible');
+    toast.classList.add('visible');
+    setTimeout(function(){
+      overlay.classList.remove('visible');
+      toast.classList.remove('visible');
+    }, 3000);
+    overlay.addEventListener('click', function(){
+      overlay.classList.remove('visible');
+      toast.classList.remove('visible');
+    });
+  }
+
+  // Depois do /js/origem.js: conta o clique e redireciona para a loja certa.
+  document.addEventListener('DOMContentLoaded', function () {
+    var O = window.TribboOrigem;
+    if (!O) return;
+    var device = O.device();
+    var nome = O.entrada('download');
+    O.track(nome, { reaberto: new URLSearchParams(location.search).get('r') === '1' });
+    O.gaEvent('smart_link_redirect', { entrada: nome, device: device, is_inapp: isInApp ? 'yes' : 'no' });
+    ttq.track('ClickButton', {
+      contents: [{ content_id: device, content_type: 'app', content_name: 'Tribbo Smart Link - ' + device }]
     });
 
-    function copyAndShowToast(url) {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(url).then(showToast);
-      } else {
-        var input = document.createElement('input');
-        input.value = url;
-        document.body.appendChild(input);
-        input.select();
-        document.execCommand('copy');
-        document.body.removeChild(input);
-        showToast();
-      }
-    }
+    document.getElementById('btn-site').href = '/?' + O.utmQuery();
 
-    function showToast() {
-      var overlay = document.getElementById('toast-overlay');
-      var toast = document.getElementById('toast-feedback');
-      overlay.classList.add('visible');
-      toast.classList.add('visible');
-      setTimeout(function(){
-        overlay.classList.remove('visible');
-        toast.classList.remove('visible');
-      }, 3000);
-      overlay.addEventListener('click', function(){
-        overlay.classList.remove('visible');
-        toast.classList.remove('visible');
-      });
+    if (!isInApp) {
+      // Navegador normal: redireciona automaticamente
+      setTimeout(function () { O.navigate(O.storeUrl()); }, 500);
     }
-
-    function showCopied() {
-      var msg = document.getElementById('copied-msg');
-      msg.classList.add('show');
-      setTimeout(function(){ msg.classList.remove('show'); }, 2000);
-    }
-
-  } else {
-    // Navegador normal: redireciona automaticamente
-    setTimeout(function() {
-      window.location.href = destination;
-    }, 500);
-  }
+  });
 </script>
 
 </body>

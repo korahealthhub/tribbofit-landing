@@ -31,16 +31,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body>
         {children}
 
-        {/* GA4 */}
-        <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
+        {/* GA4: só a fila. /consent.js carrega o gtag.js depois do aceite de cookies. */}
         <Script id="ga4-init" strategy="afterInteractive">{`
           window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', '${GA_ID}');
+          if (typeof window.gtag !== 'function') {
+            window.gtag = function(){dataLayer.push(arguments);};
+            gtag('js', new Date());
+            gtag('config', '${GA_ID}');
+          }
         `}</Script>
 
-        {/* TikTok Pixel */}
+        {/* TikTok Pixel: só a fila. /consent.js chama ttq.load depois do aceite de cookies. */}
         <Script
           id="tiktok-pixel"
           strategy="afterInteractive"
@@ -48,15 +49,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `
               !function (w, d, t) {
                 w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
-                ttq.load('D8Q75PRC77U8IPSBJ8TG');
-                ttq.page();
               }(window, document, 'ttq');
             `,
           }}
         />
 
-        {/* Faixa de cookies + Meta Pixel (só após aceite). Arquivo na raiz do domínio, fora do basePath. */}
+        {/* Faixa de cookies + GA4, TikTok e Meta Pixel (só após aceite). Arquivo na raiz do domínio, fora do basePath. */}
         <Script src="/consent.js" strategy="afterInteractive" />
+
+        {/* Origem dos downloads (UTM → lojas) e contagem de cliques sem cookie. Também fora do basePath. */}
+        <Script src="/js/origem.js" strategy="afterInteractive" />
       </body>
     </html>
   );

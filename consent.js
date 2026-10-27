@@ -1,7 +1,10 @@
 /*
- * Faixa de cookies + Meta Pixel (Pixel Tribbofit).
- * O pixel só carrega depois que a pessoa toca em "Aceitar".
+ * Faixa de cookies + GA4 + Pixel do TikTok + Meta Pixel (Pixel Tribbofit).
+ * Os três só carregam depois que a pessoa toca em "Aceitar".
  * A escolha fica no localStorage ('tribbo_consent': 'accepted' | 'declined').
+ *
+ * As páginas só definem as filas (gtag() / ttq.track()) sem carregar nada:
+ * os eventos ficam guardados no navegador e só são enviados se houver aceite.
  *
  * Eventos enviados à Meta:
  *   - PageView em cada página
@@ -9,11 +12,16 @@
  * Nada de saúde, e-mail ou telefone: sem advanced matching e sem autoConfig
  * (que leria textos de botões e campos de formulário).
  *
+ * A contagem de cliques sem cookie (origem dos downloads) fica em /js/origem.js.
+ *
  * Uso: <script src="/consent.js" defer></script>
  * Em /download/: data-banner="inapp-only" (fora do in-app a página só redireciona).
+ * Nos links curtos (/ig, /tt...): data-banner="off".
  */
 (function () {
   var PIXEL_ID = '975639901668813';
+  var GA_ID = 'G-9YWGCSWEBJ';
+  var TIKTOK_ID = 'D8Q75PRC77U8IPSBJ8TG';
   var KEY = 'tribbo_consent';
   var script = document.currentScript;
   var bannerMode = (script && script.getAttribute('data-banner')) || 'on';
@@ -23,6 +31,34 @@
   }
   function setChoice(v) {
     try { localStorage.setItem(KEY, v); } catch (e) {}
+  }
+
+  // ─── GA4 e TikTok ────────────────────────────────────────────────
+  // As filas normalmente já vêm da página; aqui só garantimos que existam.
+  window.dataLayer = window.dataLayer || [];
+  if (typeof window.gtag !== 'function') {
+    window.gtag = function () { window.dataLayer.push(arguments); };
+    window.gtag('js', new Date());
+    window.gtag('config', GA_ID);
+  }
+  if (!window.ttq) {
+    !function (w, d, t) {
+      w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
+    }(window, document, 'ttq');
+  }
+
+  var analyticsLoaded = false;
+  function loadAnalytics() {
+    if (analyticsLoaded) return;
+    analyticsLoaded = true;
+    var ga = document.createElement('script');
+    ga.async = true;
+    ga.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(ga);
+    if (window.ttq && typeof window.ttq.load === 'function') {
+      window.ttq.load(TIKTOK_ID);
+      window.ttq.page();
+    }
   }
 
   // ─── Meta Pixel ──────────────────────────────────────────────────
@@ -40,10 +76,15 @@
     fbq('track', 'PageView');
   }
 
-  // Apaga os cookies da Meta (_fbp/_fbc) ao recusar depois de ter aceitado.
-  function clearMetaCookies() {
+  // Apaga os cookies da Meta, do GA4 e do TikTok ao recusar depois de ter aceitado.
+  function clearTrackingCookies() {
     var host = location.hostname.replace(/^www\./, '');
-    ['_fbp', '_fbc'].forEach(function (name) {
+    var names = ['_fbp', '_fbc', '_ga', '_ttp'];
+    document.cookie.split(';').forEach(function (c) {
+      var n = c.split('=')[0].trim();
+      if (/^_ga_/.test(n)) names.push(n);
+    });
+    names.forEach(function (name) {
       [host, '.' + host, ''].forEach(function (d) {
         document.cookie = name + '=; Max-Age=0; path=/' + (d ? '; domain=' + d : '');
       });
@@ -115,6 +156,7 @@
     banner.querySelector('.tc-accept').addEventListener('click', function () {
       setChoice('accepted');
       hideBanner();
+      loadAnalytics();
       loadPixel();
     });
     banner.querySelector('.tc-decline').addEventListener('click', function () {
@@ -133,8 +175,8 @@
       var wasAccepted = getChoice() === 'accepted';
       try { localStorage.removeItem(KEY); } catch (e) {}
       if (wasAccepted) {
-        clearMetaCookies();
-        location.reload(); // descarrega o pixel desta página
+        clearTrackingCookies();
+        location.reload(); // descarrega GA4, TikTok e Meta desta página
         return;
       }
       showBanner();
@@ -144,8 +186,9 @@
   // ─── Início ──────────────────────────────────────────────────────
   var choice = getChoice();
   if (choice === 'accepted') {
+    loadAnalytics();
     loadPixel();
-  } else if (choice !== 'declined') {
+  } else if (choice !== 'declined' && bannerMode !== 'off') {
     var wantBanner = bannerMode === 'on' ||
       (bannerMode === 'inapp-only' && document.body.classList.contains('is-inapp'));
     if (wantBanner) showBanner();

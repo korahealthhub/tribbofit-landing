@@ -1,21 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<!-- Google Analytics GA4 -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-9YWGCSWEBJ"></script>
+<!-- GA4 e TikTok: aqui só as filas, nada é carregado nem enviado.
+     /consent.js carrega os dois depois do aceite de cookies. -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-9YWGCSWEBJ');
-</script>
-
-<!-- TikTok Pixel -->
-<script>
 !function (w, d, t) {
   w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
-  ttq.load('D8Q75PRC77U8IPSBJ8TG');
-  ttq.page();
 }(window, document, 'ttq');
 </script>
 
@@ -191,6 +185,28 @@ nav.scrolled{
   50%{ box-shadow:0 0 32px rgba(168,85,247,0.7),0 0 48px rgba(124,58,237,0.3); }
 }
 
+/* QR code: só no computador, para baixar pelo celular com a mesma origem */
+.entry-qr{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding:14px 18px 14px 14px;
+  border-radius:24px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(237,251,107,0.18);
+}
+.entry-qr[hidden]{display:none}
+.entry-qr-code{
+  flex:0 0 auto;
+  width:112px;height:112px;
+  padding:8px;
+  border-radius:14px;
+  background:#fff;
+}
+.entry-qr-code img,.entry-qr-code svg{display:block;width:100%;height:100%}
+.entry-qr-title{font-size:15px;font-weight:700;color:var(--text);margin:0 0 4px}
+.entry-qr-text{font-size:13px;line-height:1.5;color:rgba(245,240,230,0.6);margin:0}
+
 .entry-btn-disabled{
   background:rgba(255,255,255,0.04);
   border-color:rgba(255,255,255,0.06);
@@ -310,6 +326,8 @@ footer{
 </style>
 <!-- Faixa de cookies + Meta Pixel (só após aceite) -->
 <script src="/consent.js" defer></script>
+<!-- Origem dos downloads (UTM → lojas) e contagem de cliques sem cookie -->
+<script src="/js/origem.js" defer></script>
 </head>
 <body>
 
@@ -361,6 +379,15 @@ footer{
         <span class="entry-btn-caption">Disponível para Android</span>
       </span>
     </a>
+
+    <!-- QR code (só no computador): abre /download/ no celular com a mesma origem -->
+    <div id="entry-qr" class="entry-qr" hidden>
+      <div id="entry-qr-code" class="entry-qr-code" role="img" aria-label="QR code para baixar o Tribbo Fit"></div>
+      <div>
+        <p class="entry-qr-title">Baixe pelo celular</p>
+        <p class="entry-qr-text">Aponte a câmera do iPhone ou Android para o código. Abre direto na loja certa.</p>
+      </div>
+    </div>
 
     <!-- Botão 3 — Calculadora / diagnóstico grátis -->
     <a href="./calculadora/" class="entry-btn entry-btn-diagnostic">
@@ -456,12 +483,12 @@ window.addEventListener('scroll', () => {
 
     // Redireciona botões App Store para /download/ (que trata in-app)
     document.querySelectorAll('a[href*="apps.apple.com"]').forEach(function(a){
-      a.href = '/download/?utm_source=hub&utm_medium=inapp';
+      a.href = '/download/'; // /js/origem.js acrescenta a origem no clique
       a.removeAttribute('target');
     });
 
     document.getElementById('inapp-copy').addEventListener('click', function() {
-      var url = 'https://tribbofit.com.br/';
+      var url = 'https://tribbofit.com.br/' + (window.TribboOrigem ? '?' + TribboOrigem.utmQuery() : '');
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(url).then(showCopied);
       } else {
@@ -482,6 +509,24 @@ window.addEventListener('scroll', () => {
     }
   }
 })();
+</script>
+
+<script>
+// QR code no computador: /download/ com a mesma origem desta visita (via=qr).
+// Biblioteca local (js/vendor), carregada só quando precisa.
+document.addEventListener('DOMContentLoaded', function () {
+  if (!window.TribboOrigem || TribboOrigem.device() !== 'desktop') return;
+  var lib = document.createElement('script');
+  lib.src = '/js/vendor/qrcode-generator-1.4.4.js';
+  lib.onload = function () {
+    var qr = qrcode(0, 'M');
+    qr.addData('https://tribbofit.com.br/download/?' + TribboOrigem.utmQuery() + '&via=qr');
+    qr.make();
+    document.getElementById('entry-qr-code').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+    document.getElementById('entry-qr').hidden = false;
+  };
+  document.head.appendChild(lib);
+});
 </script>
 
 </body>
