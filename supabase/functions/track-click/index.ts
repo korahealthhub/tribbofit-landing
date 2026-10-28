@@ -1,8 +1,10 @@
 // Registra um clique nos links de download do site (tribbofit.com.br).
 // Grava só origem, mídia, campanha, conteúdo, aparelho, entrada e data/hora.
-// Não lê nem grava IP, user-agent, cookie ou qualquer identificador.
+// Não grava IP, user-agent, cookie nem qualquer identificador. O user-agent e o IP só são
+// olhados na memória para descartar robôs de pré-visualização (regras.ts).
 // Chamado por navigator.sendBeacon (text/plain, sem preflight) a partir de /js/origem.js.
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { clean, clientIp, motivoRobo, normMedium, normSource } from './regras.ts';
 
 const ALLOWED_ORIGINS = new Set([
   'https://tribbofit.com.br',
@@ -17,18 +19,6 @@ const supabase = createClient(
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
   { auth: { persistSession: false } },
 );
-
-// Mesma regra de /js/origem.js: minúsculas, sem acento, só [a-z0-9_-], até 40.
-function clean(v: unknown): string | null {
-  if (typeof v !== 'string') return null;
-  const s = v
-    .normalize('NFD').replace(/[̀-ͯ]/g, '')
-    .toLowerCase().trim()
-    .replace(/[\s.]+/g, '-')
-    .replace(/[^a-z0-9_-]/g, '')
-    .slice(0, 40);
-  return s || null;
-}
 
 function cors(origin: string | null): HeadersInit {
   return origin && ALLOWED_ORIGINS.has(origin)
@@ -47,6 +37,12 @@ Deno.serve(async (req) => {
   if (req.method !== 'POST') return new Response('method', { status: 405 });
   if (!origin || !ALLOWED_ORIGINS.has(origin)) return new Response('origin', { status: 403 });
 
+  // Sem o IP no cabeçalho o filtro por rede não funciona: avisa no log (sem o IP).
+  if (!clientIp(req.headers)) console.warn('track-click: requisição sem IP no cabeçalho');
+  // Robô ou prefetch: responde como se tivesse contado, sem gravar.
+  const robo = motivoRobo(req.headers);
+  if (robo) return new Response(null, { status: 204, headers: { ...cors(origin), 'x-contado': '0', 'x-motivo': robo } });
+
   let body: Record<string, unknown>;
   try {
     const text = await req.text();
@@ -58,8 +54,8 @@ Deno.serve(async (req) => {
 
   const device = typeof body.device === 'string' && DEVICES.has(body.device) ? body.device : null;
   const row = {
-    source: clean(body.source) ?? 'site',
-    medium: clean(body.medium) ?? 'direto',
+    source: normSource(body.source) ?? 'site',
+    medium: normMedium(body.medium) ?? 'direto',
     campaign: clean(body.campaign) ?? 'nenhuma',
     content: clean(body.content),
     device,
@@ -74,5 +70,5 @@ Deno.serve(async (req) => {
     console.error('track-click insert', error.message);
     return new Response('db', { status: 500, headers: cors(origin) });
   }
-  return new Response(null, { status: 204, headers: cors(origin) });
+  return new Response(null, { status: 204, headers: { ...cors(origin), 'x-contado': '1' } });
 });

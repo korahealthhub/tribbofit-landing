@@ -13,14 +13,23 @@ Todo link que leva alguém a baixar o app passa por `tribbofit.com.br`. O site c
 | Anúncios no TikTok | `tribbofit.com.br/tt-ads` | tiktok / paid / lancamento |
 | Qualquer outra coisa | `tribbofit.com.br/download?utm_source=…&utm_medium=…&utm_campaign=…&utm_content=…` | o que estiver na URL |
 
-Os quatro links curtos aceitam `utm_content` (e qualquer outro `utm_*`) para separar criativos:
+Os quatro links curtos aceitam `utm_content` para separar criativos:
 `tribbofit.com.br/ig-ads?utm_content=video-03`.
+
+Nos links curtos, **origem e mídia da página sempre vencem** (o Instagram acrescenta sozinho
+`utm_source=ig&utm_medium=social&utm_content=link_in_bio` na bio; o /ig continua gravando
+`instagram / organic / perfil`, com `link_in_bio` como conteúdo). `utm_campaign` e `utm_content` da URL
+só entram se a página não tiver os seus (todas têm campanha, nenhuma tem conteúdo).
+Para uma campanha diferente, use `/download?utm_…` ou crie um link curto novo.
 
 Os links antigos `korahealthhub.com.br/ig`, `/tt`, `/download` e `/android` continuam funcionando:
 vão para o mesmo link no tribbofit.com.br e aparecem na contagem com a entrada `ig-kh`, `tt-kh` etc.
 
 ## Regras dos nomes
 
+- Apelidos viram um nome só, no site e na gravação: `ig`, `instagram.com`, `l.instagram.com` → `instagram`;
+  `fb`, `facebook.com`, `m.facebook.com`, `l.facebook.com` → `facebook`; `tt`, `tiktok.com` → `tiktok`;
+  mídia `social` → `organic`. Os anúncios da Meta (`utm_source=ig&utm_medium=paid`) gravam `instagram / paid`.
 - Tudo em **minúsculas**, **sem acento**, **sem espaço**. Palavras separadas por hífen: `black-friday`.
   (O site corrige sozinho se escapar, mas o painel fica mais limpo se o link já vier certo.)
 - Seja curto: a Apple guarda só **40 caracteres** de `origem_midia_campanha_conteudo`.

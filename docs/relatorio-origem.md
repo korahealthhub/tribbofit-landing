@@ -17,6 +17,12 @@ order by semana desc, cliques desc;
 - `ios` / `android` / `desktop`: aparelho de quem clicou.
 - `no_app_social`: abriu dentro do Instagram/TikTok. `reabertos`: copiou o link e abriu no navegador
   (fica fora de `cliques` para não contar duas vezes).
+- Robôs não contam: a função `track-click` descarta (sem gravar nada) user-agent de robô conhecido
+  (facebookexternalhit, WhatsApp, Telegram, Googlebot, Bytespider…), prefetch/prerender e pedidos vindos
+  das redes da Meta (AS32934), do TikTok (AS138699) e da ByteDance (AS396986), que pré-visualizam os links
+  com user-agent de celular comum. As faixas ficam em `supabase/functions/track-click/redes-robos.ts`
+  (RIPEstat, *announced-prefixes*); vale atualizar a cada alguns meses. O site também só conta com a
+  página na tela (não em aba aberta em segundo plano) e não conta navegador automatizado.
 - Detalhe por entrada: `select entrada, count(*) from link_clicks where created_at > now() - interval '7 days' group by 1 order by 2 desc;`
 
 **GA4 (só quem aceitou os cookies — sempre menor)** — Explorar → Formato livre:

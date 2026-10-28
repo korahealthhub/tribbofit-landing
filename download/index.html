@@ -406,20 +406,22 @@ body.is-inapp .dl-btn-main .dl-btn-caption{color:rgba(10,10,10,0.6)}
       return;
     }
 
-    var nome = O.entrada('download');
-    O.track(nome, { reaberto: params.get('r') === '1' });
-    O.gaEvent('smart_link_redirect', { entrada: nome, device: device, is_inapp: isInApp ? 'yes' : 'no' });
-    ttq.track('ClickButton', {
-      contents: [{ content_id: device, content_type: 'app', content_name: 'Tribbo Smart Link - ' + device }]
-    });
+    O.quandoAtiva(function () {
+      var nome = O.entrada('download');
+      O.track(nome, { reaberto: params.get('r') === '1' });
+      O.gaEvent('smart_link_redirect', { entrada: nome, device: device, is_inapp: isInApp ? 'yes' : 'no' });
+      ttq.track('ClickButton', {
+        contents: [{ content_id: device, content_type: 'app', content_name: 'Tribbo Smart Link - ' + device }]
+      });
 
-    if (!isInApp || device === 'desktop') {
-      // Navegador normal: redireciona automaticamente
-      setTimeout(function () { O.navigate(O.storeUrl()); }, 500);
-    } else {
-      // Navegador interno: tenta abrir a loja direto; se o app bloquear, mostra o botão.
-      setTimeout(function () { O.tryOpen(O.storeUrl(), showButtons, showButtons); }, 500);
-    }
+      if (!isInApp || device === 'desktop') {
+        // Navegador normal: redireciona automaticamente
+        setTimeout(function () { O.navigate(O.storeUrl()); }, 500);
+      } else {
+        // Navegador interno: tenta abrir a loja direto; se o app bloquear, mostra o botão.
+        setTimeout(function () { O.tryOpen(O.storeUrl(), showButtons, showButtons); }, 500);
+      }
+    });
   });
 </script>
 

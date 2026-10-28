@@ -1,9 +1,12 @@
 /*
  * Origem dos downloads: links curtos (/ig, /tt, /download...) e botões das lojas.
  *
- * - Lê utm_source / utm_medium / utm_campaign / utm_content da URL (ou dos
- *   atributos data-* do <script>, nos links curtos) e guarda no sessionStorage
- *   da aba ('tribbo_origem'). Sem cookie e sem identificador.
+ * - Lê utm_source / utm_medium / utm_campaign / utm_content da URL e guarda no
+ *   sessionStorage da aba ('tribbo_origem'). Sem cookie e sem identificador.
+ *   Links curtos com origem fixa (data-* do <script>): source e medium da página
+ *   sempre vencem (o Instagram acrescenta utm_source=ig&utm_medium=social na bio);
+ *   utm_campaign / utm_content da URL só entram se a página não tiver os seus.
+ * - Apelidos: ig / l.instagram.com → instagram, fb → facebook, tt → tiktok, social → organic.
  * - Sem origem: site / direto / nenhuma.
  * - App Store: link de campanha da Apple (pt + ct, até 40 caracteres).
  *   Google Play: &referrer= com as UTMs codificadas.
@@ -44,6 +47,20 @@
       .slice(0, 40);
   }
 
+  // Mesmos apelidos da função track-click.
+  var SOURCE_ALIAS = {
+    'ig': 'instagram', 'instagram-com': 'instagram', 'l-instagram-com': 'instagram', 'www-instagram-com': 'instagram',
+    'fb': 'facebook', 'facebook-com': 'facebook', 'm-facebook-com': 'facebook', 'l-facebook-com': 'facebook',
+    'lm-facebook-com': 'facebook', 'www-facebook-com': 'facebook',
+    'tt': 'tiktok', 'tiktok-com': 'tiktok', 'www-tiktok-com': 'tiktok',
+  };
+  var MEDIUM_ALIAS = { 'social': 'organic' };
+  function norm(k, v) {
+    var s = clean(v);
+    var alias = k === 'source' ? SOURCE_ALIAS : k === 'medium' ? MEDIUM_ALIAS : {};
+    return alias[s] || s;
+  }
+
   function device() {
     var ua = navigator.userAgent || '';
     if (/iPhone|iPad|iPod/i.test(ua)) return 'ios';
@@ -57,19 +74,27 @@
   }
 
   function readStored() {
-    try { return JSON.parse(sessionStorage.getItem(KEY) || 'null'); } catch (e) { return null; }
+    var o;
+    try { o = JSON.parse(sessionStorage.getItem(KEY) || 'null'); } catch (e) { return null; }
+    if (!o || !o.source) return null;
+    o.source = norm('source', o.source);
+    o.medium = norm('medium', o.medium);
+    return o;
   }
   function store(o) {
     try { sessionStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {}
   }
 
-  // Origem desta visita: data-* do link curto, sobrescritos pelos utm_* da URL.
+  // Origem desta visita. Link curto com origem fixa: source e medium da página vencem;
+  // campaign e content da página vencem se existirem. Sem origem fixa: utm_* da URL.
   function resolve() {
     var preset = {};
+    var fixa = !!(script && script.getAttribute('data-source'));
     ['source', 'medium', 'campaign', 'content'].forEach(function (k) {
-      var fromUrl = clean(params.get('utm_' + k));
-      var fromTag = script ? clean(script.getAttribute('data-' + k)) : '';
-      if (fromUrl || fromTag) preset[k] = fromUrl || fromTag;
+      var fromUrl = norm(k, params.get('utm_' + k));
+      var fromTag = script ? norm(k, script.getAttribute('data-' + k)) : '';
+      var v = fixa ? fromTag || (k === 'campaign' || k === 'content' ? fromUrl : '') : fromUrl;
+      if (v) preset[k] = v;
     });
     if (preset.source) {
       var o = {
@@ -121,7 +146,23 @@
     return via ? base + '-' + via : base;
   }
 
+  // Só conta com a página na tela: prerender / prefetch e abas abertas em segundo plano
+  // esperam a pessoa ver a página; navegador automatizado (robô) não conta.
+  function quandoAtiva(fn) {
+    if (document.prerendering) {
+      document.addEventListener('prerenderingchange', function () { quandoAtiva(fn); }, { once: true });
+    } else if (document.visibilityState === 'hidden') {
+      var f = function () {
+        if (document.visibilityState === 'hidden') return;
+        document.removeEventListener('visibilitychange', f);
+        fn();
+      };
+      document.addEventListener('visibilitychange', f);
+    } else fn();
+  }
+
   function track(entradaNome, extra) {
+    if (navigator.webdriver) return;
     var body = JSON.stringify({
       source: origem.source,
       medium: origem.medium,
@@ -224,6 +265,7 @@
       return d === 'ios' ? appleUrl(origem) : d === 'android' ? androidUrl(origem) : '/?' + utmQuery(origem);
     },
     tryOpen: tryOpen,
+    quandoAtiva: quandoAtiva,
     entrada: entrada,
     track: track,
     gaEvent: gaEvent,
@@ -232,7 +274,7 @@
   };
 
   // ─── Link curto: conta, e manda para a loja certa ────────────────
-  if (script && script.hasAttribute('data-redirect')) {
+  if (script && script.hasAttribute('data-redirect')) quandoAtiva(function () {
     var nome = entrada(script.getAttribute('data-entrada') || 'link');
     var reaberto = params.get('r') === '1';
     var destino = window.TribboOrigem.storeUrl();
@@ -252,5 +294,5 @@
     // Com aceite, dá tempo para GA4 / TikTok / Meta enviarem o evento.
     if (consentAccepted()) setTimeout(ir, 300);
     else ir();
-  }
+  });
 })();
