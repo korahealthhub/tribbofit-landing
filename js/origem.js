@@ -7,6 +7,9 @@
  * - Sem origem: site / direto / nenhuma.
  * - App Store: link de campanha da Apple (pt + ct, até 40 caracteres).
  *   Google Play: &referrer= com as UTMs codificadas.
+ * - Navegador interno (Instagram, TikTok...): tenta abrir a loja direto; se o app
+ *   bloquear, /download/ mostra o botão da loja e, se o toque também falhar, o
+ *   "copiar link".
  * - Conta o clique na função track-click do Supabase (só origem, mídia,
  *   campanha, conteúdo, aparelho, entrada, in_app, reaberto).
  * - GA4 / TikTok / Meta continuam no /consent.js, só depois do aceite.
@@ -21,7 +24,7 @@
 (function () {
   // Provider token da Apple: App Store Connect → Analytics → Aquisição → Campanhas →
   // "Gerar link de campanha" (o número depois de pt=). Vazio: App Store sem campanha.
-  var APPLE_PT = '';
+  var APPLE_PT = '128858175';
   var APPLE_ID = '6769632514';
   var PLAY_ID = 'com.usekoraapp.health';
   var TRACK_URL = 'https://jllkcglzajmzqywyuswq.supabase.co/functions/v1/track-click';
@@ -103,6 +106,15 @@
       '&referrer=' + encodeURIComponent(utmQuery(o));
   }
 
+  // Navegador interno do Instagram / Facebook no Android: intent:// abre o app da Play
+  // direto (com o referrer); se não der, o próprio Android cai no link da Play.
+  function androidUrl(o) {
+    if (!(isInApp() && /Instagram|FBAN|FBAV/i.test(navigator.userAgent || ''))) return playUrl(o);
+    return 'intent://details?id=' + PLAY_ID + '&referrer=' + encodeURIComponent(utmQuery(o)) +
+      '#Intent;scheme=market;package=com.android.vending;S.browser_fallback_url=' +
+      encodeURIComponent(playUrl(o)) + ';end';
+  }
+
   // via=qr / via=site / via=kh: por onde a pessoa chegou ao link curto.
   function entrada(base) {
     var via = clean(params.get('via'));
@@ -135,6 +147,29 @@
 
   function navigate(url) {
     (window.__tribboNavigate || function (u) { location.replace(u); })(url);
+  }
+
+  // A loja abriu se a página saiu da tela (o app foi para segundo plano).
+  var saiu = false;
+  var aoVoltar = null;
+  window.addEventListener('pagehide', function () { saiu = true; });
+  window.addEventListener('blur', function () { saiu = true; });
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') { saiu = true; return; }
+    if (saiu && aoVoltar) { var f = aoVoltar; aoVoltar = null; f(); }
+  });
+
+  // Tenta abrir a loja. Se a página continua na tela depois de `espera` ms, o
+  // navegador interno bloqueou: chama falhou(). Se abriu e a pessoa voltou: voltou().
+  function tryOpen(url, falhou, voltou, espera) {
+    saiu = false;
+    aoVoltar = voltou || null;
+    navigate(url);
+    setTimeout(function () {
+      if (saiu) return;
+      aoVoltar = null;
+      if (falhou) falhou();
+    }, espera || 2500);
   }
 
   function gaEvent(name, extra) {
@@ -170,7 +205,7 @@
       a.setAttribute('href', '/download/?' + utmQuery(origem) + '&via=site');
       return;
     }
-    a.setAttribute('href', kind === 'ios' ? appleUrl(origem) : playUrl(origem));
+    a.setAttribute('href', kind === 'ios' ? appleUrl(origem) : androidUrl(origem));
     if (a.hasAttribute('data-origem-sem-contagem')) return;
     track(a.getAttribute('data-entrada') || 'botao-site');
     gaEvent('click_store', { store: kind });
@@ -186,8 +221,9 @@
     playUrl: function () { return playUrl(origem); },
     storeUrl: function () {
       var d = device();
-      return d === 'ios' ? appleUrl(origem) : d === 'android' ? playUrl(origem) : '/?' + utmQuery(origem);
+      return d === 'ios' ? appleUrl(origem) : d === 'android' ? androidUrl(origem) : '/?' + utmQuery(origem);
     },
+    tryOpen: tryOpen,
     entrada: entrada,
     track: track,
     gaEvent: gaEvent,
@@ -205,8 +241,16 @@
     if (window.ttq && typeof window.ttq.track === 'function') {
       window.ttq.track('ClickButton', { contents: [{ content_id: nome + '_' + device(), content_type: 'app', content_name: 'Tribbo Smart Link - ' + nome }] });
     }
+    var ir = function () {
+      navigate(destino);
+      // Navegador interno: se o app bloquear a loja (ou a pessoa voltar dela), /download/
+      // mostra o botão da loja. f=1: não conta o clique de novo.
+      if (isInApp() && device() !== 'desktop') {
+        setTimeout(function () { navigate('/download/?' + utmQuery(origem) + '&f=1'); }, 2500);
+      }
+    };
     // Com aceite, dá tempo para GA4 / TikTok / Meta enviarem o evento.
-    if (consentAccepted()) setTimeout(function () { navigate(destino); }, 300);
-    else navigate(destino);
+    if (consentAccepted()) setTimeout(ir, 300);
+    else ir();
   }
 })();

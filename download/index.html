@@ -52,7 +52,7 @@ body{
   margin-bottom:40px;
 }
 
-/* Spinner — só aparece fora do in-app browser */
+/* Spinner — enquanto tenta abrir a loja */
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinner{
   width:36px;height:36px;
@@ -81,6 +81,8 @@ body{
   max-width:320px;
 }
 .inapp-banner.visible{display:flex}
+.inapp-copy{display:none;flex-direction:column;align-items:center;gap:8px;margin-top:12px}
+.inapp-copy.visible{display:flex}
 .inapp-title{
   font-size:18px;
   font-weight:700;
@@ -179,16 +181,16 @@ body.is-inapp .dl-btn{
   background:rgba(237,251,107,0.08);
   border-color:rgba(237,251,107,0.2);
 }
-body.is-inapp .dl-btn-ios-inapp{
+body.is-inapp .dl-btn-main{
   background:linear-gradient(135deg,#B5C904,#EDFB6B);
   border-color:rgba(237,251,107,0.3);
   box-shadow:0 6px 24px rgba(61,170,133,0.28);
 }
-body.is-inapp .dl-btn-ios-inapp .dl-btn-icon{
+body.is-inapp .dl-btn-main .dl-btn-icon{
   background:rgba(255,255,255,0.18);
 }
-body.is-inapp .dl-btn-ios-inapp .dl-btn-label{color:#0A0A0A}
-body.is-inapp .dl-btn-ios-inapp .dl-btn-caption{color:rgba(10,10,10,0.6)}
+body.is-inapp .dl-btn-main .dl-btn-label{color:#0A0A0A}
+body.is-inapp .dl-btn-main .dl-btn-caption{color:rgba(10,10,10,0.6)}
 .toast-feedback{
   position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
   background:rgba(10,26,24,0.96);border:1px solid rgba(237,251,107,0.35);
@@ -207,7 +209,7 @@ body.is-inapp .dl-btn-ios-inapp .dl-btn-caption{color:rgba(10,10,10,0.6)}
 }
 .toast-overlay.visible{display:block}
 </style>
-<!-- Faixa de cookies + Meta Pixel (só após aceite); faixa só no in-app, fora dele a página redireciona -->
+<!-- Faixa de cookies + Meta Pixel (só após aceite); faixa só no navegador interno, fora dele a página redireciona -->
 <script src="/consent.js" data-banner="inapp-only" defer></script>
 <!-- Origem (utm_* da URL) → App Store / Google Play, e contagem do clique sem cookie -->
 <script src="/js/origem.js" defer></script>
@@ -216,25 +218,27 @@ body.is-inapp .dl-btn-ios-inapp .dl-btn-caption{color:rgba(10,10,10,0.6)}
 
 <img src="../nome-branco.png" class="logo" alt="Tribbo Fit">
 
-<!-- Estado normal: spinner + redirect -->
+<!-- Spinner enquanto tenta abrir a loja -->
 <div id="auto-redirect">
   <div class="spinner"></div>
-  <p class="status">Redirecionando...</p>
+  <p class="status" id="status">Redirecionando...</p>
 </div>
 
-<!-- Estado in-app browser: banner com instrução -->
+<!-- Navegador interno, se a loja não abriu sozinha: botão da loja; "copiar link" só se o toque também falhar -->
 <div id="inapp-banner" class="inapp-banner">
   <p class="inapp-title">Toque no botão abaixo para baixar</p>
-  <p class="inapp-subtitle">O download abre direto na App Store</p>
-  <button class="inapp-open-browser" id="copy-link" type="button">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-    </svg>
-    Copiar link e abrir no navegador
-  </button>
-  <p class="inapp-hint" id="inapp-hint">Ou toque em <strong>⋯</strong> → <strong>Abrir no navegador</strong></p>
-  <p class="inapp-copied" id="copied-msg">Link copiado!</p>
+  <p class="inapp-subtitle" id="inapp-subtitle">O download abre direto na App Store</p>
+  <div class="inapp-copy" id="inapp-copy">
+    <p class="inapp-subtitle" id="inapp-blocked">Este app não deixou abrir a loja. Copie o link e abra no navegador.</p>
+    <button class="inapp-open-browser" id="copy-link" type="button">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+      </svg>
+      Copiar link e abrir no navegador
+    </button>
+    <p class="inapp-hint" id="inapp-hint">Ou toque em <strong>⋯</strong> → <strong>Abrir no navegador</strong></p>
+  </div>
 </div>
 
 <!-- Toast de feedback ao copiar -->
@@ -242,7 +246,7 @@ body.is-inapp .dl-btn-ios-inapp .dl-btn-caption{color:rgba(10,10,10,0.6)}
 <div id="toast-feedback" class="toast-feedback">
   <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#EDFB6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
   <p style="font-size:16px;font-weight:700;color:#F5F0E6;margin:0">Link copiado!</p>
-  <p style="font-size:13px;color:rgba(245,240,230,0.6);margin:0;line-height:1.5">Agora abra o <strong style="color:#EDFB6B">Safari</strong> e cole o link na barra de endereço</p>
+  <p style="font-size:13px;color:rgba(245,240,230,0.6);margin:0;line-height:1.5">Agora abra o <strong style="color:#EDFB6B" id="toast-browser">Safari</strong> e cole o link na barra de endereço</p>
 </div>
 
 <div class="fallback">
@@ -265,7 +269,7 @@ body.is-inapp .dl-btn-ios-inapp .dl-btn-caption{color:rgba(10,10,10,0.6)}
   </a>
 
   <!-- Android -->
-  <a href="https://play.google.com/store/apps/details?id=com.usekoraapp.health"
+  <a id="btn-android" href="https://play.google.com/store/apps/details?id=com.usekoraapp.health"
      class="dl-btn" data-origem-sem-contagem
      target="_blank" rel="noopener"
      onclick="gtag('event','click_googleplay',{'event_category':'conversion','event_label':'google_play_android'});ttq.track('ClickButton',{contents:[{content_id:'google_play_android',content_type:'app',content_name:'Kora Android Google Play'}]});">
@@ -309,40 +313,47 @@ body.is-inapp .dl-btn-ios-inapp .dl-btn-caption{color:rgba(10,10,10,0.6)}
     return 'https://tribbofit.com.br/download/' + (O ? '?' + O.utmQuery() + '&r=1' : '');
   }
 
-  if (isInApp) {
-    // In-app browser: mostra botões em vez de redirecionar
-    document.body.classList.add('is-inapp');
-    document.getElementById('auto-redirect').style.display = 'none';
-    document.getElementById('inapp-banner').classList.add('visible');
+  var isAndroid = /Android/i.test(ua);
+  var lojaNome = isAndroid ? 'Google Play' : 'App Store';
+  var btnLoja = document.getElementById(isAndroid ? 'btn-android' : 'btn-ios');
 
-    // Hint contextual por plataforma
+  if (isInApp) {
+    document.body.classList.add('is-inapp');
+    document.getElementById('status').textContent = 'Abrindo a ' + lojaNome + '...';
+    document.getElementById('inapp-subtitle').textContent = 'O download abre direto na ' + lojaNome;
+    document.getElementById('toast-browser').textContent = isAndroid ? 'Chrome' : 'Safari';
+
     var hint = document.getElementById('inapp-hint');
     if (isInstagram) {
       hint.innerHTML = 'Ou toque em <strong>⋯</strong> no topo → <strong>Abrir no navegador</strong>';
     } else if (isTikTok) {
       hint.innerHTML = 'Ou toque em <strong>⋯</strong> → <strong>Abrir no navegador</strong>';
     } else {
-      hint.innerHTML = 'Ou abra este link no Safari / Chrome';
+      hint.innerHTML = 'Ou abra este link no ' + (isAndroid ? 'Chrome' : 'Safari');
     }
+    document.getElementById('inapp-blocked').textContent =
+      (isInstagram ? 'O Instagram' : isTikTok ? 'O TikTok' : 'Este app') +
+      ' não deixou abrir a loja. Copie o link e abra no ' + (isAndroid ? 'Chrome' : 'Safari') + '.';
 
-    // Transforma botão iOS: em vez de link direto (bloqueado), copia o link
-    var btnIos = document.getElementById('btn-ios');
-    if (btnIos) {
-      btnIos.href = '#';
-      btnIos.removeAttribute('target');
-      btnIos.classList.add('dl-btn-ios-inapp');
-      btnIos.querySelector('.dl-btn-label').textContent = 'Baixar no iPhone';
-      btnIos.querySelector('.dl-btn-caption').textContent = 'Toque para copiar o link';
-      btnIos.addEventListener('click', function(e) {
-        e.preventDefault();
-        copyAndShowToast(copyUrl());
-      });
-    }
+    // Botão da loja deste aparelho em destaque; links em nova aba não funcionam bem no navegador interno.
+    btnLoja.classList.add('dl-btn-main');
+    btnLoja.querySelector('.dl-btn-caption').textContent = 'Toque para abrir a ' + lojaNome;
+    document.querySelectorAll('.dl-btn').forEach(function (b) { b.removeAttribute('target'); });
 
-    // Botão copiar link do banner
     document.getElementById('copy-link').addEventListener('click', function() {
       copyAndShowToast(copyUrl());
     });
+  }
+
+  // Loja não abriu sozinha (ou a pessoa voltou dela): mostra o botão da loja.
+  function showButtons() {
+    document.getElementById('auto-redirect').style.display = 'none';
+    document.getElementById('inapp-banner').classList.add('visible');
+  }
+  // O toque no botão também não abriu a loja: aí sim, copiar o link.
+  function showCopy() {
+    showButtons();
+    document.getElementById('inapp-copy').classList.add('visible');
   }
 
   function copyAndShowToast(url) {
@@ -377,20 +388,37 @@ body.is-inapp .dl-btn-ios-inapp .dl-btn-caption{color:rgba(10,10,10,0.6)}
   // Depois do /js/origem.js: conta o clique e redireciona para a loja certa.
   document.addEventListener('DOMContentLoaded', function () {
     var O = window.TribboOrigem;
-    if (!O) return;
+    if (!O) { if (isInApp) showCopy(); return; }
     var device = O.device();
+    var params = new URLSearchParams(location.search);
+    document.getElementById('btn-site').href = '/?' + O.utmQuery();
+
+    if (isInApp && device !== 'desktop') {
+      btnLoja.addEventListener('click', function (e) {
+        e.preventDefault();
+        O.tryOpen(O.storeUrl(), showCopy, showButtons, 1500);
+      });
+    }
+
+    // f=1: veio de um link curto que já contou o clique e já tentou abrir a loja.
+    if (params.get('f') === '1') {
+      if (isInApp) showButtons();
+      return;
+    }
+
     var nome = O.entrada('download');
-    O.track(nome, { reaberto: new URLSearchParams(location.search).get('r') === '1' });
+    O.track(nome, { reaberto: params.get('r') === '1' });
     O.gaEvent('smart_link_redirect', { entrada: nome, device: device, is_inapp: isInApp ? 'yes' : 'no' });
     ttq.track('ClickButton', {
       contents: [{ content_id: device, content_type: 'app', content_name: 'Tribbo Smart Link - ' + device }]
     });
 
-    document.getElementById('btn-site').href = '/?' + O.utmQuery();
-
-    if (!isInApp) {
+    if (!isInApp || device === 'desktop') {
       // Navegador normal: redireciona automaticamente
       setTimeout(function () { O.navigate(O.storeUrl()); }, 500);
+    } else {
+      // Navegador interno: tenta abrir a loja direto; se o app bloquear, mostra o botão.
+      setTimeout(function () { O.tryOpen(O.storeUrl(), showButtons, showButtons); }, 500);
     }
   });
 </script>

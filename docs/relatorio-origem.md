@@ -35,7 +35,7 @@ e quem instalou. Atraso de 1–2 dias.
 visualizações da página, primeiros downloads, sessões. Atenção:
 - Só conta quem permite compartilhar dados com desenvolvedores (amostra, não o total).
 - Campanhas com poucos usuários podem não aparecer.
-- Só funciona depois que o `pt` (provider token) estiver em `js/origem.js` (`APPLE_PT`).
+- `pt` 128858175 (em `js/origem.js`, `APPLE_PT`). Só conta a partir da publicação com o `pt`.
 
 ## 3. Assinaturas
 

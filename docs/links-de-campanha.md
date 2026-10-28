@@ -48,11 +48,19 @@ QR code em material impresso:     tribbofit.com.br/download?utm_source=panfleto&
 ## O que acontece com cada aparelho
 
 - **iPhone** → App Store com o link de campanha da Apple:
-  `apps.apple.com/app/apple-store/id6769632514?pt=<token>&ct=instagram_paid_lancamento_video-03&mt=8`.
-  No navegador interno do Instagram/TikTok, a página `/download` mostra o botão de copiar o link
-  (com a origem) para abrir no Safari.
+  `apps.apple.com/app/apple-store/id6769632514?pt=128858175&ct=instagram_paid_lancamento_video-03&mt=8`.
 - **Android** → Google Play com `&referrer=utm_source%3D…` (aparece na Play Console).
 - **Computador** → página inicial com as UTMs. Os botões e o QR code levam a mesma origem.
+
+### Dentro do app do Instagram / TikTok (navegador interno)
+
+1. O link tenta abrir a loja direto, como fora do app. No Android, dentro do Instagram/Facebook, usa
+   `intent://` para abrir o app da Play (com o mesmo referrer); no TikTok, o link normal da Play.
+2. Se depois de ~2,5 s a página continua na tela (o app bloqueou), ou se a pessoa voltou da loja,
+   aparece `/download/?…&f=1` com o botão da loja do aparelho em destaque (o toque costuma passar
+   onde o redirecionamento automático é bloqueado). `f=1` não conta o clique de novo.
+3. Só se o toque também não abrir a loja aparece "Copiar link e abrir no navegador". O link copiado
+   leva `r=1` e, aberto no Safari/Chrome, conta como `reaberto` (fora de `cliques`).
 
 ## Criar uma regra nova de link curto (como /ig)
 
