@@ -239,10 +239,77 @@
     barFill.style.width = `${Math.round(pct * 1000) / 10}%`;
     barEl.setAttribute('aria-valuenow', Math.round(pct * 100));
     scrollEl.scrollTop = 0;
+    if (!isReady(id)) { waitFor(id); return; }
+    render(id);
+  }
+  function render(id) {
     VIEWS[id]();
     const title = scrollEl.querySelector('h1');
     if (title) title.focus({ preventScroll: true });
     scrollEl.scrollTop = 0;
+    lookAhead(id);
+  }
+
+  // ─── Carregamento sob demanda (so na web) ───────────────────────────────────
+  // Os arquivos pesados so baixam perto da tela que usa, para a primeira tela abrir rapido.
+  const LAZY = { pain: ['corpo.js'], focus: ['corpo.js'], food_summary: ['alimentos.js', 'cardapio.js'], plan_summary: ['alimentos.js', 'cardapio.js'] };
+  const scripts = {};
+  function loadScript(src) {
+    if (!scripts[src]) {
+      scripts[src] = new Promise((ok, fail) => {
+        const el = document.createElement('script');
+        el.src = src;
+        el.onload = () => { scripts[src].done = true; ok(); };
+        el.onerror = () => { el.remove(); delete scripts[src]; fail(new Error(src)); };
+        document.head.append(el);
+      });
+    }
+    return scripts[src];
+  }
+  // Em ordem: cardapio.js usa a lista de alimentos.js.
+  const loadAll = (list) => list.reduce((p, src) => p.then(() => loadScript(src)), Promise.resolve());
+  const isReady = (id) => (LAZY[id] || []).every((src) => scripts[src] && scripts[src].done);
+  function waitFor(id) {
+    const v = visit;
+    paint({ body: [h('p', { class: 'q-sub', role: 'status' }, 'Carregando...')] });
+    loadAll(LAZY[id]).then(() => {
+      if (visit !== v) return;
+      enterVisit = -1;
+      render(id);
+    }, () => {
+      if (visit !== v) return;
+      paint({ body: [header('Sem conexão', 'Confira a internet e tente de novo.')], footer: [primary('Tentar de novo', () => show(id, false))] });
+    });
+  }
+  // Imagens de cada tela, para baixar antes de a pessoa chegar nela.
+  let baPerson = null;
+  const beforeAfterPerson = () => baPerson || (baPerson = T.beforeAfter.people[Math.floor(Math.random() * T.beforeAfter.people.length)]);
+  function imagesFor(id) {
+    switch (id) {
+      case 'reviews': return T.reviewList.map((r) => r.photo);
+      case 'before_after': { const p = beforeAfterPerson(); return [`assets/antes-depois/${p.id}-antes.webp`, `assets/antes-depois/${p.id}-depois.webp`]; }
+      case 'did_you_know_training': return [eduTraining().image];
+      case 'did_you_know_food': return [T.edu.muscle.image];
+      case 'energy': return ['assets/edu_calorias.webp'];
+      case 'energy_reveal': return ['assets/copo_agua.webp'];
+      case 'food_summary': { const k = TF.plateKind(a.goal, a.dietType); return [T.plates[k.model][k.veg ? 'veg' : 'meat'].src]; }
+      case 'how_it_works': return T.howItWorks.moments.filter((m) => m.image).map((m) => m.image);
+      default: return [];
+    }
+  }
+  const fetched = new Set();
+  function lookAhead(id) {
+    let s = id;
+    for (let i = 0; i < 3; i++) {
+      let n = null;
+      try { n = TF.nextStep(s, a); } catch (e) { n = null; }
+      if (!n) return;
+      s = n.id;
+      loadAll(LAZY[s] || []).catch(() => { /* tenta de novo ao abrir a tela */ });
+      let urls = [];
+      try { urls = imagesFor(s); } catch (e) { urls = []; }
+      urls.forEach((u) => { if (fetched.has(u)) return; fetched.add(u); const img = new Image(); img.decoding = 'async'; img.src = u; });
+    }
   }
   let enterVisit = -1;
   // Desenha a tela; pode ser chamada de novo quando uma resposta muda.
@@ -539,6 +606,16 @@
   // ─── Telas 1 a 16 (src/onboarding/stepViews.tsx e questions.tsx) ────────────
 
   function Welcome() {
+    const pre = document.getElementById('pre');
+    if (pre) { // primeira visita: a tela ja veio pronta no index.html, so liga o botao
+      pre.removeAttribute('id');
+      enterVisit = visit;
+      fitText(pre.querySelector('h1'), 2, 0.85);
+      const b = document.getElementById('pre-btn');
+      b.removeAttribute('id');
+      b.onclick = () => next();
+      return;
+    }
     paint({
       fill: true,
       body: [header(T.welcome.title, T.welcome.subtitle, 2), h('div', { class: 'cover fade-up', style: { animationDelay: '150ms' } }, h('img', { src: T.welcome.cover, alt: '' }))],
@@ -888,12 +965,11 @@
   }
 
   function BeforeAfter() {
-    const people = T.beforeAfter.people;
-    const p = people[Math.floor(Math.random() * people.length)];
+    const p = beforeAfterPerson();
     paint({
       body: [
         header(T.beforeAfter.title),
-        h('div', { class: 'photos' }, h('img', { src: `assets/antes-depois/${p.id}-antes.jpg`, alt: `${p.name}, antes` }), h('i'), h('img', { src: `assets/antes-depois/${p.id}-depois.jpg`, alt: `${p.name}, depois` })),
+        h('div', { class: 'photos' }, h('img', { src: `assets/antes-depois/${p.id}-antes.webp`, alt: `${p.name}, antes` }), h('i'), h('img', { src: `assets/antes-depois/${p.id}-depois.webp`, alt: `${p.name}, depois` })),
         h('div', { class: 'who' },
           h('div', { class: 'name-row' }, h('div', { class: 'name-group' }, h('b', null, p.name), icon('checkmark-circle', 18, C.verified)), h('span', null, `· ${p.city}, ${p.uf}`)),
           caption(T.beforeAfter.disclaimer, 'disclaimer')),
@@ -1081,7 +1157,8 @@
       footer: [primary(T.edu.button, () => next())],
     });
   }
-  const DidYouKnowTraining = () => educational(a.goal === 'lose_weight' ? T.edu.lose : a.goal === 'gain_muscle' ? T.edu.gain : T.edu.health);
+  const eduTraining = () => (a.goal === 'lose_weight' ? T.edu.lose : a.goal === 'gain_muscle' ? T.edu.gain : T.edu.health);
+  const DidYouKnowTraining = () => educational(eduTraining());
   const DidYouKnowMuscle = () => educational(T.edu.muscle);
 
   function Cardio() {

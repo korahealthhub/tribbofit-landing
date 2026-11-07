@@ -343,10 +343,10 @@ window.TF = window.TF || {};
     // Reservas de src/onboarding/peopleCount.ts: PEOPLE_COUNT_FALLBACK. O app busca o numero no servidor; o quiz usa a reserva.
     peopleCount: 4000,
     reviewList: [
-      { name: 'Carol B.', photo: 'assets/reviews/carol_b.jpg', text: 'Agora consigo acompanhar minha evolução na academia e não fico mais com dúvida do movimento dos exercícios.' },
-      { name: 'Lais M.', photo: 'assets/reviews/lais_m.jpg', text: 'Muito bom para treinar e fazer dieta.' },
-      { name: 'Caio T.', photo: 'assets/reviews/caio_t.jpg', text: 'Aplicativo excelente, consigo manter minha rotina com mais facilidade.' },
-      { name: 'Andre C.', photo: 'assets/reviews/andre_c.jpg', text: 'Excelente app! O melhor que usei até agora!' },
+      { name: 'Carol B.', photo: 'assets/reviews/carol_b.webp', text: 'Agora consigo acompanhar minha evolução na academia e não fico mais com dúvida do movimento dos exercícios.' },
+      { name: 'Lais M.', photo: 'assets/reviews/lais_m.webp', text: 'Muito bom para treinar e fazer dieta.' },
+      { name: 'Caio T.', photo: 'assets/reviews/caio_t.webp', text: 'Aplicativo excelente, consigo manter minha rotina com mais facilidade.' },
+      { name: 'Andre C.', photo: 'assets/reviews/andre_c.webp', text: 'Excelente app! O melhor que usei até agora!' },
     ],
     // src/onboarding/stepViewsExtra.tsx e src/onboarding/beforeAfter.ts
     acquisition: { title: 'Como você conheceu o Tribbo?' },
@@ -427,10 +427,10 @@ window.TF = window.TF || {};
     // src/onboarding/educational.ts
     edu: {
       button: 'Faz sentido',
-      lose: { title: 'Musculação também emagrece', text: 'Músculo gasta energia até em repouso. Treinar força ajuda a perder gordura sem perder firmeza.', source: 'Fontes: Westcott, 2012; Colégio Americano de Medicina do Esporte (ACSM), 2026.', image: 'assets/edu/edu_perder_peso.jpg', ratio: 1029 / 1372 },
-      gain: { title: 'Não precisa treinar todo dia para crescer', text: 'Trabalhar cada músculo 2 vezes por semana já traz resultado. O descanso também faz o músculo crescer.', source: 'Fontes: Schoenfeld e colegas, 2016; Colégio Americano de Medicina do Esporte (ACSM), 2026.', image: 'assets/edu/edu_ganhar_massa.jpg', ratio: 1029 / 1372 },
-      health: { title: 'Poucos minutos já fazem diferença', text: 'Treinos curtos, feitos com constância, já melhoram força, disposição e saúde.', source: 'Fontes: Organização Mundial da Saúde, 2020; Colégio Americano de Medicina do Esporte (ACSM), 2026.', image: 'assets/edu/edu_saude.jpg', ratio: 1029 / 1372 },
-      muscle: { title: 'Comer pouco demais faz você perder músculo', text: 'A partir dos 30 anos, o corpo perde de 3% a 8% de músculo por década. Dietas muito restritivas aceleram essa perda e aumentam a flacidez. Para ganhar firmeza e definição, o corpo precisa de proteína ao longo do dia, sono de qualidade e treino. Uma única noite mal dormida já reduz em 18% a construção de músculo. É a rotina inteira que constrói o resultado.', source: 'Fontes: Volpi e colegas, 2004 · Morton e colegas, 2018 · Lamon e colegas, 2021 · ACSM, 2026.', image: 'assets/edu/edu_musculo.jpg', ratio: 1029 / 823 },
+      lose: { title: 'Musculação também emagrece', text: 'Músculo gasta energia até em repouso. Treinar força ajuda a perder gordura sem perder firmeza.', source: 'Fontes: Westcott, 2012; Colégio Americano de Medicina do Esporte (ACSM), 2026.', image: 'assets/edu/edu_perder_peso.webp', ratio: 1029 / 1372 },
+      gain: { title: 'Não precisa treinar todo dia para crescer', text: 'Trabalhar cada músculo 2 vezes por semana já traz resultado. O descanso também faz o músculo crescer.', source: 'Fontes: Schoenfeld e colegas, 2016; Colégio Americano de Medicina do Esporte (ACSM), 2026.', image: 'assets/edu/edu_ganhar_massa.webp', ratio: 1029 / 1372 },
+      health: { title: 'Poucos minutos já fazem diferença', text: 'Treinos curtos, feitos com constância, já melhoram força, disposição e saúde.', source: 'Fontes: Organização Mundial da Saúde, 2020; Colégio Americano de Medicina do Esporte (ACSM), 2026.', image: 'assets/edu/edu_saude.webp', ratio: 1029 / 1372 },
+      muscle: { title: 'Comer pouco demais faz você perder músculo', text: 'A partir dos 30 anos, o corpo perde de 3% a 8% de músculo por década. Dietas muito restritivas aceleram essa perda e aumentam a flacidez. Para ganhar firmeza e definição, o corpo precisa de proteína ao longo do dia, sono de qualidade e treino. Uma única noite mal dormida já reduz em 18% a construção de músculo. É a rotina inteira que constrói o resultado.', source: 'Fontes: Volpi e colegas, 2004 · Morton e colegas, 2018 · Lamon e colegas, 2021 · ACSM, 2026.', image: 'assets/edu/edu_musculo.webp', ratio: 1029 / 823 },
     },
     // src/onboarding/stepViewsTreino.tsx
     trainingSummary: {
