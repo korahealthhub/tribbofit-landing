@@ -1,6 +1,7 @@
 // Telas do quiz: desenho e comportamento copiados do onboarding do app, sem servidor.
 // Textos e opcoes: perguntas.js. Calculos: calculos.js. Respostas: so na variavel "a", na memoria da pagina.
-// Nao usa cookie, localStorage nem rede.
+// Nao usa cookie nem localStorage. Rede: so a medicao de uso (/js/medida.js, PostHog sem cookie),
+// que recebe apenas o numero e o nome da tela, o palpite de preco e a loja; nunca as respostas.
 (function () {
   'use strict';
   const { T, C } = TF;
@@ -28,6 +29,11 @@
   let openSheetClose = null;
   let visit = 0;       // cada entrada numa tela
   let seen = new Set(); // animacoes que ja rodaram nesta visita
+
+  // Medicao de uso (PostHog sem cookie). So o numero e o nome tecnico da tela, nunca respostas.
+  const medir = (evento, extra) => { if (window.tribboMedida) window.tribboMedida(evento, extra); };
+  const telaInfo = (id) => { const s = TF.STEPS.find((x) => x.id === id); return { step_number: s ? s.code : '', step_name: id }; };
+  let comecou = false;
 
   // ─── Ajudantes ──────────────────────────────────────────────────────────────
 
@@ -236,6 +242,7 @@
   // Sair do quiz pelo topo (icone ou "Voltar ao site"): sem nenhuma resposta vai direto; com alguma, pergunta antes.
   function leaveQuiz(e) {
     if (e) e.preventDefault();
+    medir('web_quiz_exit_clicked', telaInfo(current));
     const go = () => { location.href = SITE; };
     const answered = JSON.stringify(a) !== JSON.stringify(TF.emptyAnswers());
     if (!answered) { go(); return; }
@@ -263,6 +270,8 @@
     resetScreen();
     visit += 1;
     current = id;
+    if (!comecou && id !== 'welcome') { comecou = true; medir('web_quiz_started'); }
+    medir('web_quiz_step_viewed', telaInfo(id));
     if (forward) pushHist();
     const progress = TF.showsProgress(id);
     const back = TF.canGoBack(id) || !!nav.returnTo;
@@ -1980,7 +1989,7 @@
     const total = V.apps.reduce((s, x) => s + monthlyOf(x.yearly), 0);
     let guess = a.priceGuess ?? V.ruler.initial;
     let moved = a.priceGuess != null;
-    const btn = primary(V.button, () => { if (moved) next({ priceGuess: guess }); }, !moved);
+    const btn = primary(V.button, () => { if (moved) { medir('web_quiz_price_guess_done', { guess }); next({ priceGuess: guess }); } }, !moved);
     const totalNum = h('span', { class: 'apps-total-num' });
     countUp(totalNum, total, (n) => `R$${Math.round(n)}`, 1100);
     const game = h('div', { class: 'game' });
@@ -2018,6 +2027,7 @@
   // Os valores vem de preco.js (TF.PRECO); os cards seguem src/utils/planDisplay.ts (planCardLines).
   function PriceReveal() {
     const R = T.priceReveal, P = TF.PRECO;
+    medir('web_quiz_price_revealed');
     const brl = (n) => `R$ ${n.toFixed(2).replace('.', ',')}`;
     const guess = a.priceGuess;
     const plan = (title, sub, price, best, delay) => h('div', { class: `card plan-card fade-up${best ? ' best' : ''}`, style: { animationDelay: `${delay}ms` } },
@@ -2100,7 +2110,8 @@
     const store = (kind) => {
       const apple = kind === 'apple';
       const mine = apple ? ios : android;
-      return h('a', { class: `store-card${mine ? ' mine' : ''}`, href: apple ? D.appStore : D.googlePlay, target: '_blank', rel: 'noopener' },
+      return h('a', { class: `store-card${mine ? ' mine' : ''}`, href: apple ? D.appStore : D.googlePlay, target: '_blank', rel: 'noopener',
+        onclick: () => medir('web_quiz_store_clicked', { store: apple ? 'app_store' : 'google_play' }) },
         mine && h('span', { class: 'tag' }, D.yourPhone),
         h('img', { src: apple ? '/plano/assets/app-store.svg' : '/plano/assets/google-play.webp', alt: apple ? D.appStoreAlt : D.googlePlayAlt, height: 52 }));
     };

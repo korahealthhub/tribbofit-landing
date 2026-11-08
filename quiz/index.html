@@ -8,8 +8,8 @@
 <meta name="googlebot" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#F8F5F4">
-<!-- Dados de saude: esta pagina nao envia nada para nenhum servidor. De fora, so baixa os GIFs publicos dos exercicios (Supabase, exercise-gifs), sem enviar dados. Sem pixel e sem analytics. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://jllkcglzajmzqywyuswq.supabase.co; font-src 'self'; connect-src 'none'; manifest-src 'self'; form-action 'none'; base-uri 'none'">
+<!-- Dados de saude: as respostas nunca saem da pagina. De fora, so baixa os GIFs publicos dos exercicios (Supabase, exercise-gifs). Medicao de uso no PostHog sem cookie (/js/medida.js): so numero e nome da tela, palpite de preco, loja e utm_*. Sem pixel da Meta e sem faixa de cookies. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://jllkcglzajmzqywyuswq.supabase.co; font-src 'self'; connect-src https://us.i.posthog.com; manifest-src 'self'; form-action 'none'; base-uri 'none'">
 <link rel="icon" href="/plano/assets/icones/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/plano/assets/icones/favicon-48.png" sizes="48x48" type="image/png">
 <link rel="apple-touch-icon" href="/plano/assets/icones/apple-touch-icon.png">
@@ -35,6 +35,7 @@
 <!-- corpo.js, alimentos.js e cardapio.js carregam depois, perto das telas que usam (app.js, LAZY). -->
 <script src="perguntas.js" defer></script>
 <script src="calculos.js" defer></script>
+<script src="/js/medida.js" defer></script>
 <script src="app.js" defer></script>
 </body>
 </html>

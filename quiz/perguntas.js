@@ -552,7 +552,7 @@ window.TF = window.TF || {};
     },
     // So na web, enquanto o pagamento nao existe: fim do quiz com os botoes das lojas.
     download: {
-      title: 'Baixe o app e comece agora', subtitle: 'Seu plano está pronto para você continuar no app.',
+      title: 'Baixe o app e comece agora', subtitle: 'Baixe o app e crie seu plano em poucos minutos.',
       appStore: 'https://apps.apple.com/br/app/id6769632514', googlePlay: 'https://play.google.com/store/apps/details?id=com.usekoraapp.health',
       appStoreAlt: 'Baixar na App Store', googlePlayAlt: 'Disponível no Google Play', yourPhone: 'Para o seu celular',
     },

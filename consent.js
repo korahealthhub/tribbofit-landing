@@ -18,7 +18,8 @@
  * Uso: <script src="/consent.js" defer></script>
  * Em /download/: data-banner="inapp-only" (fora do in-app a página só redireciona).
  * Nos links curtos (/ig, /tt...): data-banner="off".
- * Na /plano/: data-trackers="meta" (só a Meta; GA4 e TikTok não carregam).
+ * Na /plano/: data-trackers="meta" (só a Meta; GA4 e TikTok não carregam) e
+ * data-estilo="plano" (faixa clara no visual da /plano/, acima da barra do botão).
  * Sem <noscript> com a imagem do pixel: ela dispararia sem aceite.
  */
 (function () {
@@ -29,6 +30,7 @@
   var script = document.currentScript;
   var bannerMode = (script && script.getAttribute('data-banner')) || 'on';
   var onlyMeta = !!script && script.getAttribute('data-trackers') === 'meta';
+  var estiloPlano = !!script && script.getAttribute('data-estilo') === 'plano';
 
   function getChoice() {
     try { return localStorage.getItem(KEY); } catch (e) { return null; }
@@ -150,11 +152,34 @@
     '.tc-decline:hover{background:rgba(255,255,255,0.1)}' +
     '@media(max-width:480px){.tc-actions{width:100%}.tc-btn{flex:1}}';
 
+  // Visual da /plano/: card branco, texto escuro, "Aceitar" lima e "Recusar" discreto.
+  // Fica no rodapé; quando a barra fixa do botão aparece, sobe para ficar acima dela
+  // (a /plano/ define --tc-acima com a altura da barra). Em tela baixa, se o botão do topo
+  // ficaria embaixo da faixa, a /plano/ põe a classe tc-alto e a faixa vai para o alto da tela.
+  var CSS_PLANO =
+    '.tc-banner{position:fixed;left:12px;right:12px;z-index:40;max-width:420px;margin:0 auto;' +
+    'bottom:calc(max(var(--tc-acima,0px),env(safe-area-inset-bottom,0px)) + 10px);transition:bottom .25s ease-out;' +
+    'padding:12px 14px;border-radius:18px;background:#FFFFFF;border:1px solid #E8E2DD;' +
+    'box-shadow:0 10px 30px rgba(14,26,29,.16);font-family:Inter,system-ui,-apple-system,sans-serif;color:#0E1A1D;' +
+    'display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;animation:tcUp .3s ease}' +
+    '@keyframes tcUp{from{transform:translateY(16px);opacity:0}to{transform:none;opacity:1}}' +
+    '.tc-text{flex:1 1 220px;margin:0;font-size:13px;line-height:1.45;color:#3E4A4C}' +
+    '.tc-text a{color:#0E1A1D;font-weight:600;text-decoration:underline;text-underline-offset:2px}' +
+    '.tc-actions{display:flex;align-items:center;gap:6px;flex:0 0 auto;margin-left:auto}' +
+    '.tc-btn{font:inherit;font-size:14px;font-weight:700;min-height:40px;padding:0 16px;border-radius:100px;cursor:pointer;border:0}' +
+    '.tc-btn:focus-visible{outline:2px solid #7B3FF2;outline-offset:2px}' +
+    '.tc-accept{background:#E2F408;color:#0E1A1D;padding:0 22px}' +
+    '.tc-decline{background:transparent;color:#5F6B69;font-weight:600}' +
+    '.tc-decline:hover{color:#0E1A1D}' +
+    '.tc-alto .tc-banner{bottom:auto;top:calc(env(safe-area-inset-top,0px) + 78px)}' +
+    '@media(min-width:900px){.tc-banner{left:24px;right:auto;bottom:24px}}' +
+    '@media(prefers-reduced-motion:reduce){.tc-banner{animation:none;transition:none}}';
+
   var banner = null;
   function showBanner() {
     if (banner) return;
     var style = document.createElement('style');
-    style.textContent = CSS;
+    style.textContent = estiloPlano ? CSS_PLANO : CSS;
     document.head.appendChild(style);
 
     banner = document.createElement('div');
@@ -162,8 +187,10 @@
     banner.setAttribute('role', 'region');
     banner.setAttribute('aria-label', 'Aviso de cookies');
     banner.innerHTML =
-      '<p class="tc-text">Usamos cookies para medir de onde vêm as visitas e melhorar nossos anúncios. ' +
-      '<a href="/privacidade/#pt-3">Política de Privacidade</a></p>' +
+      (estiloPlano
+        ? '<p class="tc-text">Usamos cookies para medir nossos anúncios. <a href="/privacidade/#pt-3">Privacidade</a></p>'
+        : '<p class="tc-text">Usamos cookies para medir de onde vêm as visitas e melhorar nossos anúncios. ' +
+          '<a href="/privacidade/#pt-3">Política de Privacidade</a></p>') +
       '<div class="tc-actions">' +
       '<button type="button" class="tc-btn tc-decline">Recusar</button>' +
       '<button type="button" class="tc-btn tc-accept">Aceitar</button>' +

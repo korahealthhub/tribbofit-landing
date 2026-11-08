@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tribbo Fit: seu plano de treino e alimentação</title>
 <meta name="description" content="Responda o quiz e receba seu plano de treino e seu plano alimentar, com acompanhamento no app Tribbo Fit.">
-<!-- Pagina de anuncios. Fora do Google ate liberar: noindex, sem link no site e fora do sitemap. So o pixel da Meta, via /consent.js e depois do aceite de cookies. Sem GA4 e sem TikTok. -->
+<!-- Pagina de anuncios. Fora do Google ate liberar: noindex, sem link no site e fora do sitemap. So o pixel da Meta, via /consent.js e depois do aceite de cookies. Sem GA4 e sem TikTok. Medicao de uso no PostHog sem cookie (/js/medida.js). -->
 <meta name="robots" content="noindex, nofollow">
 <meta name="googlebot" content="noindex, nofollow">
 <meta name="theme-color" content="#F8F5F4">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://connect.facebook.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://jllkcglzajmzqywyuswq.supabase.co https://www.facebook.com; font-src 'self'; media-src 'self'; connect-src https://www.facebook.com https://connect.facebook.net; manifest-src 'self'; form-action 'none'; base-uri 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://connect.facebook.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://jllkcglzajmzqywyuswq.supabase.co https://www.facebook.com; font-src 'self'; media-src 'self'; connect-src https://www.facebook.com https://connect.facebook.net https://us.i.posthog.com; manifest-src 'self'; form-action 'none'; base-uri 'none'">
 <link rel="icon" href="/plano/assets/icones/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/plano/assets/icones/favicon-48.png" sizes="48x48" type="image/png">
 <link rel="apple-touch-icon" href="/plano/assets/icones/apple-touch-icon.png">
@@ -18,8 +18,9 @@
 <link rel="preload" href="/quiz/assets/fontes/inter-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/plano/plano.css">
 <script src="/quiz/exercicios.js" defer></script>
+<script src="/js/medida.js" defer></script>
 <script src="plano.js" defer></script>
-<script src="/consent.js" data-trackers="meta" defer></script>
+<script src="/consent.js" data-trackers="meta" data-estilo="plano" defer></script>
 </head>
 <body>
 
@@ -379,12 +380,12 @@
       <div class="colunas">
         <div><b>Página</b><a href="#para-quem">Para quem é</a><a href="#como-funciona">Como funciona</a><a href="#seu-plano">Seu plano</a><a href="#recursos">Recursos</a><a href="#depoimentos">Depoimentos</a><a href="#perguntas">Dúvidas</a><a href="/plano/comunidade/">Comunidade</a></div>
         <div><b>Legal</b><a href="/termos/">Termos de uso</a><a href="/privacidade/">Privacidade</a></div>
-        <div><b>Contato</b><a href="mailto:atendimento.app.kora@gmail.com">Atendimento</a><a href="https://www.instagram.com/tribbofit/" rel="noopener" target="_blank">Instagram</a><a href="https://www.tiktok.com/@tribbofit" rel="noopener" target="_blank">TikTok</a><a href="https://apps.apple.com/br/app/id6769632514" rel="noopener" target="_blank">App Store</a><a href="https://play.google.com/store/apps/details?id=com.usekoraapp.health" rel="noopener" target="_blank">Google Play</a></div>
+        <div><b>Contato</b><a href="mailto:suporte@tribbofit.com.br">Atendimento</a><a href="https://www.instagram.com/tribbofit/" rel="noopener" target="_blank">Instagram</a><a href="https://www.tiktok.com/@tribbofit" rel="noopener" target="_blank">TikTok</a><a href="https://apps.apple.com/br/app/id6769632514" rel="noopener" target="_blank">App Store</a><a href="https://play.google.com/store/apps/details?id=com.usekoraapp.health" rel="noopener" target="_blank">Google Play</a></div>
       </div>
     </div>
     <div class="base">
       <p>O Tribbo Fit é um app de bem-estar e não substitui orientação de médico, nutricionista ou educador físico.</p>
-      <p class="direitos"><span>&copy; 2026 Tribbo Fit.</span> <span>Todos os direitos reservados.</span> <span>KORA SOLUCOES EM TECNOLOGIA LTDA&nbsp;·</span> <span>CNPJ 69.107.211/0001-24&nbsp;·</span> <a href="mailto:atendimento.app.kora@gmail.com">atendimento.app.kora@gmail.com</a></p>
+      <p class="direitos"><span>&copy; 2026 Tribbo Fit.</span> <span>Todos os direitos reservados.</span> <span>KORA SOLUCOES EM TECNOLOGIA LTDA&nbsp;·</span> <span>CNPJ 69.107.211/0001-24&nbsp;·</span> <a href="mailto:suporte@tribbofit.com.br">suporte@tribbofit.com.br</a></p>
     </div>
   </div>
 </footer>

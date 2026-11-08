@@ -1,7 +1,19 @@
 // Pagina /plano/: barra fixa do botao no celular, menu, exemplo do plano e video que so baixa ao tocar.
-// Sem cookie, sem armazenamento e sem chamada para fora.
+// Sem cookie e sem armazenamento. Fora daqui: so a medicao de uso (/js/medida.js, PostHog sem cookie).
 (function () {
   'use strict';
+
+  // Medicao de uso: pagina vista e qual botao "Criar meu plano gratis" foi tocado.
+  var medir = function (ev, extra) { if (window.tribboMedida) window.tribboMedida(ev, extra); };
+  var pagina = /comunidade/.test(location.pathname) ? 'comunidade' : 'plano';
+  medir('web_plano_viewed', { page: pagina });
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="/quiz/"]');
+    if (!a) return;
+    var sec = a.closest('section');
+    var botao = a.id ? a.id.replace(/^cta-/, '') : a.closest('.barra') ? 'barra' : a.classList.contains('btn-mini') ? 'menu' : sec && sec.id ? sec.id : 'outro';
+    medir('web_plano_cta_clicked', { page: pagina, button: botao });
+  }, true);
 
   // Botoes "Criar meu plano gratis": levam para o /quiz/ os parametros da URL (utm_source, utm_medium,
   // utm_campaign, utm_content e parecidos), para sabermos de qual anuncio veio cada pessoa.
@@ -20,11 +32,33 @@
       barra.classList.toggle('on', on);
       barra.setAttribute('aria-hidden', on ? 'false' : 'true');
       barra.querySelector('a').tabIndex = on ? 0 : -1;
+      // A faixa de cookies (consent.js) sobe para ficar acima da barra e nunca cobrir o botão.
+      document.documentElement.style.setProperty('--tc-acima', on && getComputedStyle(barra).display !== 'none' ? barra.offsetHeight + 'px' : '0px');
     };
     new IntersectionObserver(function (e) {
       passouTopo = !e[0].isIntersecting && e[0].boundingClientRect.top < 0; mostrar();
     }).observe(topo);
     new IntersectionObserver(function (e) { noFim = e[0].isIntersecting; mostrar(); }, { rootMargin: '0px 0px -20% 0px' }).observe(fim);
+  }
+
+  // Faixa de cookies (consent.js): em tela baixa, se o botão do topo cairia embaixo dela, ela vai para o alto.
+  var ctaTopo = document.getElementById('cta-topo');
+  if (ctaTopo) {
+    var checaFaixa = function () {
+      var f = document.querySelector('.tc-banner');
+      var raiz = document.documentElement;
+      if (!f) { raiz.classList.remove('tc-alto'); return; }
+      var c = ctaTopo.getBoundingClientRect();
+      var alturaFaixa = f.offsetHeight + 24;
+      raiz.classList.toggle('tc-alto', c.bottom > innerHeight - alturaFaixa && c.top < innerHeight);
+    };
+    var pedido = 0;
+    var agenda = function () { if (!pedido) pedido = requestAnimationFrame(function () { pedido = 0; checaFaixa(); }); };
+    addEventListener('scroll', agenda, { passive: true });
+    addEventListener('resize', agenda);
+    document.addEventListener('click', function () { setTimeout(checaFaixa, 0); });
+    if ('MutationObserver' in window) new MutationObserver(agenda).observe(document.body, { childList: true });
+    agenda();
   }
 
   // Menu do celular: abre a lista e fecha ao tocar num item, ao tocar fora ou no Esc.

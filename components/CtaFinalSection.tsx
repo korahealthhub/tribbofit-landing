@@ -14,7 +14,7 @@ const faqs = [
   { q: 'Funciona para treino em casa?', a: 'Sim. O app tem exercícios para academia, casa e peso do corpo. Você escolhe de acordo com o que tem disponível no dia.' },
   { q: 'Funciona para iniciante?', a: 'Sim. Foi feito para quem está começando agora e para quem já treina mas não consegue manter a constância.' },
   { q: 'Como o Coach IA funciona?', a: 'O Coach IA tira dúvidas sobre treino, alimentação e hábitos, registra suas refeições por foto ou mensagem e envia lembretes inteligentes para não deixar você esquecer nada.' },
-  { q: 'Ainda tem dúvidas?', a: 'Fala com a gente pelo e-mail atendimento.app.kora@gmail.com. Respondemos o mais rápido possível.' },
+  { q: 'Ainda tem dúvidas?', a: 'Fala com a gente pelo e-mail suporte@tribbofit.com.br. Respondemos o mais rápido possível.' },
 ];
 
 function FaqItem({ q, a }: { q: string; a: string }) {
