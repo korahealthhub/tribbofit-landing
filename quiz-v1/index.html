@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<title>Tribbo Fit</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#07161B">
+<!-- Dados de saude: esta pagina nao fala com nenhum servidor nem carrega nada de fora. Sem pixel e sem analytics. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<link rel="icon" href="assets/logo-preto.png">
+<link rel="preload" href="assets/fontes/inter-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fontes/inter-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header id="top" hidden>
+    <button id="back" type="button" aria-label="Voltar"></button>
+    <div id="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"><div id="bar-fill"></div></div>
+  </header>
+  <!-- Primeira tela ja pronta no HTML para aparecer antes do JavaScript. Os textos repetem T.welcome (perguntas.js): mudou la, muda aqui. -->
+  <main id="scroll"><div class="content fill" id="pre"><div class="q-head"><h1 class="q-title fixed" tabindex="-1">Queremos criar uma experiência personalizada para você!</h1><p class="q-sub">Responda as próximas perguntas para nos ajudar a criar seu plano.</p></div><div class="cover"><img src="assets/foto_capa.webp" alt="" width="700" height="589" fetchpriority="high" decoding="async"></div></div></main>
+  <footer id="foot"><button type="button" class="btn" id="pre-btn">Criar meu plano</button></footer>
+</div>
+<noscript><p style="color:#fff;padding:24px;font-family:sans-serif">Ative o JavaScript para responder ao quiz.</p></noscript>
+<script src="icones.js" defer></script>
+<!-- corpo.js, alimentos.js e cardapio.js carregam depois, perto das telas que usam (app.js, LAZY). -->
+<script src="perguntas.js" defer></script>
+<script src="calculos.js" defer></script>
+<script src="app.js" defer></script>
+</body>
+</html>

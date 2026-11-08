@@ -16,12 +16,12 @@ window.TF = window.TF || {};
   ];
 
   // ==== src/onboarding/steps.ts: ordem das telas e quando cada uma e pulada ====
-  // Fora do quiz, de proposito: 48A (avaliacao na loja), 49 (jogo do preco, leva a paywall) e
-  // 49A (rastreamento da Apple). "lead_form" so existe na web: vem depois da tela de resultado.
+  // Fora do quiz, de proposito: so o que existe apenas no app: 3 (aceites; na web eles ficam no cadastro final),
+  // 45 (pedido de notificacao), 48A (avaliacao na loja) e 49A (rastreamento da Apple).
+  // Final na web: 48 (resultado), 49 (jogo do preco), 49B (preco revelado, no lugar da paywall) e 50 (cadastro).
   TF.STEPS = [
     { id: 'welcome', code: '1', section: 'voce' },
     { id: 'name', code: '2', section: 'voce' },
-    { id: 'consents', code: '3', section: 'voce' },
     { id: 'goal', code: '4', section: 'corpo' },
     { id: 'tried_before', code: '5', section: 'corpo' },
     { id: 'motivation', code: '5A', section: 'corpo' },
@@ -69,11 +69,14 @@ window.TF = window.TF || {};
     { id: 'food_summary', code: '42', section: 'alimentacao' },
     { id: 'how_it_works', code: '43', section: 'plano' },
     { id: 'obstacle', code: '44', section: 'plano' },
-    { id: 'notifications', code: '45', section: 'plano' },
     { id: 'commitment', code: '46', section: 'plano' },
     { id: 'building', code: '47', section: 'plano' },
     { id: 'plan_summary', code: '48', section: 'plano' },
-    { id: 'lead_form', code: '49', section: 'plano' },
+    { id: 'value', code: '49', section: 'plano' },
+    { id: 'price_reveal', code: '49B', section: 'plano' },
+    // Com TF.PAGAMENTO_ATIVO (preco.js) falso, o cadastro e pulado e entra a tela das lojas.
+    { id: 'lead_form', code: '50', section: 'plano', skip: () => !TF.PAGAMENTO_ATIVO },
+    { id: 'download', code: '50B', section: 'plano', skip: () => !!TF.PAGAMENTO_ATIVO },
   ];
 
   // ==== src/onboarding/answers.ts: emptyAnswers ====
@@ -339,7 +342,7 @@ window.TF = window.TF || {};
       title: 'Você pode alcançar seus objetivos', button: 'Eu consigo', with: 'Com o Tribbo Fit', without: 'Sem rotina',
       item1: 'Desbloqueie suas conquistas', item2: 'Ative as notificações para lembrarmos você do que fazer', caption: 'Gráfico ilustrativo.', y: 'EVOLUÇÃO', x: 'SEMANAS',
     },
-    reviews: { titleA: 'Mais de', titleB: 'pessoas', subtitle: 'já começaram com o Tribbo Fit', button: 'Quero começar também' },
+    reviews: { titleA: 'Mais de', titleB: 'pessoas', peopleLabel: '5 mil', subtitle: 'já começaram com o Tribbo Fit', button: 'Quero começar também' },
     // Reservas de src/onboarding/peopleCount.ts: PEOPLE_COUNT_FALLBACK. O app busca o numero no servidor; o quiz usa a reserva.
     peopleCount: 4000,
     reviewList: [
@@ -512,7 +515,7 @@ window.TF = window.TF || {};
       moments: [
         { when: 'Manhã', text: 'Check-in do dia em 1 minuto', icon: 'sunny-outline' },
         { when: 'Nas refeições', text: 'Registre o que comeu com uma foto', image: 'assets/registro_cal.webp' },
-        { when: 'No treino', text: 'Vídeo de cada exercício, no seu nível', icon: 'barbell-outline' },
+        { when: 'No treino', text: 'Vídeo de cada exercício, no seu nível', icon: 'barbell-outline', gif: 'Agachamento livre (peso do corpo)' },
         { when: 'À noite', text: 'Veja seu Tribbo Score e sua evolução', rise: true },
         { when: 'Lembretes inteligentes', text: 'Te avisamos na hora certa', icon: 'notifications-outline', reminders: true },
       ],
@@ -541,6 +544,33 @@ window.TF = window.TF || {};
     leadForm: {
       title: 'Falta pouco para começar', subtitle: 'Deixe seu contato para continuar.', name: 'Nome', email: 'E-mail', whatsapp: 'WhatsApp',
       button: 'Continuar para o pagamento', soon: 'Pagamento em breve', privacy: 'Nesta versão, nada é enviado nem guardado: suas respostas ficam só nesta página e somem ao fechar.',
+      // Aceites (no app ficam na tela 3; na web, aqui, obrigatorios para o botao ligar).
+      terms: ['Li e aceito os', 'Termos de Uso', 'e a', 'Política de Privacidade'],
+      health: 'Autorizo o uso das minhas informações de saúde para montar o meu plano.',
+      backToSite: 'Voltar para o site',
+      wellbeing: 'O Tribbo Fit é um app de bem-estar e não substitui orientação médica ou nutricional.',
+    },
+    // So na web, enquanto o pagamento nao existe: fim do quiz com os botoes das lojas.
+    download: {
+      title: 'Baixe o app e comece agora', subtitle: 'Seu plano está pronto para você continuar no app.',
+      appStore: 'https://apps.apple.com/br/app/id6769632514', googlePlay: 'https://play.google.com/store/apps/details?id=com.usekoraapp.health',
+      appStoreAlt: 'Baixar na App Store', googlePlayAlt: 'Disponível no Google Play', yourPhone: 'Para o seu celular',
+    },
+    // So na web: sair do quiz pelo topo.
+    exit: { link: 'Voltar ao site', title: 'Quer sair? Suas respostas não serão salvas.', leave: 'Sair', stay: 'Continuar o quiz', home: '/plano/' },
+    // ==== src/onboarding/stepViewsPlano.tsx (ValueStep, tela 49) e src/onboarding/planValue.ts ====
+    value: {
+      title: 'Quanto custam 3 apps separados?', perMonth: '/mês', totalA: '= cerca de', totalB: 'por mês',
+      caption: 'Preço médio por mês dos planos anuais de apps populares de treino, dieta e sono',
+      apps: [{ name: 'Treino', yearly: 160, icon: 'barbell-outline', color: '#0A0A0A' }, { name: 'Alimentação', yearly: 163, icon: 'restaurant-outline', color: '#3B82F6' }, { name: 'Sono', yearly: 197, icon: 'moon-outline', color: '#A78BFA' }],
+      question: 'Quanto você acha que custa o Tribbo Fit por mês?', ruler: { min: 0, max: 150, step: 5, initial: 75 }, maxSuffix: 'ou mais', unit: 'por mês',
+      rulerLabel: 'Seu palpite em reais por mês', button: 'Ver meu preço', stepMs: 2300,
+    },
+    // So na web: a revelacao do preco (no app o preco aparece na paywall). Cards com os textos de src/utils/planDisplay.ts.
+    priceReveal: {
+      guess: 'Seu palpite:', titleA: 'Seu plano sai por', titleB: 'por mês', annual: 'Anual', monthly: 'Mensal', best: 'Melhor opção', noCommitment: 'Sem compromisso',
+      perMonth: '/mês', perYear: '/ano', renewal: 'Renova automaticamente; cancele quando quiser.', button: 'Continuar',
+      vsApps: 'contra cerca de R$43 por mês em 3 apps separados',
     },
     // Termos e privacidade: mesmos enderecos de src/utils/legalLinks.ts, no proprio site.
     links: { terms: '/termos/', privacy: '/privacidade/' },
@@ -563,8 +593,9 @@ window.TF = window.TF || {};
 
   // ==== Tema (src/theme/colors.ts) usado nos desenhos em SVG; o resto esta em style.css ====
   TF.C = {
-    bg: '#07161B', teal: '#E2F408', tealLt: '#EDFB6B', tealPale: '#F5FCB8', tealGrad: '#B5C904', onAccent: '#0A0A0A', t1: '#FFFFFF', t2: '#8A9A96', t3: '#6B8880',
-    icon: 'rgba(255,255,255,0.85)', amber: '#F59E0B', bodyInjury: '#E88C8C', bodyFocus: '#86CF9E', macroProtein: '#A78BFA', macroCarbs: '#F59E0B', macroFat: '#FDE047', water: '#3B82F6',
-    pastelGreen: '#8FD9AE', gold: '#F5B301', verified: '#1877F2', bmi: ['#4C8DF6', '#34C77B', '#F5C542', '#EF5350'], barGreen: '#34C77B', barBlue: '#4C8DF6', barYellow: '#F5C542',
+    // Visual claro da /plano/ (11/2026): "teal" virou o violeta dos detalhes; o lima ficou so no botao principal (style.css).
+    bg: '#F8F5F4', teal: '#7B3FF2', tealLt: '#EDFB6B', tealPale: '#D9CCFF', tealGrad: '#B5C904', onAccent: '#FFFFFF', t1: '#0E1A1D', t2: '#5F6B69', t3: '#85908D',
+    icon: 'rgba(14,26,29,0.80)', amber: '#B45309', bodyInjury: '#E35D5D', bodyFocus: '#2FA36B', macroProtein: '#7B3FF2', macroCarbs: '#C9DA00', macroFat: '#E5A50A', water: '#3B82F6',
+    pastelGreen: '#2FA36B', line: 'rgba(14,26,29,', lima: '#E2F408', gold: '#F5B301', verified: '#1877F2', bmi: ['#4C8DF6', '#34C77B', '#F5C542', '#EF5350'], barGreen: '#34C77B', barBlue: '#4C8DF6', barYellow: '#F5C542',
   };
 })();

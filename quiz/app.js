@@ -14,6 +14,12 @@
   const barEl = document.getElementById('bar');
   const barFill = document.getElementById('bar-fill');
 
+  // Parametros da URL vindos da /plano/ (utm_source, utm_medium, utm_campaign, utm_content e parecidos).
+  // Ficam so na memoria da pagina (TF.utm) e voltam para a /plano/ se a pessoa sair pelo topo.
+  const URL_PARAMS = new URLSearchParams(location.search);
+  TF.utm = Object.fromEntries(URL_PARAMS);
+  const SITE = T.exit.home + (URL_PARAMS.toString() ? `?${URL_PARAMS}` : '');
+
   let a = TF.emptyAnswers();
   let current = 'welcome';
   let nav = { returnTo: null, chain: [] };
@@ -85,6 +91,16 @@
     const t = h('h1', { class: `q-title${fixedLines ? ' fixed' : ''}`, tabindex: '-1' }, title);
     if (fixedLines) fitText(t, fixedLines, 0.85);
     return h('div', { class: 'q-head' }, t, subtitle && h('p', { class: 'q-sub' }, subtitle));
+  }
+  function emojiBubble(ch, size = 42) {
+    return h('span', { class: 'bubble emo-b', 'aria-hidden': 'true', style: { width: `${size}px`, height: `${size}px`, fontSize: `${Math.round(size * 0.5)}px` } }, ch);
+  }
+  // GIF do exercicio (exercicios.js), com fundo cinza claro enquanto carrega; sem GIF na lista, null.
+  function gifThumb(nome, size) {
+    const src = TF.gifDe && TF.gifDe(nome);
+    if (!src) return null;
+    return h('span', { class: 'ex-gif', style: { width: `${size}px`, height: `${size}px` } },
+      h('img', { src, alt: '', loading: 'lazy', decoding: 'async', width: size, height: size }));
   }
   function bubble(name, size = 42) {
     return h('span', { class: 'bubble', style: { width: `${size}px`, height: `${size}px` } }, icon(name, Math.round(size * 0.5)));
@@ -217,6 +233,24 @@
   backEl.append(icon('chevron-back', 26, C.t1));
   backEl.addEventListener('click', () => { history.back(); });
 
+  // Sair do quiz pelo topo (icone ou "Voltar ao site"): sem nenhuma resposta vai direto; com alguma, pergunta antes.
+  function leaveQuiz(e) {
+    if (e) e.preventDefault();
+    const go = () => { location.href = SITE; };
+    const answered = JSON.stringify(a) !== JSON.stringify(TF.emptyAnswers());
+    if (!answered) { go(); return; }
+    openSheet((close) => [
+      h('div', { class: 'sheet-handle' }),
+      h('h2', { class: 'sheet-title' }, T.exit.title),
+      h('div', { class: 'sheet-actions' }, primary(T.exit.stay, close), h('button', { type: 'button', class: 'btn-2', onclick: go }, T.exit.leave)),
+    ]);
+  }
+  for (const el of [document.getElementById('logo'), document.getElementById('exit')]) {
+    if (!el) continue;
+    el.href = SITE;
+    el.addEventListener('click', leaveQuiz);
+  }
+
   function resetScreen() {
     timers.forEach(clearTimeout); timers = [];
     cleanups.forEach((f) => f()); cleanups = [];
@@ -232,7 +266,7 @@
     if (forward) pushHist();
     const progress = TF.showsProgress(id);
     const back = TF.canGoBack(id) || !!nav.returnTo;
-    topEl.hidden = !progress && !back;
+    topEl.hidden = false;
     barEl.classList.toggle('off', !progress);
     backEl.classList.toggle('off', !back);
     const pct = TF.overallProgress(id, a);
@@ -252,7 +286,8 @@
 
   // ─── Carregamento sob demanda (so na web) ───────────────────────────────────
   // Os arquivos pesados so baixam perto da tela que usa, para a primeira tela abrir rapido.
-  const LAZY = { pain: ['corpo.js'], focus: ['corpo.js'], food_summary: ['alimentos.js', 'cardapio.js'], plan_summary: ['alimentos.js', 'cardapio.js'] };
+  const LAZY = { pain: ['corpo.js'], focus: ['corpo.js'], food_summary: ['alimentos.js', 'cardapio.js'], plan_summary: ['alimentos.js', 'cardapio.js'], value: ['preco.js'], price_reveal: ['preco.js'],
+    bodyweight: ['exercicios.js'], training_summary: ['exercicios.js'], how_it_works: ['exercicios.js'] };
   const scripts = {};
   function loadScript(src) {
     if (!scripts[src]) {
@@ -373,9 +408,9 @@
       const s = svg('svg', { width, height });
       const defs = svg('defs');
       s.append(defs);
-      [0.25, 0.5, 0.75].forEach((f) => s.append(svg('line', { x1: pad.l, x2: width - pad.r, y1: pad.t + innerH * f, y2: pad.t + innerH * f, stroke: 'rgba(255,255,255,0.06)' })));
-      s.append(svg('line', { x1: pad.l, x2: width - pad.r, y1: baseY, y2: baseY, stroke: 'rgba(255,255,255,0.18)' }));
-      if (hasAxes) s.append(svg('line', { x1: pad.l, x2: pad.l, y1: pad.t, y2: baseY, stroke: 'rgba(255,255,255,0.18)' }));
+      [0.25, 0.5, 0.75].forEach((f) => s.append(svg('line', { x1: pad.l, x2: width - pad.r, y1: pad.t + innerH * f, y2: pad.t + innerH * f, stroke: 'rgba(14,26,29,0.06)' })));
+      s.append(svg('line', { x1: pad.l, x2: width - pad.r, y1: baseY, y2: baseY, stroke: 'rgba(14,26,29,0.18)' }));
+      if (hasAxes) s.append(svg('line', { x1: pad.l, x2: pad.l, y1: pad.t, y2: baseY, stroke: 'rgba(14,26,29,0.18)' }));
       series.forEach((sr, i) => {
         const pts = toPts(sr.values);
         const d = smoothPath(pts);
@@ -425,7 +460,7 @@
   function yoYoChart(label) {
     const height = 220;
     const pad = { l: 26, r: 18, t: 16, b: 30 };
-    const routineColor = C.pastelGreen, dietColor = 'rgba(255,255,255,0.55)';
+    const routineColor = C.pastelGreen, dietColor = 'rgba(14,26,29,0.45)';
     const box = h('div', { class: 'chart', role: 'img', 'aria-label': label, style: { height: `${height}px` } });
     const xt = h('p', { class: 'axis x-title', style: { margin: `6px ${pad.r}px 0 ${pad.l}px` } }, 'TEMPO');
     requestAnimationFrame(() => {
@@ -441,9 +476,9 @@
       const at = (start, i, n) => start + DRAW_MS * (i / Math.max(1, n - 1));
       const s = svg('svg', { width, height },
         svg('defs', null, svg('clipPath', { id: 'aboveStart' }, svg('rect', { x: 0, y: 0, width, height: startY }))),
-        svg('line', { x1: pad.l, x2: pad.l, y1: pad.t, y2: baseY, stroke: 'rgba(255,255,255,0.18)' }),
-        svg('line', { x1: pad.l, x2: width - pad.r, y1: baseY, y2: baseY, stroke: 'rgba(255,255,255,0.18)' }),
-        svg('line', { x1: pad.l, x2: width - pad.r, y1: startY, y2: startY, stroke: 'rgba(255,255,255,0.35)', 'stroke-dasharray': '5 5' }));
+        svg('line', { x1: pad.l, x2: pad.l, y1: pad.t, y2: baseY, stroke: 'rgba(14,26,29,0.18)' }),
+        svg('line', { x1: pad.l, x2: width - pad.r, y1: baseY, y2: baseY, stroke: 'rgba(14,26,29,0.18)' }),
+        svg('line', { x1: pad.l, x2: width - pad.r, y1: startY, y2: startY, stroke: 'rgba(14,26,29,0.30)', 'stroke-dasharray': '5 5' }));
       s.append(fadeIn(svg('path', { d: `${dietPath} L ${diet[diet.length - 1].x} ${startY} L ${diet[0].x} ${startY} Z`, fill: 'rgba(232,140,140,0.18)', 'clip-path': 'url(#aboveStart)' }), dietDelay + DRAW_MS));
       const dp = svg('path', { d: dietPath, stroke: dietColor, 'stroke-width': 2.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', fill: 'none' });
       s.append(dp); drawLine(dp, dietDelay);
@@ -897,7 +932,7 @@
       body: [
         header(T.yoYo.title, a.triedBefore === 'many' ? T.yoYo.subtitleMany : null, 2),
         h('div', { class: 'card chart-card' }, yoYoChart('Com dieta restritiva o peso cai e volta acima do inicial três vezes, cada vez mais alto; com rotina cai aos poucos e se mantém'),
-          legend([{ label: T.yoYo.legendRoutine, color: C.pastelGreen, line: 'solid' }, { label: T.yoYo.legendDiet, color: 'rgba(255,255,255,0.55)', line: 'solid' }])),
+          legend([{ label: T.yoYo.legendRoutine, color: C.pastelGreen, line: 'solid' }, { label: T.yoYo.legendDiet, color: 'rgba(14,26,29,0.45)', line: 'solid' }])),
         h('p', { class: 'body gap18' }, T.yoYo.body),
         h('div', { class: 'banners' }, banner({ ic: 'document-text-outline', text: T.yoYo.source })),
       ],
@@ -946,7 +981,7 @@
   function Reviews() {
     paint({
       body: [
-        header(`${T.reviews.titleA} ${TF.formatThousands(T.peopleCount)} ${T.reviews.titleB}`, T.reviews.subtitle),
+        header(`${T.reviews.titleA} ${T.reviews.peopleLabel} ${T.reviews.titleB}`, T.reviews.subtitle),
         h('div', { class: 'reviews' }, T.reviewList.map((r) => h('div', { class: 'card' },
           h('div', { class: 'rev-head' }, h('img', { class: 'avatar', src: r.photo, alt: '' }), h('div', { class: 'rev-who' }, h('div', { class: 'rev-name' }, r.name), stars(13))),
           h('p', { class: 'rev-txt' }, `"${r.text}"`)))),
@@ -1105,12 +1140,13 @@
   const Equipment = () => singleChoice({ title: T.equipment.title, list: TF.EQUIPMENT_OPTIONS, field: 'equipment', iconGroup: 'equipment', descs: true });
   function Bodyweight() {
     const MOVE_ICONS = { squat: 'body-outline', push_up: 'barbell-outline', pull_up: 'barbell-outline', none: 'remove-circle-outline' };
+    const MOVE_GIFS = { squat: 'Agachamento livre (peso do corpo)', push_up: 'Flexão de braço', pull_up: 'Barra fixa' };
     const draw = () => paint({
       body: [
         header(T.bodyweight.title, T.bodyweight.subtitle),
         opts(T.bodyweight.moves.map((o) => optionCard({
           label: o.label, desc: o.desc, multi: true, selected: a.bodyweightMoves.includes(o.value), ic: o.value === 'none' ? MOVE_ICONS.none : undefined,
-          media: o.value !== 'none' ? bubble(MOVE_ICONS[o.value], 56) : undefined,
+          media: o.value !== 'none' ? (gifThumb(MOVE_GIFS[o.value], 56) || bubble(MOVE_ICONS[o.value], 56)) : undefined,
           onPress: () => { a.bodyweightMoves = TF.toggleExclusive(a.bodyweightMoves, o.value); draw(); },
         }))),
         a.bodyweightMoves.includes('none') && reactionCard('none', T.bodyweight.reaction, 'trending-up-outline'),
@@ -1192,7 +1228,7 @@
       const s = svg('svg', { viewBox: d.box, width: 200 * scale, height: 400 * scale, role: 'img', 'aria-label': side === 'front' ? T.pain.front : T.pain.back });
       d.parts.forEach((p) => {
         const hit = tappable.has(p.s);
-        const fill = hit ? (on.has(p.s) ? highlight : 'rgba(255,255,255,0.30)') : 'rgba(255,255,255,0.12)';
+        const fill = hit ? (on.has(p.s) ? highlight : 'rgba(14,26,29,0.22)') : 'rgba(14,26,29,0.10)';
         p.d.forEach((path) => {
           const el = svg('path', { d: path, fill });
           if (hit) { el.style.cursor = 'pointer'; el.addEventListener('click', () => { const c = owner(p.s); if (c) onToggle(c); }); }
@@ -1311,8 +1347,9 @@
     return h('div', { class: 'week-row', 'aria-hidden': 'true' }, DAY_SHORT.map((d, i) => h('div', { class: 'week-day' },
       h('div', { class: `week-dot${days.includes(i) ? ' on' : ''}` }, days.includes(i) && icon('barbell-outline', 13, C.bg)), h('span', null, d))));
   }
-  function exerciseRow(x) {
-    return h('div', { class: 'ex-row' }, bubble('barbell-outline', 52),
+  // withGif: so as linhas visiveis (as borradas ficam com o icone, para nao baixar GIF escondido).
+  function exerciseRow(x, withGif) {
+    return h('div', { class: 'ex-row' }, (withGif && gifThumb(x.name, 52)) || bubble('barbell-outline', 52),
       h('div', { class: 'ex-txt' }, h('div', { class: 'ex-name' }, x.name), h('div', { class: 'ex-meta' }, `${x.sets} ${T.trainingSummary.sets} · ${x.reps} ${T.trainingSummary.reps}`)));
   }
   function TrainingSummary() {
@@ -1336,9 +1373,9 @@
         h('div', { class: 'folder' },
           h('div', { class: 'folder-tab' }, icon('folder-open-outline', 15), `Treino ${preview.session.letter} · ${preview.session.label}`),
           h('div', { class: 'folder-body' },
-            preview.exercises.slice(0, 3).map(exerciseRow),
+            preview.exercises.slice(0, 3).map((x) => exerciseRow(x, true)),
             preview.exercises.length > 3 && h('div', { class: 'locked-wrap' },
-              h('div', { class: 'locked-inner', 'aria-hidden': 'true' }, preview.exercises.slice(3).map(exerciseRow)),
+              h('div', { class: 'locked-inner', 'aria-hidden': 'true' }, preview.exercises.slice(3).map((x) => exerciseRow(x, false))),
               h('div', { class: 'locked-over' }, icon('lock-closed-outline', 16), manual ? S.lockedManual : S.locked))),
           preview.week.filter((w) => w.letter !== preview.session.letter).map((w) => h('div', { class: 'closed-tab' }, icon('folder-outline', 15), `Treino ${w.letter} · ${w.label}`))),
         injuries.length > 0 && h('div', { class: 'gap18' }, iconItem('shield-checkmark-outline', `${S.protect} ${joinPt(injuries)}`)),
@@ -1596,12 +1633,12 @@
     paint({
       body: [
         header(R.title),
-        card('reveal', 0, [bubble('flame-outline', 44), h('div', { class: 'reveal-body' }, h('p', { class: 'reveal-lead' }, R.spend), n1, h('p', { class: 'reveal-small' }, R.basis))]),
+        card('reveal', 0, [emojiBubble('🔥', 44), h('div', { class: 'reveal-body' }, h('p', { class: 'reveal-lead' }, R.spend), n1, h('p', { class: 'reveal-small' }, R.basis))]),
         card('reveal gap12', CARD, [bubble('locate-outline', 44), h('div', { class: 'reveal-body' }, h('p', { class: 'reveal-lead white' }, heading[0], heading[1] && h('b', null, heading[1])), n2, h('p', { class: 'reveal-small' }, diffLine))]),
         card('macros gap12', CARD * 2, macros(e, CARD * 2 + 200)),
         card('reveal gap12', CARD * 3, [
           waterCup(t.waterMl / 4000, 112, CARD * 3 + 200),
-          h('div', { class: 'reveal-body' }, h('p', { class: 'reveal-lead' }, R.water), h('p', { class: 'reveal-num' }, `${TF.formatLiters(t.waterMl)} ${R.litersDay}`),
+          h('div', { class: 'reveal-body' }, h('p', { class: 'reveal-lead' }, h('span', { class: 'emo-i', 'aria-hidden': 'true' }, '💧'), R.water), h('p', { class: 'reveal-num' }, `${TF.formatLiters(t.waterMl)} ${R.litersDay}`),
             plan.cups > 1 && [h('p', { class: 'reveal-small' }, `${plan.cups} ${R.cups}`), h('p', { class: 'reveal-small' }, `${R.every[0]} ${TF.formatInterval(plan.intervalMin)}, ${R.every[1]} ${TF.formatClock(plan.firstMin)} ${R.every[2]} ${TF.formatClock(plan.lastMin)}`)]),
         ]),
         h('div', { class: 'gap8' }, textLink(R.how, openHow, { soft: true })),
@@ -1718,7 +1755,7 @@
         h('div', null, H.moments.map((m, i) => h('div', { class: 'day-row fade-up', style: { animationDelay: `${150 + i * 260}ms` } },
           h('div', { class: 'day-rail' }, h('div', { class: `day-dot${i === 0 ? ' first' : ''}` }), i < H.moments.length - 1 && h('div', { class: 'day-line' })),
           h('div', { class: `card day-card${i < H.moments.length - 1 ? ' mb' : ''}` },
-            h('div', { class: `media${m.image ? ' tall' : ''}${m.reminders ? ' small' : ''}` }, m.image ? h('img', { src: m.image, alt: '' }) : m.rise ? miniRise() : bubble(m.icon, m.reminders ? 44 : 56)),
+            h('div', { class: `media${m.image ? ' tall' : ''}${m.reminders ? ' small' : ''}` }, m.image ? h('img', { src: m.image, alt: '' }) : m.gif && TF.gifDe && TF.gifDe(m.gif) ? gifThumb(m.gif, 64) : m.rise ? miniRise() : bubble(m.icon, m.reminders ? 44 : 56)),
             h('div', { style: { flex: 1, minWidth: 0 } },
               h('div', { class: 'day-when' }, m.when), h('div', { class: 'feature' }, m.text),
               m.reminders && h('div', { class: 'rem-row' }, H.reminders.map(([ic, label]) => h('div', { class: 'rem-item' }, icon(ic, 18), h('span', null, label))))))))),
@@ -1763,7 +1800,7 @@
     let progress = 0, raf = 0, holding = false, done = false, stage = 0, lastT = 0;
     const ring = h('div', { class: 'hold-ring' });
     const hint = h('p', { class: 'hold-hint', 'aria-live': 'polite' }, M.hint);
-    const logo = h('img', { src: 'assets/logo-preto.png', alt: '', draggable: 'false' });
+    const logo = h('img', { src: 'assets/logo-escuro.png', alt: '', draggable: 'false' });
     const circle = h('div', { class: 'hold-circle', role: 'button', tabindex: '0', 'aria-label': 'Assumir compromisso. Toque e segure por 2 segundos e meio' }, logo);
     const render = () => {
       const s = progress <= 0.02 ? 0 : progress < 0.55 ? 1 : 2;
@@ -1824,8 +1861,8 @@
     const el = h('div', { class: 'ring', role: 'progressbar', 'aria-valuemin': 0, 'aria-valuemax': 100, 'aria-valuenow': Math.round(pct) },
       svg('svg', { width: RING, height: RING },
         svg('defs', null, svg('linearGradient', { id: 'build', x1: 0, y1: 0, x2: 1, y2: 1 }, svg('stop', { offset: 0, 'stop-color': C.tealPale ?? '#F5FCB8' }), svg('stop', { offset: 1, 'stop-color': C.teal }))),
-        svg('circle', { cx: RING / 2, cy: RING / 2, r, stroke: 'rgba(255,255,255,0.08)', 'stroke-width': STROKE, fill: 'none' }), fg),
-      h('img', { src: 'assets/logo-branco.png', alt: '' }), label);
+        svg('circle', { cx: RING / 2, cy: RING / 2, r, stroke: 'rgba(14,26,29,0.08)', 'stroke-width': STROKE, fill: 'none' }), fg),
+      h('img', { src: 'assets/logo-escuro.png', alt: '' }), label);
     el.set = (p) => { fg.setAttribute('stroke-dashoffset', c * (1 - p / 100)); label.textContent = `${Math.round(p)}%`; el.setAttribute('aria-valuenow', Math.round(p)); };
     return el;
   }
@@ -1906,12 +1943,12 @@
           ? [bubble('barbell-outline', 52), h('div', { class: 'sheet-card-body' }, h('p', { class: 'sc-title' }, S.yourTraining), h('p', { class: 'sc-sub' }, !serious && a.planSetupChoice === 'manual' ? S.manual : S.other))]
           : [bubble('barbell-outline', 52), h('div', { class: 'sheet-card-body' }, h('p', { class: 'sc-title' }, sessionTitle), h('p', { class: 'sc-sub' }, `${a.workoutDays ?? 3}${S.perWeek} · ${sessionMinutes} min`))]),
         up(300, 'card gap8 food-card', [
-          h('div', null, h('p', { class: 'card-label' }, S.food), h('p', { class: 'big-value' }, `${TF.formatKcal(e.kcal)} `, h('span', null, S.kcalDay))),
+          h('div', null, h('p', { class: 'card-label' }, S.food), h('p', { class: 'big-value' }, h('span', { class: 'emo-i', 'aria-hidden': 'true' }, '🔥'), `${TF.formatKcal(e.kcal)} `, h('span', null, S.kcalDay))),
           macros(e, 500),
           todayMenu,
         ]),
         up(450, 'pair gap8', [
-          h('div', { class: 'card pair-card' }, bubble('water-outline', 40), h('p', { class: 'pair-value' }, `${TF.formatLiters(t.waterMl)} L`), h('p', { class: 'pair-label' }, S.waterLabel)),
+          h('div', { class: 'card pair-card' }, emojiBubble('💧', 40), h('p', { class: 'pair-value' }, `${TF.formatLiters(t.waterMl)} L`), h('p', { class: 'pair-label' }, S.waterLabel)),
           h('div', { class: 'card pair-card' }, bubble('moon-outline', 40), h('p', { class: 'pair-value' }, `${sleepGoal} h`), h('p', { class: 'pair-label' }, `${S.sleepLabel[0]} ${bedtimeOf()}`)),
         ]),
         h('p', { class: 'section-title' }, S.benefits),
@@ -1935,11 +1972,104 @@
     });
   }
 
-  // ─── So na web: formulario depois do resultado ──────────────────────────────
+  // ─── Tela 49: jogo do preco (src/onboarding/stepViewsPlano.tsx, ValueStep) ──
+  // 3 apps separados entram um por um, o total sobe, e depois o palpite na regua (comeca vazia).
+  function Value() {
+    const V = T.value;
+    const monthlyOf = (y) => Math.round(y / 12); // monthlyOfYearly (src/onboarding/planValue.ts)
+    const total = V.apps.reduce((s, x) => s + monthlyOf(x.yearly), 0);
+    let guess = a.priceGuess ?? V.ruler.initial;
+    let moved = a.priceGuess != null;
+    const btn = primary(V.button, () => { if (moved) next({ priceGuess: guess }); }, !moved);
+    const totalNum = h('span', { class: 'apps-total-num' });
+    countUp(totalNum, total, (n) => `R$${Math.round(n)}`, 1100);
+    const game = h('div', { class: 'game' });
+    paint({
+      body: [
+        header(V.title),
+        h('div', { class: 'card apps-card' },
+          h('div', { class: 'apps-row' }, V.apps.map((x, i) => h('div', { class: 'app-col fade-up', style: { animationDelay: `${200 + i * 300}ms` } },
+            h('span', { class: 'app-tile', style: { background: x.color } }, icon(x.icon, 26, '#FFFFFF')),
+            h('span', { class: 'app-name' }, x.name),
+            h('span', { class: 'app-price' }, `R$${monthlyOf(x.yearly)}${V.perMonth}`)))),
+          h('p', { class: 'apps-total late', style: { animationDelay: '1000ms' } }, `${V.totalA} `, totalNum, ` ${V.totalB}`),
+          h('p', { class: 'apps-caption' }, V.caption)),
+        game,
+      ],
+      footer: [btn],
+    });
+    later(() => {
+      const unitOf = (v) => (v >= V.ruler.max ? `${V.maxSuffix} ${V.unit}` : V.unit);
+      const rl = ruler({
+        min: V.ruler.min, max: V.ruler.max, step: V.ruler.step, majorEvery: 4, value: guess, unit: V.unit, label: V.rulerLabel,
+        onChange: (v) => { guess = v; moved = true; btn.disabled = false; num.classList.remove('empty'); unitEl.textContent = unitOf(v); },
+      });
+      const num = rl.querySelector('.ruler-num');
+      const unitEl = rl.querySelector('.ruler-unit');
+      num.before(h('span', { class: 'ruler-unit pre' }, 'R$'));
+      if (!moved) { num.textContent = '?'; num.classList.add('empty'); } else unitEl.textContent = unitOf(guess);
+      game.append(h('div', { class: 'fade-up' },
+        h('div', { class: 'tribbo-head' }, h('img', { class: 'tribbo-tile', src: '/plano/assets/icones/icone-192.png', alt: '', width: 52, height: 52 }), h('p', { class: 'game-q' }, V.question)),
+        rl));
+    }, REDUCED ? 0 : V.stepMs);
+  }
+
+  // ─── Tela 49B, so na web: o preco revelado (no app ele aparece na paywall) ──
+  // Os valores vem de preco.js (TF.PRECO); os cards seguem src/utils/planDisplay.ts (planCardLines).
+  function PriceReveal() {
+    const R = T.priceReveal, P = TF.PRECO;
+    const brl = (n) => `R$ ${n.toFixed(2).replace('.', ',')}`;
+    const guess = a.priceGuess;
+    const plan = (title, sub, price, best, delay) => h('div', { class: `card plan-card fade-up${best ? ' best' : ''}`, style: { animationDelay: `${delay}ms` } },
+      best && h('span', { class: 'tag' }, R.best),
+      h('div', { class: 'plan-left' }, h('p', { class: 'plan-title' }, title), h('p', { class: 'plan-sub' }, sub)),
+      h('p', { class: 'plan-price' }, price));
+    paint({
+      body: [
+        guess != null && h('p', { class: 'guess-line' }, `${R.guess} R$ ${guess}${guess >= T.value.ruler.max ? ` ${T.value.maxSuffix}` : ''} ${T.value.unit}`),
+        header(`${R.titleA} ${brl(P.anualPorMes)} ${R.titleB}`, R.vsApps),
+        h('div', { class: 'plans' },
+          plan(R.annual, `${brl(P.anual)}${R.perYear}`, `${brl(P.anualPorMes)}${R.perMonth}`, true, 150),
+          plan(R.monthly, R.noCommitment, `${brl(P.mensal)}${R.perMonth}`, false, 300)),
+        caption(R.renewal, 'gap12 center-txt'),
+      ],
+      footer: [primary(R.button, () => next())],
+    });
+  }
+
+  // ─── So na web: cadastro depois do resultado ────────────────────────────────
   // So visual: os campos nao tem destino, nada e enviado nem guardado.
+  // Os aceites do app (tela 3) ficam aqui, obrigatorios: o botao so liga com os dois marcados.
   function LeadForm() {
     const L = T.leadForm;
     const field = (id, label, attrs) => h('div', null, h('label', { class: 'field-label', for: id }, label), h('input', { class: 'input form', id, ...attrs }));
+    const btn = h('button', { type: 'button', class: 'btn', disabled: true }, L.button);
+    const st = { terms: !!a.termsAcceptedAt, health: !!a.healthDataConsentAt };
+    const refresh = () => { btn.disabled = !(st.terms && st.health); };
+    const stop = (e) => e.stopPropagation();
+    const check = (key, kids) => {
+      const box = h('span', { class: 'cb-box' });
+      const row = h('div', {
+        class: 'cb lead-cb', role: 'checkbox', tabindex: '0',
+        onclick: (e) => { if (e.target.tagName !== 'A') toggle(); },
+        onkeydown: (e) => { if ((e.key === ' ' || e.key === 'Enter') && e.target.tagName !== 'A') { e.preventDefault(); toggle(); } },
+      }, box, h('div', { class: 'cb-txt' }, kids));
+      const draw = () => {
+        row.setAttribute('aria-checked', st[key] ? 'true' : 'false');
+        box.classList.toggle('on', st[key]);
+        box.replaceChildren(...(st[key] ? [icon('checkmark', 14, C.onAccent)] : []));
+      };
+      function toggle() {
+        st[key] = !st[key];
+        const now = new Date().toISOString();
+        if (key === 'terms') a.termsAcceptedAt = st.terms ? now : null; else a.healthDataConsentAt = st.health ? now : null;
+        draw(); refresh();
+      }
+      draw();
+      return row;
+    };
+    const [t1, t2, t3, t4] = L.terms;
+    refresh();
     paint({
       body: [
         header(L.title, L.subtitle),
@@ -1949,7 +2079,39 @@
           field('f-whats', L.whatsapp, { type: 'tel', inputmode: 'tel', autocomplete: 'tel' })),
         caption(L.privacy, 'gap16'),
       ],
-      footer: [h('button', { type: 'button', class: 'btn', disabled: true }, L.button), h('p', { class: 'soon' }, L.soon)],
+      footer: [
+        h('div', { class: 'lead-checks' },
+          check('terms', [`${t1} `, h('a', { href: T.links.terms, target: '_blank', rel: 'noopener noreferrer', onclick: stop }, t2), ` ${t3} `, h('a', { href: T.links.privacy, target: '_blank', rel: 'noopener noreferrer', onclick: stop }, t4), '.']),
+          check('health', L.health)),
+        h('p', { class: 'lead-aviso' }, L.wellbeing),
+        btn, h('p', { class: 'soon' }, L.soon),
+        h('a', { class: 'link-plain', href: SITE, onclick: leaveQuiz }, L.backToSite),
+      ],
+    });
+  }
+
+  // ─── So na web, enquanto TF.PAGAMENTO_ATIVO e falso: baixar o app ───────────
+  // Os dois botoes aparecem; o da loja do aparelho da pessoa vem primeiro e em destaque.
+  function Download() {
+    const D = T.download;
+    const ua = navigator.userAgent;
+    const ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+    const android = /Android/.test(ua);
+    const store = (kind) => {
+      const apple = kind === 'apple';
+      const mine = apple ? ios : android;
+      return h('a', { class: `store-card${mine ? ' mine' : ''}`, href: apple ? D.appStore : D.googlePlay, target: '_blank', rel: 'noopener' },
+        mine && h('span', { class: 'tag' }, D.yourPhone),
+        h('img', { src: apple ? '/plano/assets/app-store.svg' : '/plano/assets/google-play.webp', alt: apple ? D.appStoreAlt : D.googlePlayAlt, height: 52 }));
+    };
+    const order = android ? ['google', 'apple'] : ['apple', 'google'];
+    paint({
+      body: [
+        h('div', { class: 'download-top fade-up' }, h('img', { class: 'download-icon', src: '/plano/assets/icones/icone-192.png', alt: '', width: 88, height: 88 })),
+        header(D.title, D.subtitle),
+        h('div', { class: 'stores' }, order.map(store)),
+      ],
+      footer: [h('a', { class: 'link-plain', href: SITE, onclick: leaveQuiz }, T.leadForm.backToSite)],
     });
   }
 
@@ -1960,7 +2122,8 @@
     did_you_know_training: DidYouKnowTraining, cardio: Cardio, pain: Pain, health: Health, focus: Focus, plan_setup: PlanSetup, training_summary: TrainingSummary,
     meals: MealCount, diet: DietType, allergies: Allergies, dislikes: Dislikes, meal_places: MealLocations, cooking: CookingTime, did_you_know_food: DidYouKnowMuscle, kitchen: Kitchen,
     household: Household, budget: Budget, nutritionist: Nutritionist, supplements: Supplements, energy: Energy, energy_reveal: EnergyReveal, food_summary: FoodSummary,
-    how_it_works: HowItWorks, obstacle: Obstacle, notifications: Notifications, commitment: Commitment, building: Building, plan_summary: PlanSummary, lead_form: LeadForm,
+    how_it_works: HowItWorks, obstacle: Obstacle, notifications: Notifications, commitment: Commitment, building: Building, plan_summary: PlanSummary,
+    value: Value, price_reveal: PriceReveal, lead_form: LeadForm, download: Download,
   };
 
   show('welcome', false);

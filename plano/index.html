@@ -9,11 +9,15 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="googlebot" content="noindex, nofollow">
 <meta name="theme-color" content="#F8F5F4">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; form-action 'none'; base-uri 'none'">
-<link rel="icon" href="assets/favicon.png">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://jllkcglzajmzqywyuswq.supabase.co; font-src 'self'; media-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'">
+<link rel="icon" href="/plano/assets/icones/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/plano/assets/icones/favicon-48.png" sizes="48x48" type="image/png">
+<link rel="apple-touch-icon" href="/plano/assets/icones/apple-touch-icon.png">
+<link rel="manifest" href="/plano/assets/icones/site.webmanifest">
 <link rel="preload" href="/quiz/assets/fontes/inter-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/quiz/assets/fontes/inter-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/plano/plano.css">
+<script src="/quiz/exercicios.js" defer></script>
 <script src="plano.js" defer></script>
 </head>
 <body>
@@ -26,6 +30,7 @@
       <nav aria-label="Seções da página">
         <a href="#para-quem">Para quem é</a>
         <a href="#como-funciona">Como funciona</a>
+        <a href="#seu-plano">Seu plano</a>
         <a href="#recursos">Recursos</a>
         <a href="#depoimentos">Depoimentos</a>
         <a href="#perguntas">Dúvidas</a>
@@ -41,6 +46,7 @@
     <div class="menu-lista" id="menu-lista" hidden>
       <a class="item" href="#para-quem">Para quem é</a>
       <a class="item" href="#como-funciona">Como funciona</a>
+      <a class="item" href="#seu-plano">Seu plano</a>
       <a class="item" href="#recursos">Recursos</a>
       <a class="item" href="#depoimentos">Depoimentos</a>
       <a class="item" href="#perguntas">Dúvidas</a>
@@ -69,7 +75,7 @@
       <p class="prova"><span><b>Mais de 5 mil pessoas</b><span class="ponto">·</span></span><span><b>4,8</b> na App Store<span class="ponto">·</span></span><span><b>4,9</b> no Google Play</span></p>
     </div>
     <div class="hero-cel">
-      <img src="assets/cel-treino.webp" alt="Tela de treino do app Tribbo Fit com os exercícios do Treino B" width="560" height="1129" fetchpriority="high" decoding="async">
+      <div class="fone"><div class="moldura"><div class="tela" data-video="assets/midia/topo"><img src="assets/midia/topo-capa.webp" alt="Tour pelo app Tribbo Fit: refeição registrada com IA, treino montado na hora e treino guiado" width="540" height="1170" fetchpriority="high"></div></div></div>
     </div>
     <!-- Video vertical: pronto e escondido. Para ligar: coloque o arquivo em assets/, preencha data-video (ex.: assets/video.mp4) e tire o hidden. O video so baixa quando a pessoa toca. -->
     <button type="button" class="video" id="video" data-video="" aria-label="Assistir ao vídeo" hidden></button>
@@ -116,113 +122,161 @@
       <div class="card passo revela"><h3>Receba seu plano</h3><p>Treino e alimentação montados com as suas respostas.</p></div>
       <div class="card passo revela"><h3>Acompanhe no app</h3><p>Treino do dia, cardápio e um coach para tirar dúvidas. Todo dia.</p></div>
     </div>
+  </div>
+</section>
+
+<!-- 6. Seu plano: previa pronta, sem formulario. Os valores dos dois objetivos ficam em plano.js (PLANOS); o HTML ja vem com Emagrecer. -->
+<section class="s-branco" id="seu-plano">
+  <div class="wrap">
+    <div class="cab">
+      <span class="pilula">Seu plano</span>
+      <h2>Um plano feito só para você, do primeiro dia até o seu objetivo</h2>
+      <p class="sub">Diagnóstico, metas do dia, treino e cardápio, com o passo a passo para chegar lá. Veja uma prévia.</p>
+    </div>
+    <div class="plano-topo">
+      <div class="seletor" role="group" aria-label="Objetivo do exemplo">
+        <button type="button" data-obj="emagrecer" aria-pressed="true">Emagrecer</button>
+        <button type="button" data-obj="massa" aria-pressed="false">Ganhar massa</button>
+      </div>
+      <span class="selo">Prévia do plano</span>
+    </div>
+    <div class="plano-cards" id="plano-cards">
+      <article class="pcard">
+        <div class="pcab"><span class="pico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3v18M4.5 3v5a2.5 2.5 0 0 0 5 0V3M17.5 21V3c-2 0-3.5 2.5-3.5 6s1.5 4 3.5 4"/></svg></span><h3>Alimentação</h3></div>
+        <p class="rot">Metas do dia</p>
+        <div class="metas">
+          <div class="meta"><span class="emo" aria-hidden="true">🔥</span><b><span data-n="kcal">1.850</span> kcal</b><small>Calorias</small></div>
+          <div class="meta"><span class="emo" aria-hidden="true">💧</span><b><span data-n="agua">2,5</span> L</b><small>Água</small></div>
+        </div>
+        <div class="macros">
+          <div class="macro"><div class="mlinha"><span>Proteína</span><b><span data-n="prot">130</span> g</b></div><div class="trilha"><i class="m1" data-w="prot" style="width:28%"></i></div></div>
+          <div class="macro"><div class="mlinha"><span>Carboidrato</span><b><span data-n="carb">190</span> g</b></div><div class="trilha"><i class="m2" data-w="carb" style="width:41%"></i></div></div>
+          <div class="macro"><div class="mlinha"><span>Gordura</span><b><span data-n="gord">60</span> g</b></div><div class="trilha"><i class="m3" data-w="gord" style="width:29%"></i></div></div>
+        </div>
+        <p class="refeicoes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/></svg>5 refeições por dia</p>
+        <p class="rot">Exemplo da semana · prato principal</p>
+        <ul class="semana" data-lista="cardapio">
+          <li><b>Seg</b><span>Arroz, feijão e frango grelhado</span></li>
+          <li><b>Ter</b><span>Omelete com legumes e pão integral</span></li>
+          <li><b>Qua</b><span>Carne moída com purê e salada</span></li>
+          <li><b>Qui</b><span>Peixe com batata-doce</span></li>
+          <li><b>Sex</b><span>Macarrão com frango e salada</span></li>
+        </ul>
+      </article>
+      <article class="pcard">
+        <div class="pcab"><span class="pico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9.5v5M20.5 9.5v5M6.5 12h11"/></svg></span><h3>Treino</h3></div>
+        <p class="rot">Dias de treino</p>
+        <div class="chips" data-lista="dias" aria-hidden="true"><span class="on">Seg</span><span>Ter</span><span class="on">Qua</span><span>Qui</span><span class="on">Sex</span><span>Sáb</span><span>Dom</span></div>
+        <ul class="semana" data-lista="treino">
+          <li><b>Seg</b><span>Peito, ombro e tríceps</span></li>
+          <li><b>Qua</b><span>Costas e bíceps</span></li>
+          <li><b>Sex</b><span>Pernas e glúteos</span></li>
+        </ul>
+        <p class="rot" data-t="exemplo">Exemplo de treino · Quarta, costas e bíceps</p>
+        <ul class="exercicios" data-lista="exercicios">
+          <li><span>Puxada Frontal na Máquina</span><b>3 × 12</b></li>
+          <li><span>Remada Baixa Sentado no Cabo</span><b>3 × 12</b></li>
+          <li><span>Remada com Halteres</span><b>3 × 10</b></li>
+          <li><span>Rosca Direta com Barra</span><b>3 × 12</b></li>
+          <li><span>Rosca Martelo com Halteres</span><b>3 × 12</b></li>
+        </ul>
+        <div class="treino-info">
+          <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></svg><b><span data-n="min">50</span> min</b><small>por treino</small></div>
+          <div><span class="emo" aria-hidden="true">🔥</span><b>cerca de <span data-n="gasto">300</span> kcal</b><small>gasto estimado por treino</small></div>
+        </div>
+      </article>
+    </div>
+    <div class="completo">
+      <p class="rot">Seu plano completo também traz</p>
+      <ul class="trancados">
+        <li><span class="cad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></span><b>Diagnóstico do seu ponto de partida</b><span class="borrao" aria-hidden="true"><i></i><i></i><i></i></span></li>
+        <li><span class="cad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></span><b>Estimativa de quando você chega no objetivo</b><span class="borrao" aria-hidden="true"><i></i><i></i><i></i></span></li>
+        <li><span class="cad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></span><b>Cardápio completo, com todas as refeições</b><span class="borrao" aria-hidden="true"><i></i><i></i><i></i></span></li>
+        <li><span class="cad"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg></span><b>Acompanhamento e ajustes semanais</b><span class="borrao" aria-hidden="true"><i></i><i></i><i></i></span></li>
+      </ul>
+    </div>
     <div class="cta"><a class="btn" href="/quiz/">Criar meu plano grátis <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a><span class="cancele">Leva poucos minutos · grátis para começar</span></div>
   </div>
 </section>
 
-<!-- 6. Recursos -->
-<section class="s-branco" id="recursos">
+<!-- 7. Recursos, em ordem de importancia. Videos em assets/midia (capa .webp + .webm + .mp4). -->
+<section class="s-creme" id="recursos">
   <div class="wrap">
     <div class="cab">
       <span class="pilula">Recursos</span>
       <h2>Tudo o que você precisa para não desistir no meio do caminho</h2>
-      <p class="sub">Treino, alimentação e acompanhamento no mesmo app. Menos força de vontade, mais direção.</p>
+      <p class="sub">Do plano ao acompanhamento diário, tudo no mesmo app.</p>
     </div>
 
     <div class="recursos">
 
       <div class="recurso revela">
         <div class="txt">
-          <span class="emo" aria-hidden="true">📸</span>
-          <h3>Foto da refeição: tirou, registrou</h3>
-          <p>Tire uma foto do prato. O app estima as calorias e os nutrientes. Pronto, está registrado.</p>
-          <ul class="checks">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Calorias e proteína estimadas pela foto</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Compara com a meta do seu plano</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Registro em segundos</li>
+          <h3>Saiba exatamente o que fazer</h3>
+          <p>Você recebe um plano de treino e um plano alimentar feitos para o seu objetivo, com uma estimativa de quando pode chegar lá.</p>
+          <ul class="itens">
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c1 3.5 5 5.5 5 10a5 5 0 0 1-10 0c0-2.5 1.5-4 2.5-5 .3 1.6 1.2 2.6 2.5 3 0-3-1-5.5 0-8z"/></svg></span>Quanto você gasta e quanto precisa comer</li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/></svg></span>Proteína, carboidrato e gordura do dia</li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5s6 6.4 6 10.5a6 6 0 0 1-12 0c0-4.1 6-10.5 6-10.5z"/></svg></span>Meta de água</li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span>Treino e cardápio da semana</li>
           </ul>
         </div>
-        <div class="midia"><img class="cel" src="assets/cel-foto.webp" alt="Coach do app analisando a foto de um prato de almoço" width="560" height="1215" loading="lazy" decoding="async"></div>
+        <div class="midia"><div class="fone"><div class="moldura"><div class="tela" data-video="assets/midia/planos"><img src="assets/midia/planos-capa.webp" alt="Cardápio da semana, sugestão de refeição e plano de treino com as fichas A, B, C e D no app" width="540" height="1170" loading="lazy" decoding="async"></div></div></div></div>
       </div>
 
       <div class="recurso revela">
         <div class="txt">
-          <span class="emo" aria-hidden="true">📈</span>
-          <h3>Evolução de carga: o app diz quando subir o peso</h3>
-          <p>O app guarda a carga de cada série. Ele avisa quando é hora de subir o peso. E quando é melhor manter.</p>
-          <ul class="checks">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Carga de cada série salva</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Sugestão de quando aumentar</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Sem ficar parado no mesmo peso</li>
+          <h3>Acompanhe sua evolução</h3>
+          <p>Veja se está funcionando, semana após semana.</p>
+          <ul class="itens">
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17l6-6 4 4 6-7M14 8h6v6"/></svg></span>Aviso de quando e quanto subir a carga</li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20v-8M12 20V5M19 20v-5M3 20h18"/></svg></span>Gráficos de carga e de peso</li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9.5 13h6M9.5 17h6"/></svg></span>Resumos semanais e mensais do coach</li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg></span>Score do dia</li>
           </ul>
         </div>
-        <div class="midia"><div class="recorte"><img src="assets/print-carga.webp" alt="Exercício no app com a sugestão Suba para 22 kg" width="560" height="511" loading="lazy" decoding="async"></div></div>
+        <div class="midia"><div class="fone"><div class="moldura"><div class="tela" data-video="assets/midia/evolucao"><img src="assets/midia/evolucao-capa.webp" alt="Aviso de subir a carga no treino e tela de evolução com Score, gráficos e resumo do período" width="540" height="1170" loading="lazy" decoding="async"></div></div></div></div>
       </div>
 
       <div class="recurso revela">
         <div class="txt">
-          <span class="emo" aria-hidden="true">🎙️</span>
-          <h3>Áudio: fale o que comeu e a IA registra</h3>
-          <p>Sem tempo para digitar? Aperte o microfone e conte o que comeu. A IA registra para você.</p>
-          <ul class="checks">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Fale do seu jeito</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>A IA separa os alimentos</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Bom para os dias corridos</li>
+          <h3>Registre suas refeições em segundos, com IA</h3>
+          <p>Do jeito mais fácil para você. A IA calcula calorias e nutrientes.</p>
+          <ul class="itens">
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5h3.5l2-3h6l2 3h3.5V19h-17z"/><circle cx="12" cy="13.2" r="3.3"/></svg></span>Foto do prato</li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5v14M7.5 5v14M11 5v14M14 5v14M17 5v14M20 5v14"/></svg></span>Código de barras</li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 10.5a6.5 6.5 0 0 0 13 0M12 17v4.5M8.5 21.5h7"/></svg></span>Áudio</li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 6.5V5h14v1.5M12 5v14M9 19h6"/></svg></span>Texto</li>
           </ul>
         </div>
-        <!-- Sem print desta funcao por enquanto: ilustracao simples, marcada como exemplo. Trocar pelo print quando existir. -->
-        <div class="midia"><div class="audio" role="img" aria-label="Exemplo ilustrativo de registro por áudio">
-          <div class="mic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5M8 22h8"/></svg></div>
-          <div class="onda" aria-hidden="true"><i style="height:8px"></i><i style="height:16px"></i><i style="height:24px"></i><i style="height:12px"></i><i style="height:20px"></i><i style="height:26px"></i><i style="height:14px"></i><i style="height:22px"></i><i style="height:10px"></i><i style="height:18px"></i><i style="height:8px"></i></div>
-          <p class="fala">"Almocei arroz, feijão, um filé de frango e salada."</p>
-          <p class="resp">Pronto, registrei no seu almoço.</p>
-          <small>Exemplo ilustrativo</small>
-        </div></div>
+        <div class="midia"><div class="fone"><div class="moldura"><div class="tela" data-video="assets/midia/registro"><img src="assets/midia/registro-capa.webp" alt="Refeição registrada por texto e por foto, com a IA calculando calorias e nutrientes" width="540" height="1170" loading="lazy" decoding="async"></div></div></div></div>
       </div>
 
       <div class="recurso revela">
         <div class="txt">
-          <span class="emo" aria-hidden="true">🏋️</span>
-          <h3>Plano de treino com vídeo de cada exercício</h3>
-          <p>Séries, repetições e descanso para o seu nível. Na academia, em casa ou só com o peso do corpo. Cada exercício tem vídeo.</p>
-          <div class="gifs">
-            <figure><img data-src="assets/ex-1461.webp" alt="Animação do agachamento com barra" width="240" height="240" decoding="async"><figcaption>Agachamento com barra</figcaption></figure>
-            <figure><img data-src="assets/ex-0410.webp" alt="Animação do agachamento búlgaro com halteres" width="240" height="240" decoding="async"><figcaption>Agachamento búlgaro</figcaption></figure>
-            <figure><img data-src="assets/ex-0113.webp" alt="Animação da rosca direta com barra" width="240" height="240" decoding="async"><figcaption>Rosca direta</figcaption></figure>
-          </div>
+          <h3>Treino guiado, exercício por exercício</h3>
+          <p>Mais de 1.300 exercícios com vídeo, para academia, casa ou peso do corpo.</p>
+          <ul class="itens">
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9v6l5-3z"/></svg></span>Vídeo de cada movimento</li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></svg></span>Como fazer e como se preparar</li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></svg></span>Séries, repetições e descanso</li>
+          </ul>
         </div>
-        <div class="midia"><img class="cel" src="assets/cel-exercicio.webp" alt="Treino em andamento no app, com cronômetro, vídeo do exercício e séries" width="560" height="1129" loading="lazy" decoding="async"></div>
+        <div class="midia"><div class="fone"><div class="moldura"><div class="tela" data-video="assets/midia/treino"><img src="assets/midia/treino-capa.webp" alt="Treino guiado com vídeo de cada exercício e a explicação de como fazer" width="540" height="1170" loading="lazy" decoding="async"></div></div></div></div>
       </div>
 
       <div class="recurso revela">
         <div class="txt">
-          <span class="emo" aria-hidden="true">🥗</span>
-          <h3>Plano alimentar com cardápio da semana</h3>
-          <p>Suas metas de calorias, proteína e água. Divididas por refeição. E um cardápio para cada dia da semana.</p>
-          <ul class="checks">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Metas do dia calculadas para você</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Divisão por refeição</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Comida que você encontra no mercado</li>
+          <h3>Um coach com IA que acompanha você</h3>
+          <p>Toda semana ele analisa os seus resultados e te manda um resumo do que melhorar. E quando bater uma dúvida, é só perguntar.</p>
+          <ul class="itens">
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9.5 13h6M9.5 17h6"/></svg></span>Análise semanal dos seus resultados</li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12z"/></svg></span>Tire dúvidas sobre o seu plano</li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 11h14a7 7 0 0 1-14 0zM3.5 11h17M9 7.5c0-1.5 1-2 1-3.5M13 7.5c0-1.5 1-2 1-3.5"/></svg></span>Receitas que cabem na sua dieta</li>
+            <li><span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3v18M4.5 3v5a2.5 2.5 0 0 0 5 0V3M17.5 21V3c-2 0-3.5 2.5-3.5 6s1.5 4 3.5 4"/></svg></span>Ideias de refeição para bater suas metas</li>
           </ul>
         </div>
-        <div class="midia"><img class="cel" src="assets/cel-plano.webp" alt="Tela do plano alimentar com calorias, macros e divisão por refeição" width="560" height="1129" loading="lazy" decoding="async"></div>
-      </div>
-
-      <div class="recurso revela">
-        <div class="txt">
-          <span class="emo" aria-hidden="true">🤖</span>
-          <h3>Coach com IA e acompanhamento do peso</h3>
-          <p>Tire dúvidas com o coach a qualquer hora. Veja no Score como foi o seu dia. E acompanhe o seu peso semana a semana.</p>
-          <ul class="checks">
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Respostas na hora, sobre o seu plano</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Score do dia e da semana</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Peso registrado semana a semana</li>
-          </ul>
-        </div>
-        <div class="midia par">
-          <img class="cel" src="assets/cel-coach.webp" alt="Tribbo Coach com exemplos de perguntas" width="560" height="1129" loading="lazy" decoding="async">
-          <img class="cel" src="assets/cel-score.webp" alt="Evolução histórica do Score com o equilíbrio dos pilares" width="560" height="1117" loading="lazy" decoding="async">
-        </div>
+        <div class="midia"><div class="fone"><div class="moldura"><div class="tela" data-video="assets/midia/coach"><img src="assets/midia/coach-capa.webp" alt="Conversa com o Tribbo Coach pedindo uma receita de café da manhã que cabe na dieta" width="540" height="1170" loading="lazy" decoding="async"></div></div></div></div>
       </div>
 
     </div>
@@ -230,8 +284,8 @@
   </div>
 </section>
 
-<!-- 7. Depoimentos: as mesmas pessoas, fotos e frases da tela de avaliacoes do onboarding do app e do quiz -->
-<section class="s-creme" id="depoimentos">
+<!-- 8. Depoimentos: as mesmas pessoas, fotos e frases da tela de avaliacoes do onboarding do app e do quiz -->
+<section class="s-branco" id="depoimentos">
   <div class="wrap">
     <div class="cab">
       <span class="pilula">Depoimentos</span>
@@ -251,22 +305,30 @@
   </div>
 </section>
 
-<!-- 7. Comunidade -->
+<!-- 9. Comunidade -->
 <section class="s-escuro" id="comunidade">
   <div class="wrap">
     <div class="comunidade">
       <span class="pilula">Comunidade</span>
-      <h2>Você não precisa fazer isso sozinho</h2>
-      <p class="sub">Entre na comunidade do Tribbo Fit no WhatsApp. Receba as novidades em primeira mão, ajude a decidir os próximos passos do app e participe de desafios, eventos e brindes.</p>
+      <h2>Faça parte da comunidade Tribbo Fit</h2>
+      <p class="sub">Quem está no grupo recebe tudo primeiro.</p>
+      <ul class="beneficios">
+        <li class="benef revela destaque"><span class="bico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="8" width="17" height="4" rx="1"/><path d="M5 12v8.5h14V12M12 8v12.5M12 8c-1.5-3.5-5.5-4-5.5-1.5S10 8 12 8zM12 8c1.5-3.5 5.5-4 5.5-1.5S14 8 12 8z"/></svg></span><h3>Cupons e brindes</h3><p>Descontos e presentes só para quem está no grupo.</p></li>
+        <li class="benef revela"><span class="bico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 10v4h3l8 4.5v-13l-8 4.5z"/><path d="M6.5 14l1.5 5.5h2.5L9.5 15M18 9.5a3.5 3.5 0 0 1 0 5"/></svg></span><h3>Novidades em primeira mão</h3><p>Veja as funções novas antes de todo mundo.</p></li>
+        <li class="benef revela"><span class="bico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13h16v7.5H4zM8 13V4h8v9"/><path d="M10 8.5l1.5 1.5L14 7"/></svg></span><h3>Sua opinião decide</h3><p>Vote no que o app vai ganhar a seguir.</p></li>
+        <li class="benef revela"><span class="bico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v6a4 4 0 0 1-8 0zM8 6H4.5a3 3 0 0 0 3.5 4M16 6h3.5a3 3 0 0 1-3.5 4M12 14v3.5M8.5 20.5h7M9.5 20.5l.5-3h4l.5 3"/></svg></span><h3>Eventos e desafios</h3><p>Desafios de posts e encontros da comunidade.</p></li>
+        <li class="benef revela"><span class="bico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg></span><h3>Fale com o fundador</h3><p>Mande ideias direto para quem cria o app.</p></li>
+      </ul>
       <!-- WhatsApp: troque NUMERO pelo numero com DDI e DDD, so digitos (ex.: 5511999999999). -->
-      <a class="btn-whats" href="https://wa.me/NUMERO?text=Oi%2C%20quero%20entrar%20na%20comunidade%20do%20Tribbo%20Fit" id="whats" rel="noopener" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.2A8.5 8.5 0 1 1 21 12z"/></svg>Entrar na comunidade</a>
+      <div><a class="btn-whats" href="https://wa.me/NUMERO?text=Oi%2C%20quero%20entrar%20na%20comunidade%20do%20Tribbo%20Fit" id="whats" rel="noopener" target="_blank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.2A8.5 8.5 0 1 1 21 12z"/></svg>Entrar na comunidade</a></div>
       <div><span class="marcador">número do WhatsApp a preencher</span></div>
+      <p class="coach-nota">Dúvidas sobre o seu treino ou a sua alimentação? O Coach com IA do app responde na hora.</p>
       <a class="link-claro" href="/plano/comunidade/">Conhecer a comunidade</a>
     </div>
   </div>
 </section>
 
-<!-- 9. Perguntas frequentes -->
+<!-- 10. Perguntas frequentes -->
 <section class="s-creme" id="perguntas">
   <div class="wrap">
     <div class="cab">
@@ -275,16 +337,21 @@
       <p class="sub">O que as pessoas perguntam antes de começar.</p>
     </div>
     <div class="faq">
+      <details><summary>Como o plano é montado?</summary><p>Pelo quiz: objetivo, corpo, rotina, onde você treina e o que gosta de comer. Com isso, o app monta o seu treino e o seu plano alimentar.</p></details>
+      <details><summary>Serve para iniciante?</summary><p>Sim. O plano se adapta ao seu nível, do primeiro treino em diante.</p></details>
+      <details><summary>Preciso de academia?</summary><p>Não. Tem plano para academia, para casa e só com o peso do corpo.</p></details>
+      <details><summary>Tenho lesão ou restrição. E agora?</summary><p>Você informa no quiz e o plano evita os exercícios que forçam a região. Se tiver alguma condição de saúde, converse antes com um profissional.</p></details>
+      <details><summary>Como registro as refeições?</summary><p>Por foto, código de barras, áudio ou texto.</p></details>
       <details><summary>Quanto custa?</summary><p>Montar o seu plano no quiz é grátis. Para usar o plano completo no app, você faz uma assinatura. O preço aparece no fim do quiz, antes de você decidir qualquer coisa. E você cancela quando quiser, direto na App Store ou no Google Play.</p></details>
       <details><summary>Posso cancelar quando quiser?</summary><p>Pode. A assinatura é feita pela App Store ou pelo Google Play, e você cancela quando quiser nas assinaturas da sua loja, sem precisar falar com ninguém.</p></details>
-      <details><summary>Para quem é o Tribbo Fit?</summary><p>Para quem quer perder peso, ganhar massa ou começar a se cuidar com um plano de verdade. Serve para quem nunca treinou e para quem já treina. É para maiores de 18 anos.</p></details>
-      <details><summary>Preciso de academia?</summary><p>Não. O plano é montado para onde você treina: academia, em casa com poucos equipamentos ou só com o peso do corpo.</p></details>
-      <details><summary>É um app médico?</summary><p>Não. O Tribbo Fit é um app de bem-estar. Ele não faz diagnóstico e não substitui médico, nutricionista ou educador físico. Se você tem alguma condição de saúde, está grávida ou amamentando, converse com um profissional antes de mudar o treino ou a alimentação.</p></details>
+      <details><summary>Funciona no iPhone e no Android?</summary><p>Sim, nos dois.</p></details>
+      <details><summary>É um app médico?</summary><p>Não. É um app de bem-estar e não substitui médico, nutricionista ou educador físico.</p></details>
+      <details><summary>Meus dados estão seguros?</summary><p>Tratamos seus dados conforme a LGPD. Veja os detalhes na <a href="/privacidade/">Política de Privacidade</a>.</p></details>
     </div>
   </div>
 </section>
 
-<!-- 10. Chamada final: card violeta -->
+<!-- 11. Chamada final: card violeta -->
 <section class="s-branco final" id="final">
   <div class="wrap">
     <div class="card-final">
@@ -309,15 +376,14 @@
         <p>Plano de treino, plano alimentar e acompanhamento diário no mesmo app.</p>
       </div>
       <div class="colunas">
-        <div><b>Página</b><a href="#para-quem">Para quem é</a><a href="#como-funciona">Como funciona</a><a href="#recursos">Recursos</a><a href="#depoimentos">Depoimentos</a><a href="#perguntas">Dúvidas</a><a href="/plano/comunidade/">Comunidade</a></div>
+        <div><b>Página</b><a href="#para-quem">Para quem é</a><a href="#como-funciona">Como funciona</a><a href="#seu-plano">Seu plano</a><a href="#recursos">Recursos</a><a href="#depoimentos">Depoimentos</a><a href="#perguntas">Dúvidas</a><a href="/plano/comunidade/">Comunidade</a></div>
         <div><b>Legal</b><a href="/termos/">Termos de uso</a><a href="/privacidade/">Privacidade</a></div>
         <div><b>Contato</b><a href="mailto:atendimento.app.kora@gmail.com">Atendimento</a><a href="https://www.instagram.com/tribbofit/" rel="noopener" target="_blank">Instagram</a><a href="https://www.tiktok.com/@tribbofit" rel="noopener" target="_blank">TikTok</a><a href="https://apps.apple.com/br/app/id6769632514" rel="noopener" target="_blank">App Store</a><a href="https://play.google.com/store/apps/details?id=com.usekoraapp.health" rel="noopener" target="_blank">Google Play</a></div>
       </div>
     </div>
     <div class="base">
       <p>O Tribbo Fit é um app de bem-estar e não substitui orientação de médico, nutricionista ou educador físico.</p>
-      <!-- Razao social e CNPJ: preencher quando o CNPJ sair. -->
-      <p class="direitos"><span>&copy; 2026 Tribbo Fit. Todos os direitos reservados.</span><span><span class="marcador2">razão social a preencher</span></span><span>CNPJ <span class="marcador2">00.000.000/0000-00</span></span><span><a href="mailto:atendimento.app.kora@gmail.com">atendimento.app.kora@gmail.com</a></span></p>
+      <p class="direitos"><span>&copy; 2026 Tribbo Fit.</span> <span>Todos os direitos reservados.</span> <span>KORA SOLUCOES EM TECNOLOGIA LTDA&nbsp;·</span> <span>CNPJ 69.107.211/0001-24&nbsp;·</span> <a href="mailto:atendimento.app.kora@gmail.com">atendimento.app.kora@gmail.com</a></p>
     </div>
   </div>
 </footer>
