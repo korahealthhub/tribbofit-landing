@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tribbo Fit: seu plano de treino e alimentação</title>
 <meta name="description" content="Responda o quiz e receba seu plano de treino e seu plano alimentar, com acompanhamento no app Tribbo Fit.">
-<!-- Pagina de anuncios. Fora do Google ate liberar: noindex, sem link no site e fora do sitemap. Sem pixel e sem analytics. -->
+<!-- Pagina de anuncios. Fora do Google ate liberar: noindex, sem link no site e fora do sitemap. So o pixel da Meta, via /consent.js e depois do aceite de cookies. Sem GA4 e sem TikTok. -->
 <meta name="robots" content="noindex, nofollow">
 <meta name="googlebot" content="noindex, nofollow">
 <meta name="theme-color" content="#F8F5F4">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://jllkcglzajmzqywyuswq.supabase.co; font-src 'self'; media-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://connect.facebook.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://jllkcglzajmzqywyuswq.supabase.co https://www.facebook.com; font-src 'self'; media-src 'self'; connect-src https://www.facebook.com https://connect.facebook.net; manifest-src 'self'; form-action 'none'; base-uri 'none'">
 <link rel="icon" href="/plano/assets/icones/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/plano/assets/icones/favicon-48.png" sizes="48x48" type="image/png">
 <link rel="apple-touch-icon" href="/plano/assets/icones/apple-touch-icon.png">
@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="/plano/plano.css">
 <script src="/quiz/exercicios.js" defer></script>
 <script src="plano.js" defer></script>
+<script src="/consent.js" data-trackers="meta" defer></script>
 </head>
 <body>
 

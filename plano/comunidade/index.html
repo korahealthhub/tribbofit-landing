@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Tribbo Fit: comunidade</title>
 <meta name="description" content="Comunidade do Tribbo Fit no WhatsApp: cupons e brindes exclusivos, novidades em primeira mão, voz nas decisões do app, eventos e desafios.">
-<!-- Pagina da comunidade, ligada so pela /plano/. Fora do Google ate liberar: noindex, sem link no site e fora do sitemap. Sem pixel e sem analytics. -->
+<!-- Pagina da comunidade, ligada so pela /plano/. Fora do Google ate liberar: noindex, sem link no site e fora do sitemap. So o pixel da Meta, via /consent.js e depois do aceite de cookies. Sem GA4 e sem TikTok. -->
 <meta name="robots" content="noindex, nofollow">
 <meta name="googlebot" content="noindex, nofollow">
 <meta name="theme-color" content="#07161B">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' https://connect.facebook.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.facebook.com; font-src 'self'; media-src 'self'; connect-src https://www.facebook.com https://connect.facebook.net; manifest-src 'self'; form-action 'none'; base-uri 'none'">
 <link rel="icon" href="/plano/assets/icones/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/plano/assets/icones/favicon-48.png" sizes="48x48" type="image/png">
 <link rel="apple-touch-icon" href="/plano/assets/icones/apple-touch-icon.png">
@@ -18,6 +18,7 @@
 <link rel="preload" href="/quiz/assets/fontes/inter-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/plano/plano.css">
 <script src="/plano/plano.js" defer></script>
+<script src="/consent.js" data-trackers="meta" defer></script>
 </head>
 <body class="sem-barra pag-escura">
 

@@ -6,9 +6,10 @@
  * As páginas só definem as filas (gtag() / ttq.track()) sem carregar nada:
  * os eventos ficam guardados no navegador e só são enviados se houver aceite.
  *
- * Eventos enviados à Meta:
+ * Eventos enviados à Meta (pixel 1434300995485582, conta nova):
  *   - PageView em cada página
  *   - Lead { store: 'ios' | 'android' } no clique em App Store / Google Play
+ *   - ClicouCriarPlano (trackCustom) no clique em "Criar meu plano grátis"
  * Nada de saúde, e-mail ou telefone: sem advanced matching e sem autoConfig
  * (que leria textos de botões e campos de formulário).
  *
@@ -17,14 +18,17 @@
  * Uso: <script src="/consent.js" defer></script>
  * Em /download/: data-banner="inapp-only" (fora do in-app a página só redireciona).
  * Nos links curtos (/ig, /tt...): data-banner="off".
+ * Na /plano/: data-trackers="meta" (só a Meta; GA4 e TikTok não carregam).
+ * Sem <noscript> com a imagem do pixel: ela dispararia sem aceite.
  */
 (function () {
-  var PIXEL_ID = '975639901668813';
+  var PIXEL_ID = '1434300995485582';
   var GA_ID = 'G-9YWGCSWEBJ';
   var TIKTOK_ID = 'D8Q75PRC77U8IPSBJ8TG';
   var KEY = 'tribbo_consent';
   var script = document.currentScript;
   var bannerMode = (script && script.getAttribute('data-banner')) || 'on';
+  var onlyMeta = !!script && script.getAttribute('data-trackers') === 'meta';
 
   function getChoice() {
     try { return localStorage.getItem(KEY); } catch (e) { return null; }
@@ -49,7 +53,7 @@
 
   var analyticsLoaded = false;
   function loadAnalytics() {
-    if (analyticsLoaded) return;
+    if (analyticsLoaded || onlyMeta) return;
     analyticsLoaded = true;
     var ga = document.createElement('script');
     ga.async = true;
@@ -110,7 +114,18 @@
     var a = ev.target.closest('a');
     if (!a) return;
     var store = storeFor(a);
-    if (store) fbq('track', 'Lead', { store: store });
+    if (store) { fbq('track', 'Lead', { store: store }); return; }
+    if (/Criar meu plano gr[aá]tis/i.test(a.textContent || '')) {
+      fbq('trackCustom', 'ClicouCriarPlano');
+      // A troca de página cortaria o envio: espera 300 ms antes de abrir o quiz.
+      // Só no clique normal (sem nova aba) e só com o pixel ativo (após o aceite).
+      if (ev.button === 0 && !ev.metaKey && !ev.ctrlKey && !ev.shiftKey && !ev.altKey &&
+          (!a.target || a.target === '_self') && a.href) {
+        ev.preventDefault();
+        var href = a.href;
+        setTimeout(function () { location.href = href; }, 300);
+      }
+    }
   }, true);
 
   // ─── Faixa de cookies ────────────────────────────────────────────
