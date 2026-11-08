@@ -33,6 +33,33 @@
     gifs.forEach(carrega);
   }
 
+  // Menu do celular: abre a lista e fecha ao tocar num item, ao tocar fora ou no Esc.
+  var botaoMenu = document.getElementById('abre-menu');
+  var lista = document.getElementById('menu-lista');
+  if (botaoMenu && lista) {
+    var fechar = function () { lista.hidden = true; botaoMenu.setAttribute('aria-expanded', 'false'); botaoMenu.setAttribute('aria-label', 'Abrir menu'); };
+    botaoMenu.addEventListener('click', function () {
+      var abrir = lista.hidden;
+      lista.hidden = !abrir;
+      botaoMenu.setAttribute('aria-expanded', abrir ? 'true' : 'false');
+      botaoMenu.setAttribute('aria-label', abrir ? 'Fechar menu' : 'Abrir menu');
+    });
+    lista.addEventListener('click', function (e) { if (e.target.closest('a')) fechar(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !lista.hidden) { fechar(); botaoMenu.focus(); } });
+    document.addEventListener('click', function (e) { if (!lista.hidden && !e.target.closest('.menu')) fechar(); });
+  }
+
+  // Movimento leve: cards e blocos sobem um pouco ao entrar na tela. Nada no topo e nada com "reduzir movimento".
+  var calmo = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!calmo && 'IntersectionObserver' in window) {
+    var itens = document.querySelectorAll('.revela');
+    document.documentElement.classList.add('anima');
+    var ve = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('visto'); ve.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    itens.forEach(function (el) { ve.observe(el); });
+  }
+
   // Video: o arquivo so e pedido quando a pessoa toca (data-video vazio = ainda nao existe).
   var v = document.getElementById('video');
   if (v) v.addEventListener('click', function () {
