@@ -435,9 +435,10 @@ footer { background: var(--branco); border-top: 1px solid var(--linha); padding-
 
 .sem-barra footer { padding-bottom: 48px; }
 
-/* Cabecalho no celular: so o icone com "Tribbo Fit" e o menu. O botao "Criar meu plano gratis" fica no meio da pagina e na barra de baixo. */
+/* Cabecalho no celular da /plano/: so o icone com "Tribbo Fit" e o menu. O botao "Criar meu plano gratis" fica no meio da pagina
+   e na barra de baixo. Paginas sem a barra (.sem-barra, como a comunidade) mantem o botao no cabecalho: e a unica entrada para o quiz. */
 @media (max-width: 639px) {
-  .menu .btn-mini { display: none; }
-  .menu .marca b { display: inline; }
-  .menu .abre-menu { margin-left: auto; }
+  body:not(.sem-barra) .menu .btn-mini { display: none; }
+  body:not(.sem-barra) .menu .marca b { display: inline; }
+  body:not(.sem-barra) .menu .abre-menu { margin-left: auto; }
 }
