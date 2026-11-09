@@ -18,7 +18,7 @@ window.TF = window.TF || {};
   // ==== src/onboarding/steps.ts: ordem das telas e quando cada uma e pulada ====
   // Fora do quiz, de proposito: so o que existe apenas no app: 3 (aceites; na web eles ficam no cadastro final),
   // 45 (pedido de notificacao), 48A (avaliacao na loja) e 49A (rastreamento da Apple).
-  // Final na web: 48 (resultado), 49 (jogo do preco), 49B (preco revelado, no lugar da paywall) e 50 (cadastro).
+  // Final na web: 48 (resultado), 48L (cadastro, so com pagamento), 49 (jogo do preco), 49B (preco revelado, no lugar da paywall; com pagamento, vai para a Cakto) e 50B (lojas, sem pagamento).
   TF.STEPS = [
     { id: 'welcome', code: '1', section: 'voce' },
     { id: 'name', code: '2', section: 'voce' },
@@ -72,10 +72,11 @@ window.TF = window.TF || {};
     { id: 'commitment', code: '46', section: 'plano' },
     { id: 'building', code: '47', section: 'plano' },
     { id: 'plan_summary', code: '48', section: 'plano' },
+    // Com TF.PAGAMENTO_ATIVO (preco.js): cadastro logo depois do resultado e antes do preco; da revelacao vai direto para a Cakto.
+    // Com ele falso: sem cadastro, e depois do preco entra a tela das lojas.
+    { id: 'lead_form', code: '48L', section: 'plano', skip: () => !TF.PAGAMENTO_ATIVO },
     { id: 'value', code: '49', section: 'plano' },
     { id: 'price_reveal', code: '49B', section: 'plano' },
-    // Com TF.PAGAMENTO_ATIVO (preco.js) falso, o cadastro e pulado e entra a tela das lojas.
-    { id: 'lead_form', code: '50', section: 'plano', skip: () => !TF.PAGAMENTO_ATIVO },
     { id: 'download', code: '50B', section: 'plano', skip: () => !!TF.PAGAMENTO_ATIVO },
   ];
 
@@ -540,15 +541,25 @@ window.TF = window.TF || {};
       wholeBody: 'Corpo inteiro', goalRow: 'Objetivo', goalReach: ['Chegar a', 'kg até'], goalHealth: 'Cuidar da saúde e da disposição', goalKeep: ['Manter', 'kg com mais energia'],
       rows: { weight: 'Peso atual', days: 'Dias por semana', duration: 'Duração do treino', focus: 'Foco', meals: 'Refeições por dia', supplements: 'Suplementos e remédios', sleep: 'Sono' },
     },
-    // So na web: formulario depois do resultado. Visual apenas, nao envia nada.
+    // So na web: cadastro (tela 48L, com TF.PAGAMENTO_ATIVO), depois do resultado e antes do preco. Envia para o web-lead.
     leadForm: {
-      title: 'Falta pouco para começar', subtitle: 'Deixe seu contato para continuar.', name: 'Nome', email: 'E-mail', whatsapp: 'WhatsApp',
-      button: 'Continuar para o pagamento', soon: 'Pagamento em breve', privacy: 'Nesta versão, nada é enviado nem guardado: suas respostas ficam só nesta página e somem ao fechar.',
-      // Aceites (no app ficam na tela 3; na web, aqui, obrigatorios para o botao ligar).
+      title: 'Seu plano está pronto. Para quem é?', subtitle: 'Deixe seu contato para criar sua conta e liberar o seu plano.', name: 'Nome', email: 'E-mail', whatsapp: 'WhatsApp',
+      whatsappPh: '(11) 99999-9999', suggest: 'Você quis dizer',
+      button: 'Continuar', sending: 'Um instante...', saved: 'Pronto, {nome}! Seu plano foi salvo.',
+      privacy: 'Usamos seus dados para criar sua conta e montar o seu plano no app.',
+      // Aceites (no app ficam na tela 3; na web, aqui, obrigatorios para o botao ligar). A de ofertas e opcional.
       terms: ['Li e aceito os', 'Termos de Uso', 'e a', 'Política de Privacidade'],
       health: 'Autorizo o uso das minhas informações de saúde para montar o meu plano.',
+      marketing: 'Quero receber descontos exclusivos, benefícios e dicas por e-mail e WhatsApp pelos próximos 12 meses. Posso cancelar quando quiser.',
       backToSite: 'Voltar para o site',
       wellbeing: 'O Tribbo Fit é um app de bem-estar e não substitui orientação médica ou nutricional.',
+      errors: {
+        consents: 'Marque os dois aceites acima para continuar.',
+        name: 'Digite o seu nome.', email: 'Confira o seu e-mail.', whatsapp: 'Digite o WhatsApp com DDD.',
+        limit: 'Muitas tentativas seguidas. Espere alguns minutos e tente de novo.',
+        network: 'Sem conexão no momento. Confira a internet e tente de novo.',
+        generic: 'Não conseguimos continuar agora. Tente de novo em instantes ou escreva para suporte@tribbofit.com.br.',
+      },
     },
     // So na web, enquanto o pagamento nao existe: fim do quiz com os botoes das lojas.
     download: {
@@ -570,6 +581,10 @@ window.TF = window.TF || {};
     priceReveal: {
       guess: 'Seu palpite:', titleA: 'Seu plano sai por', titleB: 'por mês', annual: 'Anual', monthly: 'Mensal', best: 'Melhor opção', noCommitment: 'Sem compromisso',
       perMonth: '/mês', perYear: '/ano', renewal: 'Renova automaticamente; cancele quando quiser.', button: 'Continuar',
+      // Com o pagamento ligado (TF.PAGAMENTO_ATIVO):
+      buttonPay: 'Assinar e receber meu plano', mostChosen: 'Mais escolhido', renewalPay: 'Renovação automática ao fim de cada período.',
+      guaranteeA: 'Garantia de 7 dias:', guaranteeB: 'não gostou, devolvemos o valor', cancelAnytime: 'Cancele quando quiser',
+      rating: '4,8', ratingTail: 'na App Store · mais de 5 mil pessoas', card: 'Cartão', secure: 'Pagamento seguro pela Cakto',
       vsApps: 'contra cerca de R$43 por mês em 3 apps separados',
     },
     // Termos e privacidade: mesmos enderecos de src/utils/legalLinks.ts, no proprio site.

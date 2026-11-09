@@ -1,0 +1,77 @@
+/* /obrigado/: mesmo visual da /plano/ (tokens e fonte de /plano/plano.css). */
+.ob { background: var(--creme); min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; }
+.ob-col { width: 100%; max-width: 560px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.ob-topo { padding-top: calc(env(safe-area-inset-top, 0px) + 18px); padding-bottom: 8px; }
+.ob-marca { display: inline-flex; align-items: center; gap: 10px; font-size: 18px; }
+.ob-marca img { border-radius: 9px; }
+main.ob-col { flex: 1; display: flex; flex-direction: column; gap: 14px; padding-block: 16px 28px; }
+
+.ob-card { background: var(--branco); border: 1px solid var(--linha); border-radius: var(--r); box-shadow: var(--sombra); padding: 22px 20px; }
+.ob h1 { font-size: 26px; line-height: 1.18; font-weight: 700; letter-spacing: -.025em; text-wrap: balance; }
+.ob-sub { color: var(--cinza); margin-top: 10px; font-size: 16px; line-height: 1.5; text-wrap: pretty; }
+.ob-rot { font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--cinza); }
+
+/* Aguardando */
+.ob-espera { text-align: center; padding-block: 34px; }
+.ob-giro { display: block; width: 44px; height: 44px; margin: 0 auto 18px; border-radius: 50%; border: 4px solid #EFE8FE; border-top-color: var(--violeta); animation: ob-gira 0.9s linear infinite; }
+@keyframes ob-gira { to { transform: rotate(360deg); } }
+.ob-pix { margin-top: 16px; padding: 12px 14px; border-radius: 14px; background: #F3EEFE; color: var(--violeta2); font-size: 15px; line-height: 1.45; text-align: left; }
+
+/* Pronto */
+.ob-feito { display: flex; align-items: center; gap: 14px; }
+.ob-feito .ob-ok { flex: none; width: 46px; height: 46px; border-radius: 50%; background: var(--lima); display: flex; align-items: center; justify-content: center; }
+.ob-feito .ob-ok svg { width: 24px; height: 24px; }
+.ob-email { font-size: 20px; font-weight: 700; margin-top: 6px; word-break: break-all; }
+.ob-errado { display: inline-block; margin-top: 6px; font-size: 15px; color: var(--violeta); }
+.ob-codigo-card { border: 2px solid var(--violeta); background: #F3EEFE; }
+.ob-codigo { display: block; margin-top: 8px; font-family: ui-monospace, Menlo, Consolas, "Courier New", monospace; font-weight: 700; font-size: clamp(28px, 9vw, 38px); letter-spacing: .04em; color: var(--texto); user-select: all; -webkit-user-select: all; }
+.ob-copiar { margin-top: 14px; width: 100%; border: 0; cursor: pointer; font: inherit; font-weight: 700; }
+.ob-semsenha { margin-top: 12px; font-weight: 700; font-size: 16px; }
+.ob-validade { margin-top: 4px; font-size: 14px; color: var(--cinza); }
+
+.ob-passo { display: flex; gap: 14px; }
+.ob-num { flex: none; width: 32px; height: 32px; border-radius: 50%; background: var(--escuro); color: #fff; font-weight: 700; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+.ob-passo-txt { flex: 1; min-width: 0; }
+.ob-passo h2 { font-size: 20px; line-height: 1.25; letter-spacing: -.015em; }
+.ob-passo .ob-sub { margin-top: 4px; }
+.ob-lojas { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+.ob-loja { position: relative; display: flex; align-items: center; justify-content: center; min-height: 72px; padding: 14px; border-radius: 16px; border: 1px solid var(--linha); background: var(--branco); }
+.ob-loja img { height: 40px; width: auto; }
+.ob-loja.mine { border: 2px solid var(--violeta); background: #F3EEFE; min-height: 88px; }
+.ob-loja.mine img { height: 50px; }
+.ob-tag { position: absolute; top: 8px; left: 10px; font-size: 12px; font-weight: 700; color: var(--violeta); }
+.ob-qrs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+.ob-qr { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 14px 10px; border-radius: 16px; border: 1px solid var(--linha); background: var(--branco); text-decoration: none; }
+.ob-qr .qr { width: 100%; max-width: 150px; aspect-ratio: 1; }
+.ob-qr .selo { height: 34px; width: auto; }
+.ob-qr-dica { margin-top: 10px; font-size: 14px; color: var(--cinza); }
+.ob-mono { font-family: ui-monospace, Menlo, Consolas, "Courier New", monospace; font-weight: 700; }
+
+.ob-rodape { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 24px); text-align: center; font-size: 14px; color: var(--cinza); display: flex; flex-direction: column; gap: 4px; }
+.ob-rodape a { color: var(--cinza); }
+
+@media (min-width: 700px) {
+  main.ob-col { padding-top: 32px; }
+  .ob h1 { font-size: 30px; }
+}
+@media (prefers-reduced-motion: reduce) { .ob-giro { animation-duration: 3s; } }
+.ob-conta { margin-top: 18px; }
+.ob h1:focus { outline: none; }
+.ob-loja.mine { padding-top: 34px; }
+.ob-rodape, footer.ob-rodape { background: transparent; border: 0; margin-top: 0; }
+.ob-email { word-break: normal; overflow-wrap: anywhere; }
+footer.ob-rodape { padding-top: 8px; padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 24px); }
+
+/* Passo 2: abrir o app direto; o codigo e o Copiar logo abaixo */
+.ob-abrir { width: 100%; margin-top: 14px; font-size: 17px; }
+.ob-codigo-box { margin-top: 14px; padding: 14px 14px 12px; border-radius: 16px; border: 2px solid var(--violeta); background: #F3EEFE; }
+.ob-codigo-linha { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 4px; }
+.ob-codigo-box .ob-codigo { margin-top: 0; font-size: clamp(22px, 7vw, 30px); min-width: 0; }
+.ob-trb { color: var(--cinza2); font-weight: 400; }
+.ob-copiar { flex: none; min-height: 40px; padding: 0 16px; border-radius: 100px; border: 1.5px solid var(--violeta); background: var(--branco); color: var(--violeta); font: inherit; font-weight: 700; font-size: 15px; cursor: pointer; margin-top: 0; width: auto; }
+.ob-codigo-linha { flex-direction: column; align-items: stretch; gap: 10px; }
+.ob-codigo-box .ob-codigo { white-space: nowrap; font-size: clamp(22px, 6.6vw, 30px); letter-spacing: .02em; }
+.ob-copiar { width: 100%; min-height: 44px; }
+.ob-abrir { padding: 0 16px; font-size: 16px; white-space: nowrap; }
+p.ob-errado { display: block; color: var(--cinza); font-size: 15px; line-height: 1.5; margin-top: 8px; }
+p.ob-errado a { color: var(--violeta); }

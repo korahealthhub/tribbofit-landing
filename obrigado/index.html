@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tribbo Fit: seu acesso</title>
+<!-- Pagina de sucesso depois do pagamento na Cakto (redireciona para /obrigado/?acesso={{callback}}, callback = lead_id.assinatura).
+     Pergunta ao web-access-status (Supabase, endereco em /js/funil.js) ate o codigo de acesso ficar pronto.
+     Fora do Google (noindex). Sem pixel da Meta (a compra vai para a Meta pela Cakto) e sem faixa de cookies.
+     Nada guardado no navegador. Medicao de uso no PostHog sem cookie (/js/medida.js): web_success_viewed, web_code_copied, web_store_clicked. -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#F8F5F4">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src https://us.i.posthog.com https://wqdxxdwplaoyirdirjif.supabase.co; manifest-src 'self'; form-action 'none'; base-uri 'none'">
+<link rel="icon" href="/plano/assets/icones/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/plano/assets/icones/favicon-48.png" sizes="48x48" type="image/png">
+<link rel="apple-touch-icon" href="/plano/assets/icones/apple-touch-icon.png">
+<link rel="manifest" href="/plano/assets/icones/site.webmanifest">
+<link rel="preload" href="/quiz/assets/fontes/inter-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/quiz/assets/fontes/inter-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/plano/plano.css">
+<link rel="stylesheet" href="/obrigado/obrigado.css">
+<script src="/js/medida.js" defer></script>
+<script src="/js/funil.js" defer></script>
+<script src="/obrigado/obrigado.js" defer></script>
+</head>
+<body class="ob">
+
+<header class="ob-topo">
+  <div class="ob-col">
+    <span class="ob-marca"><img src="/plano/assets/icone.webp" alt="" width="34" height="34"><b>Tribbo Fit</b></span>
+  </div>
+</header>
+
+<main class="ob-col" id="ob" aria-live="polite">
+  <!-- Estado inicial, antes do JavaScript: aguardando. obrigado.js troca pelo estado certo. -->
+  <section class="ob-card ob-espera">
+    <span class="ob-giro" aria-hidden="true"></span>
+    <h1>Confirmando seu pagamento...</h1>
+    <p class="ob-sub">Isso leva só alguns segundos.</p>
+  </section>
+</main>
+
+<footer class="ob-col ob-rodape">
+  <p>Dúvidas? Escreva para <a href="mailto:suporte@tribbofit.com.br">suporte@tribbofit.com.br</a></p>
+  <p><a href="/privacidade/">Privacidade</a> · <a href="/termos/">Termos</a></p>
+</footer>
+
+<noscript><p class="ob-col">Ative o JavaScript para ver o seu código de acesso. Ele também chega no seu e-mail.</p></noscript>
+</body>
+</html>

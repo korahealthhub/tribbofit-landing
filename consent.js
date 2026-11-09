@@ -8,7 +8,8 @@
  *
  * Eventos enviados à Meta (pixel 1434300995485582, conta nova):
  *   - PageView em cada página
- *   - Lead { store: 'ios' | 'android' } no clique em App Store / Google Play
+ *   - ClicouLoja { store: 'ios' | 'android' } (personalizado) no clique em App Store / Google Play.
+ *     O "Lead" fica só para o cadastro do quiz, enviado pelo servidor.
  *   - ClicouCriarPlano (trackCustom) no clique em "Criar meu plano grátis"
  * Nada de saúde, e-mail ou telefone: sem advanced matching e sem autoConfig
  * (que leria textos de botões e campos de formulário).
@@ -97,7 +98,7 @@
     });
   }
 
-  // ─── Lead nos botões das lojas ───────────────────────────────────
+  // ─── ClicouLoja nos botões das lojas ─────────────────────────────
   function storeFor(a) {
     var href = a.getAttribute('href') || '';
     if (href.indexOf('apps.apple.com') !== -1) return 'ios';
@@ -116,7 +117,7 @@
     var a = ev.target.closest('a');
     if (!a) return;
     var store = storeFor(a);
-    if (store) { fbq('track', 'Lead', { store: store }); return; }
+    if (store) { fbq('trackCustom', 'ClicouLoja', { store: store }); return; }
     if (/Criar meu plano gr[aá]tis/i.test(a.textContent || '')) {
       fbq('trackCustom', 'ClicouCriarPlano');
       // A troca de página cortaria o envio: espera 300 ms antes de abrir o quiz.

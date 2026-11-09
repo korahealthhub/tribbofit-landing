@@ -8,8 +8,8 @@
 <meta name="googlebot" content="noindex, nofollow">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#F8F5F4">
-<!-- Dados de saude: as respostas nunca saem da pagina. De fora, so baixa os GIFs publicos dos exercicios (Supabase, exercise-gifs). Medicao de uso no PostHog sem cookie (/js/medida.js): so numero e nome da tela, palpite de preco, loja e utm_*. Sem pixel da Meta e sem faixa de cookies. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://jllkcglzajmzqywyuswq.supabase.co; font-src 'self'; connect-src https://us.i.posthog.com; manifest-src 'self'; form-action 'none'; base-uri 'none'">
+<!-- Dados de saude: as respostas so saem da pagina no cadastro com pagamento ligado (abaixo). De fora, so baixa os GIFs publicos dos exercicios (Supabase, exercise-gifs). Medicao de uso no PostHog sem cookie (/js/medida.js): so numero e nome da tela, palpite de preco, loja e utm_*. Sem pixel da Meta e sem faixa de cookies. Com TF.PAGAMENTO_ATIVO (preco.js), o cadastro (tela 48L, depois do resultado) manda respostas, contato e aceites ao Supabase (web-lead; endereco em /js/funil.js); ?retomar= le o lead de volta (web-lead-resume). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://jllkcglzajmzqywyuswq.supabase.co; font-src 'self'; connect-src https://us.i.posthog.com https://wqdxxdwplaoyirdirjif.supabase.co; manifest-src 'self'; form-action 'none'; base-uri 'none'">
 <link rel="icon" href="/plano/assets/icones/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="/plano/assets/icones/favicon-48.png" sizes="48x48" type="image/png">
 <link rel="apple-touch-icon" href="/plano/assets/icones/apple-touch-icon.png">
@@ -34,8 +34,10 @@
 <script src="icones.js" defer></script>
 <!-- corpo.js, alimentos.js e cardapio.js carregam depois, perto das telas que usam (app.js, LAZY). -->
 <script src="perguntas.js" defer></script>
+<script src="preco.js" defer></script>
 <script src="calculos.js" defer></script>
 <script src="/js/medida.js" defer></script>
+<script src="/js/funil.js" defer></script>
 <script src="app.js" defer></script>
 </body>
 </html>

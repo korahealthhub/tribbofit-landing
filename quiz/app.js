@@ -1,7 +1,10 @@
 // Telas do quiz: desenho e comportamento copiados do onboarding do app, sem servidor.
 // Textos e opcoes: perguntas.js. Calculos: calculos.js. Respostas: so na variavel "a", na memoria da pagina.
-// Nao usa cookie nem localStorage. Rede: so a medicao de uso (/js/medida.js, PostHog sem cookie),
+// Nao usa cookie nem localStorage. Rede: a medicao de uso (/js/medida.js, PostHog sem cookie),
 // que recebe apenas o numero e o nome da tela, o palpite de preco e a loja; nunca as respostas.
+// Com TF.PAGAMENTO_ATIVO, o cadastro (tela 48L) manda as respostas, o contato e os aceites para o
+// Supabase (web-lead, js/funil.js), so quando a pessoa toca em "Continuar" (tela 48L); a revelacao do
+// preco leva para a Cakto. ?retomar=<lead_id>.<assinatura> le o lead de volta (web-lead-resume).
 (function () {
   'use strict';
   const { T, C } = TF;
@@ -19,7 +22,9 @@
   // Ficam so na memoria da pagina (TF.utm) e voltam para a /plano/ se a pessoa sair pelo topo.
   const URL_PARAMS = new URLSearchParams(location.search);
   TF.utm = Object.fromEntries(URL_PARAMS);
-  const SITE = T.exit.home + (URL_PARAMS.toString() ? `?${URL_PARAMS}` : '');
+  delete TF.utm.retomar; // link de volta do e-mail (?retomar=lead_id.assinatura): nao e UTM
+  const PARAMS_SITE = new URLSearchParams(URL_PARAMS); PARAMS_SITE.delete('retomar');
+  const SITE = T.exit.home + (PARAMS_SITE.toString() ? `?${PARAMS_SITE}` : '');
 
   let a = TF.emptyAnswers();
   let current = 'welcome';
@@ -34,6 +39,7 @@
   const medir = (evento, extra) => { if (window.tribboMedida) window.tribboMedida(evento, extra); };
   const telaInfo = (id) => { const s = TF.STEPS.find((x) => x.id === id); return { step_number: s ? s.code : '', step_name: id }; };
   let comecou = false;
+  let planoWeb = 'anual'; // plano escolhido na tela 49B (so com TF.PAGAMENTO_ATIVO)
 
   // ─── Ajudantes ──────────────────────────────────────────────────────────────
 
@@ -295,7 +301,7 @@
 
   // ─── Carregamento sob demanda (so na web) ───────────────────────────────────
   // Os arquivos pesados so baixam perto da tela que usa, para a primeira tela abrir rapido.
-  const LAZY = { pain: ['corpo.js'], focus: ['corpo.js'], food_summary: ['alimentos.js', 'cardapio.js'], plan_summary: ['alimentos.js', 'cardapio.js'], value: ['preco.js'], price_reveal: ['preco.js'],
+  const LAZY = { pain: ['corpo.js'], focus: ['corpo.js'], food_summary: ['alimentos.js', 'cardapio.js'], plan_summary: ['alimentos.js', 'cardapio.js'],
     bodyweight: ['exercicios.js'], training_summary: ['exercicios.js'], how_it_works: ['exercicios.js'] };
   const scripts = {};
   function loadScript(src) {
@@ -2030,32 +2036,159 @@
     medir('web_quiz_price_revealed');
     const brl = (n) => `R$ ${n.toFixed(2).replace('.', ',')}`;
     const guess = a.priceGuess;
-    const plan = (title, sub, price, best, delay) => h('div', { class: `card plan-card fade-up${best ? ' best' : ''}`, style: { animationDelay: `${delay}ms` } },
-      best && h('span', { class: 'tag' }, R.best),
-      h('div', { class: 'plan-left' }, h('p', { class: 'plan-title' }, title), h('p', { class: 'plan-sub' }, sub)),
-      h('p', { class: 'plan-price' }, price));
-    paint({
-      body: [
-        guess != null && h('p', { class: 'guess-line' }, `${R.guess} R$ ${guess}${guess >= T.value.ruler.max ? ` ${T.value.maxSuffix}` : ''} ${T.value.unit}`),
-        header(`${R.titleA} ${brl(P.anualPorMes)} ${R.titleB}`, R.vsApps),
-        h('div', { class: 'plans' },
-          plan(R.annual, `${brl(P.anual)}${R.perYear}`, `${brl(P.anualPorMes)}${R.perMonth}`, true, 150),
-          plan(R.monthly, R.noCommitment, `${brl(P.mensal)}${R.perMonth}`, false, 300)),
-        caption(R.renewal, 'gap12 center-txt'),
-      ],
-      footer: [primary(R.button, () => next())],
-    });
+    // Com o pagamento ligado, os cards viram a escolha do plano (anual marcado de inicio).
+    const escolhe = !!TF.PAGAMENTO_ATIVO;
+    const plan = (key, title, sub, price, best, delay) => {
+      const sel = escolhe && planoWeb === key;
+      return h(escolhe ? 'button' : 'div', {
+        type: escolhe ? 'button' : null, role: escolhe ? 'radio' : null, 'aria-checked': escolhe ? (sel ? 'true' : 'false') : null,
+        class: `card plan-card fade-up${best ? ' best' : ''}${escolhe ? ' escolha' : ''}${sel ? ' sel' : ''}`, style: { animationDelay: `${delay}ms` },
+        onclick: escolhe ? () => { planoWeb = key; draw(); } : null,
+      },
+        best && h('span', { class: 'tag' }, escolhe ? R.mostChosen : R.best),
+        escolhe && h('span', { class: `radio${sel ? ' on' : ''}` }),
+        h('div', { class: 'plan-left' }, h('p', { class: 'plan-title' }, title), h('p', { class: 'plan-sub' }, sub)),
+        h('p', { class: 'plan-price' }, price));
+    };
+    function draw() {
+      paint({
+        body: [
+          guess != null && h('p', { class: 'guess-line' }, `${R.guess} R$ ${guess}${guess >= T.value.ruler.max ? ` ${T.value.maxSuffix}` : ''} ${T.value.unit}`),
+          header(`${R.titleA} ${brl(P.anualPorMes)} ${R.titleB}`, R.vsApps),
+          h('div', { class: 'plans', role: escolhe ? 'radiogroup' : null },
+            plan('anual', R.annual, `${brl(P.anual)}${R.perYear}`, `${brl(P.anualPorMes)}${R.perMonth}`, true, 150),
+            plan('mensal', R.monthly, R.noCommitment, `${brl(P.mensal)}${R.perMonth}`, false, 300)),
+          caption(escolhe ? R.renewalPay : R.renewal, 'gap12 center-txt'),
+        ],
+        // Com pagamento: garantia e cancelamento acima do botao; nota e numero de pessoas junto dele; Pix e cartao embaixo.
+        footer: escolhe
+          ? [
+            h('ul', { class: 'pr-garantias' },
+              h('li', null, icon('shield-checkmark-outline', 18, C.teal), h('span', null, h('b', null, R.guaranteeA), ` ${R.guaranteeB}`)),
+              h('li', null, icon('checkmark-circle', 18, C.teal), h('span', null, R.cancelAnytime))),
+            primary(R.buttonPay, irParaCakto),
+            h('p', { class: 'pr-prova' }, h('span', { class: 'pr-estrelas', 'aria-hidden': 'true' }, [0, 1, 2, 3, 4].map(() => icon('star', 13, C.gold))),
+              h('span', null, h('b', null, R.rating), ` ${R.ratingTail}`)),
+            h('p', { class: 'pr-pag' }, h('span', null, icon('diamond-outline', 15, C.t2), 'Pix'), h('span', null, icon('card-outline', 15, C.t2), R.card), h('span', null, R.secure)),
+          ]
+          : [primary(R.button, () => next())],
+      });
+    }
+    draw();
   }
 
-  // ─── So na web: cadastro depois do resultado ────────────────────────────────
-  // So visual: os campos nao tem destino, nada e enviado nem guardado.
-  // Os aceites do app (tela 3) ficam aqui, obrigatorios: o botao so liga com os dois marcados.
+  // ─── So na web: cadastro (tela 48L) e ida para a Cakto ─────────────────────
+  const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/;
+  const DOMINIOS = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'yahoo.com.br', 'icloud.com', 'live.com', 'msn.com', 'me.com',
+    'hotmail.com.br', 'outlook.com.br', 'uol.com.br', 'bol.com.br', 'terra.com.br', 'ig.com.br', 'globo.com', 'globomail.com'];
+  function distancia(x, y) {
+    const d = Array.from({ length: x.length + 1 }, (_, i) => [i]);
+    for (let j = 1; j <= y.length; j++) d[0][j] = j;
+    for (let i = 1; i <= x.length; i++) for (let j = 1; j <= y.length; j++) {
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (x[i - 1] === y[j - 1] ? 0 : 1));
+      if (i > 1 && j > 1 && x[i - 1] === y[j - 2] && x[i - 2] === y[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+    }
+    return d[x.length][y.length];
+  }
+  // gmail.con → gmail.com, hotmial.com → hotmail.com. Sem sugestao quando o dominio ja e conhecido ou esta longe de todos.
+  function sugestaoEmail(email) {
+    const m = /^([^\s@]+)@([^\s@]+)$/.exec(email.trim().toLowerCase());
+    if (!m) return null;
+    const dom = m[2];
+    if (DOMINIOS.includes(dom)) return null;
+    // Ate 2 letras de diferenca so em dominios longos; nos curtos (b.com, me.com) so 1, para nao sugerir errado.
+    const limite = dom.length >= 8 ? 2 : 1;
+    let melhor = null, menor = limite + 1;
+    for (const d of DOMINIOS) { const n = distancia(dom, d); if (n < menor) { menor = n; melhor = d; } }
+    if (!melhor && !dom.includes('.')) melhor = DOMINIOS.find((d) => d.split('.')[0] === dom) || null;
+    return melhor ? `${m[1]}@${melhor}` : null;
+  }
+  const soDigitos = (v) => String(v || '').replace(/\D/g, '');
+  function mascaraWhats(v) {
+    const d = soDigitos(v).replace(/^55(?=\d{10,11}$)/, '').slice(0, 11);
+    if (d.length <= 2) return d.length ? `(${d}` : '';
+    if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+    if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+    return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+  }
+
+  // Lead ja enviado nesta pagina (ou recuperado pelo link ?retomar=). So na memoria.
+  // { id, token, name, email, whatsapp }
+  let lead = null;
+  const utmDoQuiz = () => {
+    const utm = {};
+    for (const [k, val] of Object.entries(TF.utm || {})) if (/^utm_[a-z]+$/.test(k) || k === 'fbclid') utm[k] = String(val).slice(0, 500);
+    return utm;
+  };
+  // Checkout da Cakto ja preenchido. callback = lead_id.assinatura (so letras, numeros, - e .; 69 caracteres).
+  function irParaCakto() {
+    const F = window.TF_FUNIL;
+    if (!lead) { goTo('lead_form'); return; }
+    medir('web_quiz_checkout_started');
+    const q = new URLSearchParams({ name: lead.name, email: lead.email, confirmEmail: lead.email, phone: lead.whatsapp });
+    // Sem lead gravado (servidor fora ou limite de IP), vai sem callback: o webhook cria a conta pelo e-mail.
+    if (lead.id) q.set('callback', lead.token ? `${lead.id}.${lead.token}` : lead.id);
+    for (const [k, val] of Object.entries(utmDoQuiz())) q.set(k, val);
+    // Voltar da Cakto: se o navegador recarregar o quiz, ele abre direto na revelacao do preco (web-lead-resume).
+    // So troca o endereco da pagina atual; nada fica guardado no navegador. Sem lead, fica como esta.
+    const sig = lead.id && (lead.resumeSig || lead.token);
+    if (sig) {
+      try {
+        const volta = new URLSearchParams({ retomar: `${lead.id}.${sig}` });
+        for (const [k, val] of Object.entries(utmDoQuiz())) volta.set(k, val);
+        history.replaceState(history.state, '', `${location.pathname}?${volta}`);
+      } catch (e) { /* sem troca de endereco, segue normal */ }
+    }
+    location.href = `${F.cakto[planoWeb] || F.cakto.anual}?${q}`;
+  }
+
+  // Tela 48L, so na web com TF.PAGAMENTO_ATIVO: logo depois do resultado do plano e antes do jogo do preco.
+  // Nome, e-mail (com sugestao de dominio) e WhatsApp, os 2 aceites obrigatorios e a caixa opcional de ofertas.
+  // Ao enviar: web-lead (Supabase, js/funil.js) com as respostas, o plano (o anual por padrao; a escolha final
+  // vai para a Cakto), as UTMs, o fbclid e os aceites. Sem verificacao visivel: so o campo isca "tf_hp_campo",
+  // escondido fora da tela. Se a pessoa voltar e nao mudar nada, segue sem mandar de novo.
   function LeadForm() {
-    const L = T.leadForm;
-    const field = (id, label, attrs) => h('div', null, h('label', { class: 'field-label', for: id }, label), h('input', { class: 'input form', id, ...attrs }));
-    const btn = h('button', { type: 'button', class: 'btn', disabled: true }, L.button);
-    const st = { terms: !!a.termsAcceptedAt, health: !!a.healthDataConsentAt };
-    const refresh = () => { btn.disabled = !(st.terms && st.health); };
+    const L = T.leadForm, F = window.TF_FUNIL;
+    const st = { terms: !!a.termsAcceptedAt, health: !!a.healthDataConsentAt, ofertas: !!a.ofertasAceitasEm, enviando: false };
+    const erroDe = {};
+    const field = (id, label, attrs) => {
+      const input = h('input', { class: 'input form', id, 'aria-describedby': `${id}-erro`, ...attrs });
+      erroDe[id] = h('p', { class: 'field-erro', id: `${id}-erro`, 'aria-live': 'polite' });
+      return { input, el: h('div', null, h('label', { class: 'field-label', for: id }, label), input, erroDe[id]) };
+    };
+    const nome = field('f-nome', L.name, { type: 'text', autocomplete: 'name', autocapitalize: 'words', enterkeyhint: 'next', maxlength: 120, value: lead ? lead.name : a.fullName });
+    const email = field('f-email', L.email, { type: 'email', inputmode: 'email', autocomplete: 'email', autocapitalize: 'none', spellcheck: 'false', enterkeyhint: 'next', maxlength: 254, value: lead ? lead.email : '' });
+    const whats = field('f-whats', L.whatsapp, { type: 'tel', inputmode: 'tel', autocomplete: 'tel-national', enterkeyhint: 'done', placeholder: L.whatsappPh, maxlength: 16, value: lead ? mascaraWhats(lead.whatsapp) : '' });
+    const dica = h('div', { class: 'email-dica', 'aria-live': 'polite' });
+    email.el.append(dica);
+    const mostraErro = (f, msg) => { erroDe[f.input.id].textContent = msg || ''; f.input.setAttribute('aria-invalid', msg ? 'true' : 'false'); };
+
+    function atualizaDica() {
+      const s = sugestaoEmail(email.input.value);
+      dica.replaceChildren(...(s ? [h('button', { type: 'button', class: 'dica-btn', onclick: () => { email.input.value = s; mostraErro(email, ''); atualizaDica(); } },
+        `${L.suggest} `, h('b', null, s), '?')] : []));
+    }
+    email.input.addEventListener('input', () => { mostraErro(email, ''); atualizaDica(); });
+    email.input.addEventListener('blur', atualizaDica);
+    nome.input.addEventListener('input', () => mostraErro(nome, ''));
+    whats.input.addEventListener('input', () => {
+      const fim = whats.input.selectionStart === whats.input.value.length;
+      whats.input.value = mascaraWhats(whats.input.value);
+      if (fim) whats.input.setSelectionRange(whats.input.value.length, whats.input.value.length);
+      mostraErro(whats, '');
+    });
+    // Isca para robos: escondida por CSS fora da tela, fora do Tab e sem autocomplete. Gente nao preenche.
+    const isca = h('div', { class: 'isca', 'aria-hidden': 'true' },
+      h('label', { for: 'tf_hp_campo' }, 'Deixe em branco'),
+      h('input', { type: 'text', id: 'tf_hp_campo', name: 'tf_hp_campo', tabindex: '-1', autocomplete: 'off', 'aria-hidden': 'true' }));
+    const iscaInput = isca.querySelector('input');
+
+    const btn = h('button', { type: 'button', class: 'btn', disabled: true, onclick: () => enviar() }, L.button);
+    const erroGeral = h('p', { class: 'error lead-erro', role: 'alert' });
+    // O botao fica sempre ligado: em tela baixa os aceites ficam abaixo da dobra, e um botao apagado sem motivo visivel trava a pessoa.
+    // Sem os dois aceites, o toque leva ate eles e mostra o aviso.
+    const refresh = () => { btn.disabled = st.enviando; if (st.terms && st.health) erroAceites.textContent = ''; };
+    const erroAceites = h('p', { class: 'field-erro', 'aria-live': 'polite' });
     const stop = (e) => e.stopPropagation();
     const check = (key, kids) => {
       const box = h('span', { class: 'cb-box' });
@@ -2070,34 +2203,137 @@
         box.replaceChildren(...(st[key] ? [icon('checkmark', 14, C.onAccent)] : []));
       };
       function toggle() {
+        if (st.enviando) return;
         st[key] = !st[key];
         const now = new Date().toISOString();
-        if (key === 'terms') a.termsAcceptedAt = st.terms ? now : null; else a.healthDataConsentAt = st.health ? now : null;
+        if (key === 'terms') a.termsAcceptedAt = st.terms ? now : null;
+        else if (key === 'health') a.healthDataConsentAt = st.health ? now : null;
+        else a.ofertasAceitasEm = st.ofertas ? now : null;
         draw(); refresh();
       }
       draw();
       return row;
     };
+
+    function valida() {
+      let ok = true;
+      const n = nome.input.value.trim().replace(/\s+/g, ' ');
+      const e = email.input.value.trim().toLowerCase();
+      const w = soDigitos(whats.input.value).replace(/^55(?=\d{10,11}$)/, '');
+      if (n.length < 2) { mostraErro(nome, L.errors.name); ok = false; }
+      if (!EMAIL_RE.test(e)) { mostraErro(email, L.errors.email); ok = false; }
+      if (w.length < 10 || w.length > 11) { mostraErro(whats, L.errors.whatsapp); ok = false; }
+      if (!ok) { const f = scrollEl.querySelector('[aria-invalid="true"]'); if (f) f.focus(); return null; }
+      return { n, e, w };
+    }
+
+    async function enviar() {
+      if (st.enviando) return;
+      erroGeral.textContent = '';
+      const v = valida();
+      if (!v) return;
+      if (!(st.terms && st.health)) {
+        erroAceites.textContent = L.errors.consents;
+        erroAceites.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'center' });
+        return;
+      }
+      // Voltou do preco sem mudar nada: nao cria outro lead.
+      if (lead && lead.name === v.n && lead.email === v.e && lead.whatsapp === v.w) { next({ fullName: v.n }); return; }
+      st.enviando = true; refresh(); btn.textContent = L.sending;
+      const falhou = (msg) => { st.enviando = false; btn.textContent = L.button; refresh(); erroGeral.textContent = msg; };
+
+      // Respostas com as chaves do app; o palpite de preco (se ja houver) vai como priceExpectationValue.
+      const respostas = { ...a, fullName: v.n };
+      if (a.priceGuess != null) respostas.priceExpectationValue = a.priceGuess;
+      for (const k of ['priceGuess', 'termsAcceptedAt', 'healthDataConsentAt', 'educationalConsentAt', 'ofertasAceitasEm']) delete respostas[k];
+      const utm = utmDoQuiz();
+      const corpo = {
+        name: v.n, email: v.e, whatsapp: v.w, plan: planoWeb, answers: respostas, utm, fbclid: utm.fbclid || null,
+        consents: {
+          terms_accepted_at: a.termsAcceptedAt, terms_version: F.termosVersao, health_data_consent_at: a.healthDataConsentAt,
+          marketing_opt_in: st.ofertas, marketing_opt_in_at: st.ofertas ? a.ofertasAceitasEm : null,
+        },
+        // Isca: nome que o preenchimento automatico nao reconhece. O web-lead precisa conferir "tf_hp_campo".
+        tf_hp_campo: iscaInput.value,
+      };
+      let res = null, dados = {};
+      // Uma nova tentativa automatica se a rede falhar (comum no 4G).
+      for (let tentativa = 0; tentativa < 2 && !res; tentativa++) {
+        try {
+          res = await fetch(F.webLead, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(corpo), credentials: 'omit' });
+          dados = await res.json().catch(() => ({}));
+        } catch (err) { res = null; if (tentativa === 0) await new Promise((ok) => setTimeout(ok, 1200)); }
+      }
+      const erro = res && !res.ok ? (dados && dados.error) : null;
+      if (erro === 'invalid_email') { falhou(''); mostraErro(email, L.errors.email); email.input.focus(); return; }
+      if (erro === 'invalid_whatsapp') { falhou(''); mostraErro(whats, L.errors.whatsapp); whats.input.focus(); return; }
+      if (res && res.ok && dados.lead_id) {
+        const rt = typeof dados.resume_token === 'string' ? dados.resume_token.split('.').pop() : null;
+        lead = { id: dados.lead_id, token: dados.handoff_token || null, resumeSig: rt && /^[0-9a-f]{16,64}$/i.test(rt) ? rt.toLowerCase() : null, name: v.n, email: v.e, whatsapp: v.w };
+        medir('web_quiz_lead_sent');
+      } else {
+        // Servidor fora, limite de IP (muita gente divide o mesmo IP na rede da operadora) ou rede: a pessoa nao fica presa.
+        // Segue para o preco e para a Cakto sem o lead; a conta e criada pelo e-mail da compra.
+        lead = { id: null, token: null, name: v.n, email: v.e, whatsapp: v.w };
+        medir('web_quiz_lead_fallback');
+      }
+      st.enviando = false;
+      update({ fullName: v.n });
+      if (!lead.id) { next(); return; } // sem lead gravado, nada de "Seu plano foi salvo"
+      // Confirmacao rapida (1,5 s), sem botao: check animado e o primeiro nome; depois segue sozinha para o preco.
+      const primeiro = v.n.split(' ')[0];
+      paint({ fill: true, body: [h('div', { class: 'center lead-ok' },
+        h('div', { class: 'done-badge pop' }, icon('checkmark', 44, C.onAccent)),
+        h('h1', { class: 'ready', tabindex: '-1' }, L.saved.replace('{nome}', primeiro)))], footer: [] });
+      const t = scrollEl.querySelector('h1'); if (t) t.focus({ preventScroll: true });
+      later(() => next(), 1500);
+    }
+
     const [t1, t2, t3, t4] = L.terms;
     refresh();
     paint({
       body: [
         header(L.title, L.subtitle),
-        h('div', { class: 'form-fields' },
-          field('f-nome', L.name, { type: 'text', autocomplete: 'name', value: a.fullName }),
-          field('f-email', L.email, { type: 'email', inputmode: 'email', autocomplete: 'email', autocapitalize: 'none' }),
-          field('f-whats', L.whatsapp, { type: 'tel', inputmode: 'tel', autocomplete: 'tel' })),
-        caption(L.privacy, 'gap16'),
-      ],
-      footer: [
-        h('div', { class: 'lead-checks' },
+        h('div', { class: 'form-fields' }, nome.el, email.el, whats.el, isca),
+        h('div', { class: 'lead-checks gap16' },
           check('terms', [`${t1} `, h('a', { href: T.links.terms, target: '_blank', rel: 'noopener noreferrer', onclick: stop }, t2), ` ${t3} `, h('a', { href: T.links.privacy, target: '_blank', rel: 'noopener noreferrer', onclick: stop }, t4), '.']),
-          check('health', L.health)),
-        h('p', { class: 'lead-aviso' }, L.wellbeing),
-        btn, h('p', { class: 'soon' }, L.soon),
-        h('a', { class: 'link-plain', href: SITE, onclick: leaveQuiz }, L.backToSite),
+          check('health', L.health),
+          check('ofertas', L.marketing)),
+        erroAceites,
+        h('p', { class: 'lead-aviso gap8' }, L.wellbeing),
+        caption(L.privacy, 'gap8'),
       ],
+      footer: [erroGeral, btn],
     });
+  }
+
+  // Link de volta: /quiz/?retomar=<lead_id>.<assinatura> abre direto na revelacao do preco com as respostas
+  // daquele lead (funcao web-lead-resume do Supabase). Link invalido, vencido ou sem resposta: quiz do comeco.
+  // Contrato: POST { lead_id, token } → 200 { name, email, whatsapp, plan, answers, handoff_token? } | 404/410.
+  async function retomar() {
+    const F = window.TF_FUNIL;
+    const m = /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\.([0-9a-f]{16,64})$/i.exec(URL_PARAMS.get('retomar') || '');
+    if (!m || !TF.PAGAMENTO_ATIVO || !F) return false;
+    try {
+      const ctl = new AbortController();
+      const limite = setTimeout(() => ctl.abort(), 8000);
+      const res = await fetch(F.leadResume, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lead_id: m[1].toLowerCase(), token: m[2].toLowerCase() }), credentials: 'omit', signal: ctl.signal });
+      clearTimeout(limite);
+      if (!res.ok) return false;
+      const d = await res.json();
+      if (!d || !d.answers || typeof d.answers !== 'object' || !d.email) return false;
+      const base = TF.emptyAnswers();
+      for (const k of Object.keys(base)) if (d.answers[k] !== undefined && d.answers[k] !== null) base[k] = d.answers[k];
+      if (d.answers.priceExpectationValue != null) base.priceGuess = d.answers.priceExpectationValue;
+      a = base;
+      if (d.plan === 'mensal' || d.plan === 'anual') planoWeb = d.plan;
+      // A assinatura do link do e-mail (resume) nao vale na /obrigado/: usa o handoff_token se o servidor mandar;
+      // sem ele, o callback leva so o lead_id (a /obrigado/ entao avisa que o codigo chega por e-mail).
+      lead = { id: m[1].toLowerCase(), resumeSig: m[2].toLowerCase(), token: typeof d.handoff_token === 'string' && /^[0-9a-f]{16,64}$/i.test(d.handoff_token) ? d.handoff_token.toLowerCase() : null,
+        name: d.name || a.fullName || '', email: d.email, whatsapp: soDigitos(d.whatsapp || '') };
+      medir('web_quiz_resumed');
+      return true;
+    } catch (e) { return false; }
   }
 
   // ─── So na web, enquanto TF.PAGAMENTO_ATIVO e falso: baixar o app ───────────
@@ -2137,5 +2373,9 @@
     value: Value, price_reveal: PriceReveal, lead_form: LeadForm, download: Download,
   };
 
-  show('welcome', false);
+  // Com ?retomar= valido, abre direto na revelacao do preco; senao, o quiz do comeco.
+  if (URL_PARAMS.has('retomar') && TF.PAGAMENTO_ATIVO) {
+    const pre = document.getElementById('pre-btn'); if (pre) pre.disabled = true;
+    retomar().then((ok) => show(ok ? 'price_reveal' : 'welcome', false));
+  } else show('welcome', false);
 })();

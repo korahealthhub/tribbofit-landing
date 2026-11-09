@@ -532,3 +532,32 @@ body { font-size: 17px; line-height: 1.55; }
 @media (prefers-reduced-motion: reduce) {
   .enter, .fade-up, .fade-down, .fade { animation-duration: 1ms; animation-delay: 0ms !important; }
 }
+
+/* Cadastro com pagamento (TF.PAGAMENTO_ATIVO): erros, sugestao de e-mail, escolha do plano */
+.field-erro { font-size: 13px; line-height: 18px; color: var(--amber); margin-top: 6px; }
+.field-erro:empty { display: none; }
+.input[aria-invalid="true"] { border-color: var(--amber); }
+.email-dica:empty { display: none; }
+.dica-btn { margin-top: 8px; padding: 6px 12px; border-radius: 100px; background: var(--lilas); color: var(--teal); font-size: 14px; line-height: 20px; text-align: left; }
+.lead-erro { margin-top: 0; font-size: 14px; line-height: 20px; }
+.lead-erro:empty { display: none; }
+.isca { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+.plan-card.escolha { width: 100%; text-align: left; font: inherit; color: inherit; cursor: pointer; }
+.plan-card.escolha.best:not(.sel) { border: 1px solid var(--linha); background: var(--card); }
+.plan-card.escolha.sel { border: 2px solid var(--teal); background: var(--lilas); }
+.plan-card.escolha .radio { flex: none; }
+.lead-aviso.gap8 { margin-top: 12px; }
+.lead-ok { gap: 24px; }
+.done-badge.pop { animation: okPop 420ms cubic-bezier(.2,1.4,.4,1) both; }
+@keyframes okPop { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .done-badge.pop { animation-duration: 1ms; } }
+
+/* Tela 49B com pagamento: garantias, prova e formas de pagamento em volta do botao */
+.pr-garantias { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.pr-garantias li { display: flex; align-items: center; gap: 8px; font-size: 14px; line-height: 19px; color: var(--t1); }
+.pr-garantias b { font-weight: 700; }
+.pr-prova { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; font-size: 13px; line-height: 18px; color: var(--t2); margin-top: -2px; }
+.pr-prova b { color: var(--t1); }
+.pr-estrelas { display: inline-flex; gap: 1px; }
+.pr-pag { display: flex; justify-content: center; flex-wrap: wrap; gap: 4px 14px; font-size: 12.5px; line-height: 16px; color: var(--t2); }
+.pr-pag span { display: inline-flex; align-items: center; gap: 5px; }
