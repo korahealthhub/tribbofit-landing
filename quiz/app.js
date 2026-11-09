@@ -2120,6 +2120,15 @@
     for (const [k, val] of Object.entries(TF.utm || {})) if (/^utm_[a-z]+$/.test(k) || k === 'fbclid') utm[k] = String(val).slice(0, 500);
     return utm;
   };
+  // Cookie _fbp da Meta (criado pelo pixel na pagina inicial ou na /plano/), so com o aceite de cookies
+  // ('tribbo_consent' = 'accepted', a mesma chave do consent.js). Sem aceite, nao manda nada.
+  const fbpComAceite = () => {
+    try {
+      if (localStorage.getItem('tribbo_consent') !== 'accepted') return null;
+      const m = document.cookie.match(/(?:^|;\s*)_fbp=([^;]+)/);
+      return m && /^fb\.\d\.\d+\.\d+$/.test(m[1]) ? m[1] : null;
+    } catch (e) { return null; }
+  };
   // Checkout da Cakto ja preenchido. callback = lead_id.assinatura (so letras, numeros, - e .; 69 caracteres).
   function irParaCakto() {
     const F = window.TF_FUNIL;
@@ -2248,7 +2257,7 @@
       for (const k of ['priceGuess', 'termsAcceptedAt', 'healthDataConsentAt', 'educationalConsentAt', 'ofertasAceitasEm']) delete respostas[k];
       const utm = utmDoQuiz();
       const corpo = {
-        name: v.n, email: v.e, whatsapp: v.w, plan: planoWeb, answers: respostas, utm, fbclid: utm.fbclid || null,
+        name: v.n, email: v.e, whatsapp: v.w, plan: planoWeb, answers: respostas, utm, fbclid: utm.fbclid || null, fbp: fbpComAceite(),
         consents: {
           terms_accepted_at: a.termsAcceptedAt, terms_version: F.termosVersao, health_data_consent_at: a.healthDataConsentAt,
           marketing_opt_in: st.ofertas, marketing_opt_in_at: st.ofertas ? a.ofertasAceitasEm : null,
