@@ -143,12 +143,12 @@
       };
       requestAnimationFrame(passo);
     };
-    // Lista do treino de exemplo com o GIF de cada exercicio (/quiz/exercicios.js). No maximo 4 GIFs na tela:
-    // o 5o fica com o icone. Os GIFs so baixam perto da tela (loading="lazy").
+    // Lista do treino de exemplo com o GIF de cada exercicio (/quiz/exercicios.js), nos 5 exercicios.
+    // Sem GIF na lista, fica o icone. Os GIFs so baixam perto da tela (loading="lazy").
     var exercicios = function (lista) {
       var gif = window.TF && TF.gifDe;
-      cards.querySelector('[data-lista="exercicios"]').innerHTML = lista.map(function (i, n) {
-        var src = n < 4 && gif ? TF.gifDe(i[0]) : null;
+      cards.querySelector('[data-lista="exercicios"]').innerHTML = lista.map(function (i) {
+        var src = gif ? TF.gifDe(i[0]) : null;
         var media = src
           ? '<span class="exg"><img src="' + src + '" alt="" width="44" height="44" loading="lazy" decoding="async"></span>'
           : '<span class="exg ico-ex" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5v11M17.5 6.5v11M3.5 9.5v5M20.5 9.5v5M6.5 12h11"/></svg></span>';
