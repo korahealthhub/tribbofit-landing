@@ -6,4 +6,4 @@ TF.PRECO = { mensal: 29.90, anual: 229.90, anualPorMes: 19.16 };
 
 // Pagamento na web. false (hoje): depois do preco revelado, o quiz pula o cadastro e mostra
 // "Baixe o app e comece agora" com os botoes das lojas. true: volta o cadastro com os aceites.
-TF.PAGAMENTO_ATIVO = false;
+TF.PAGAMENTO_ATIVO = true;

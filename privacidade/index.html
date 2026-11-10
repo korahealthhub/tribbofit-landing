@@ -357,7 +357,7 @@
         <div class="doc-header-icon">🔒</div>
         <div class="doc-title">Política de Privacidade</div>
         <div class="doc-subtitle">Tribbo Fit</div>
-        <div class="doc-meta">Última atualização: 8 de novembro de 2026 &nbsp;·&nbsp; Versão 2.5</div>
+        <div class="doc-meta">Última atualização: 9 de novembro de 2026 &nbsp;·&nbsp; Versão 2.6</div>
       </div>
 
       <div class="notice">
@@ -473,6 +473,12 @@
         <h3>Meta Pixel (site tribbofit.com.br)</h3>
         <p>Medição de anúncios no site. <strong>Só é carregado se você tocar em "Aceitar" na faixa de cookies.</strong> Recebe as páginas visitadas, o toque nos botões da App Store ou do Google Play (com a loja escolhida), o toque em "Criar meu plano grátis" na /plano/, dados técnicos do navegador, o endereço IP e o cookie da Meta (_fbp). <strong>Não recebe dados de saúde, e-mail nem telefone</strong>, nem nada do que você digita na calculadora. Se você recusar, o pixel não é carregado. Para mudar a escolha, veja a seção 14. <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">Política de privacidade da Meta</a>.</p>
 
+        <h3>Meta (API de Conversões, cadastro do quiz)</h3>
+        <p>Medição de anúncios. Quando você conclui o cadastro do quiz, nosso servidor envia à Meta um evento de cadastro com nome, e-mail e telefone criptografados (SHA-256), o identificador do clique no anúncio (fbclid), dados técnicos do navegador (endereço IP e tipo de navegador) e, só se você aceitou os cookies, o identificador do navegador criado pela Meta (cookie _fbp). <strong>Nenhuma resposta do quiz e nenhum dado de saúde vão para a Meta.</strong> Veja a seção 14. <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">Política de privacidade da Meta</a>.</p>
+
+        <h3>Cakto (pagamento no site)</h3>
+        <p>Processa o pagamento das assinaturas feitas pelo site. Recebe nome, e-mail e telefone já preenchidos por nós e coleta os dados de pagamento (cartão, Pix e CPF). Nós não recebemos nem guardamos o número do cartão, o CPF ou o endereço. A Cakto nos avisa do resultado do pagamento (aprovado, renovado, cancelado ou reembolsado), do valor e da forma de pagamento, para liberar e manter o seu acesso. A compra também é informada à Meta pela própria Cakto, conforme a política de privacidade da Cakto.</p>
+
         <h3>Google Analytics 4 (site tribbofit.com.br)</h3>
         <p>Estatísticas de visitas ao site. <strong>Só é carregado se você tocar em "Aceitar" na faixa de cookies.</strong> Recebe as páginas visitadas, a origem da visita (por exemplo, "instagram / anúncio / lançamento"), o toque nos botões das lojas, dados técnicos do navegador e do aparelho, o endereço IP e os cookies do Google Analytics (_ga). <strong>Não recebe dados de saúde, e-mail nem telefone</strong>, nem nada do que você digita na calculadora. <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Política de privacidade do Google</a>.</p>
 
@@ -513,7 +519,7 @@
           <li>Data de início e de expiração da assinatura;</li>
           <li>Origem do acesso Premium (assinatura paga, cortesia, ou conta interna).</li>
         </ul>
-        <p>Não armazenamos dados do seu cartão de crédito ou informações financeiras — esses dados ficam exclusivamente com a Apple, o Google, e o RevenueCat, conforme suas respectivas políticas.</p>
+        <p>Não armazenamos dados do seu cartão de crédito ou informações financeiras — esses dados ficam exclusivamente com a Apple, o Google, e o RevenueCat ou, nas assinaturas feitas pelo site, com a Cakto, conforme suas respectivas políticas.</p>
       </div>
 
       <!-- 5 -->
@@ -535,6 +541,8 @@
           <li><strong>Arquivos PDF de upload:</strong> processados e descartados após extração; não são armazenados permanentemente</li>
           <li><strong>Dados de erro (Sentry):</strong> retidos por até 90 dias conforme política padrão do Sentry</li>
           <li><strong>Contagem de cliques nos links de download do site:</strong> guardada por até 24 meses e depois apagada automaticamente. Não identifica ninguém (veja a seção 14).</li>
+          <li><strong>Cadastro do quiz sem compra:</strong> nome, e-mail, WhatsApp e respostas do quiz são apagados em até 30 dias se não houver compra</li>
+          <li><strong>Caixa de ofertas marcada:</strong> nome, e-mail e WhatsApp ficam guardados por 12 meses para o envio de descontos, benefícios e dicas, mesmo sem compra, ou até você cancelar</li>
           <li><strong>Após exclusão da conta:</strong> todos os dados pessoais são removidos permanentemente dos nossos sistemas em até 30 dias, exceto quando houver obrigação legal de retenção</li>
         </ul>
 
@@ -676,7 +684,10 @@
         <h3>Na página do plano (/plano/) e no quiz (/quiz/)</h3>
         <p><strong>Meta Pixel só depois do aceite.</strong> Na /plano/ e na /plano/comunidade/, o Meta Pixel só é carregado se você tocar em "Aceitar" na faixa de cookies. Ele registra a página vista, o toque em "Criar meu plano grátis" e o toque nos botões das lojas. O Google Analytics e o Pixel do TikTok não são usados nessas páginas. O quiz (/quiz/) não tem Meta Pixel nem faixa de cookies.</p>
         <p><strong>Medição de uso no PostHog, sem cookie.</strong> Na /plano/, na /plano/comunidade/ e no quiz, contamos no PostHog (servidor nos Estados Unidos) a página vista, qual botão "Criar meu plano grátis" foi tocado, quais telas do quiz foram abertas (só o número e o nome da tela), o toque em "Voltar ao site", o valor que você chutou no jogo do preço, a exibição do preço e a loja escolhida no fim, junto com a origem da visita (os parâmetros utm do link do anúncio). Não usamos cookie nem guardamos nada no seu navegador: o identificador existe só enquanto a página está aberta e não criamos perfil de pessoa. Como em qualquer acesso à internet, o PostHog recebe o endereço IP e dados técnicos do navegador. Por não usar cookie, essa medição não depende da faixa.</p>
-        <p><strong>As respostas do quiz não saem da página.</strong> Objetivo, peso, altura, idade, saúde, treino e alimentação ficam só na memória da página, para montar o seu plano na tela, e somem ao fechar. Elas não vão para o PostHog nem para nenhum anunciante (Meta, Google ou TikTok), e nome, e-mail e WhatsApp também não são enviados.</p>
+        <p><strong>Respostas do quiz enviadas no cadastro.</strong> Enquanto você responde, as respostas (objetivo, peso, altura, idade, saúde, treino e alimentação) ficam só na memória da página. Quando você preenche o cadastro e toca em "Continuar", elas são enviadas ao nosso servidor (Supabase, servidor nos Estados Unidos), junto com seu nome, e-mail, WhatsApp, os aceites e a origem da visita (utm e fbclid), para montar o seu plano e criar sua conta no app depois do pagamento. Se não houver compra, apagamos o cadastro e as respostas em até 30 dias. As respostas do quiz nunca vão para o PostHog nem para anunciantes.</p>
+        <p><strong>Ofertas, só com a sua autorização.</strong> Se você marcar a caixa "Quero receber descontos exclusivos, benefícios e dicas por e-mail e WhatsApp", guardamos seu nome, e-mail e WhatsApp por 12 meses para enviar essas mensagens, mesmo que você não compre. A caixa vem desmarcada e não é obrigatória. Você pode cancelar a qualquer momento pelo link no fim de cada e-mail, respondendo "sair" no WhatsApp ou escrevendo para suporte@tribbofit.com.br.</p>
+        <p><strong>Evento de cadastro enviado à Meta.</strong> Quando o cadastro é concluído, nosso servidor avisa a Meta (Facebook e Instagram) que houve um cadastro vindo do anúncio, para medir e melhorar nossas campanhas. Vão o seu nome, e-mail e telefone criptografados (transformados em um código irreversível, SHA-256), o identificador do clique no anúncio (fbclid), a data, dados técnicos do navegador (endereço IP e tipo de navegador) e, só se você aceitou os cookies, o identificador do navegador criado pela Meta (cookie _fbp). Nenhuma resposta do quiz e nenhum dado de saúde vão para a Meta.</p>
+        <p><strong>Pagamento processado pela Cakto.</strong> O pagamento é feito no checkout da Cakto (Cakto Pagamentos), que recebe nome, e-mail e telefone já preenchidos por nós e coleta os dados de pagamento (cartão, Pix e CPF). Nós não recebemos nem guardamos o número do cartão, o CPF ou o endereço. A Cakto nos avisa do resultado do pagamento (aprovado, renovado, cancelado ou reembolsado), do valor e da forma de pagamento, para liberar e manter o seu acesso. A compra também é informada à Meta pela própria Cakto, conforme a política de privacidade da Cakto.</p>
 
         <h3>Contagem de cliques sem cookie</h3>
         <p>Quando você abre um link de download do site (como /ig, /tt ou /download) ou toca em um botão da App Store ou do Google Play, contamos esse clique no nosso servidor (Supabase, servidor nos Estados Unidos), mesmo sem o aceite dos cookies. Gravamos apenas: de onde veio o link (por exemplo, "instagram / anúncio / lançamento / vídeo 3"), o tipo de aparelho (iPhone, Android ou computador), qual link foi usado, se foi aberto dentro do app do Instagram ou do TikTok, e a data e a hora. <strong>Não gravamos o endereço IP, não usamos cookies e não criamos nenhum identificador</strong>, então não dá para saber quem clicou nem juntar dois cliques da mesma pessoa. Como em qualquer acesso à internet, o provedor do servidor recebe o endereço IP para entregar a resposta e pode mantê-lo em registros técnicos temporários. Os números são usados só de forma agregada, para saber quais canais trazem downloads, e ficam guardados por até 24 meses.</p>
@@ -701,7 +712,7 @@
 
       <div class="footer">
         <p>© 2026 Tribbo Fit · <a href="mailto:suporte@tribbofit.com.br" style="color:var(--teal);text-decoration:none;">suporte@tribbofit.com.br</a></p>
-        <p style="margin-top:4px;">Última atualização: 8 de novembro de 2026</p>
+        <p style="margin-top:4px;">Última atualização: 9 de novembro de 2026</p>
       </div>
 
     </div><!-- /pt -->
@@ -714,7 +725,7 @@
         <div class="doc-header-icon">🔒</div>
         <div class="doc-title">Privacy Policy</div>
         <div class="doc-subtitle">Tribbo Fit</div>
-        <div class="doc-meta">Last updated: November 8, 2026 &nbsp;·&nbsp; Version 2.5</div>
+        <div class="doc-meta">Last updated: November 9, 2026 &nbsp;·&nbsp; Version 2.6</div>
       </div>
 
       <div class="notice">
@@ -830,6 +841,12 @@
         <h3>Meta Pixel (tribbofit.com.br website)</h3>
         <p>Ad measurement on the website. <strong>It only loads if you tap "Aceitar" (Accept) on the cookie banner.</strong> Receives the pages you visit, taps on the App Store or Google Play buttons (with the store chosen), taps on "Criar meu plano grátis" on /plano/, technical browser data, your IP address and the Meta cookie (_fbp). <strong>It does not receive health data, email or phone number</strong>, or anything you type into the calculator. If you decline, the pixel is not loaded. To change your choice, see section 14. <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">Meta privacy policy</a>.</p>
 
+        <h3>Meta (Conversions API, quiz sign-up)</h3>
+        <p>Ad measurement. When you complete the quiz sign-up, our server sends Meta a sign-up event with your name, email and phone number encrypted (SHA-256), the ad click identifier (fbclid), technical browser data (IP address and browser type) and, only if you accepted cookies, the browser identifier created by Meta (the _fbp cookie). <strong>No quiz answers and no health data go to Meta.</strong> See section 14. <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener">Meta privacy policy</a>.</p>
+
+        <h3>Cakto (website payments)</h3>
+        <p>Processes payments for subscriptions bought on the website. Receives your name, email and phone number, pre-filled by us, and collects the payment details (card, Pix and CPF). We do not receive or store your card number, CPF or address. Cakto tells us the payment result (approved, renewed, cancelled or refunded), the amount and the payment method, so we can grant and keep your access. Cakto itself also reports the purchase to Meta, under Cakto's privacy policy.</p>
+
         <h3>Google Analytics 4 (tribbofit.com.br website)</h3>
         <p>Website visit statistics. <strong>It only loads if you tap "Aceitar" (Accept) on the cookie banner.</strong> Receives the pages you visit, where the visit came from (for example, "instagram / ad / launch"), taps on the store buttons, technical browser and device data, your IP address and the Google Analytics cookies (_ga). <strong>It does not receive health data, email or phone number</strong>, or anything you type into the calculator. <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google privacy policy</a>.</p>
 
@@ -870,7 +887,7 @@
           <li>Subscription start and expiration dates;</li>
           <li>Source of Premium access (paid subscription, complimentary, or internal account).</li>
         </ul>
-        <p>We do not store your credit card data or financial information — this data remains exclusively with Apple, Google, and RevenueCat, according to their respective policies.</p>
+        <p>We do not store your credit card data or financial information — this data remains exclusively with Apple, Google, and RevenueCat or, for subscriptions bought on the website, with Cakto, according to their respective policies.</p>
       </div>
 
       <!-- 5 -->
@@ -892,6 +909,8 @@
           <li><strong>Uploaded PDF files:</strong> processed and discarded after extraction; not permanently stored</li>
           <li><strong>Error data (Sentry):</strong> retained for up to 90 days per Sentry's default policy</li>
           <li><strong>Click counts on the website's download links:</strong> kept for up to 24 months and then deleted automatically. They do not identify anyone (see section 14).</li>
+          <li><strong>Quiz sign-up without a purchase:</strong> name, email, WhatsApp and quiz answers are deleted within 30 days if there is no purchase</li>
+          <li><strong>Offers box checked:</strong> name, email and WhatsApp are kept for 12 months to send discounts, benefits and tips, even without a purchase, or until you unsubscribe</li>
           <li><strong>After account deletion:</strong> all personal data is permanently removed from our systems within 30 days, unless there is a legal retention obligation</li>
         </ul>
 
@@ -1033,7 +1052,10 @@
         <h3>On the plan page (/plano/) and in the quiz (/quiz/)</h3>
         <p><strong>Meta Pixel only after consent.</strong> On /plano/ and /plano/comunidade/, the Meta Pixel only loads if you tap "Aceitar" (Accept) on the cookie banner. It records the page viewed, taps on "Criar meu plano grátis" (Create my free plan) and taps on the store buttons. Google Analytics and the TikTok Pixel are not used on these pages. The quiz (/quiz/) has no Meta Pixel and no cookie banner.</p>
         <p><strong>Cookie-free usage measurement in PostHog.</strong> On /plano/, /plano/comunidade/ and in the quiz, we count in PostHog (server in the United States) the page viewed, which "Create my free plan" button was tapped, which quiz screens were opened (only the screen number and name), taps on "Voltar ao site" (Back to site), the value you guessed in the price game, the price being shown and the store chosen at the end, together with the visit source (the utm parameters of the ad link). We do not use cookies or store anything in your browser: the identifier exists only while the page is open and no person profile is created. As with any internet access, PostHog receives the IP address and technical browser data. Because it uses no cookies, this measurement does not depend on the banner.</p>
-        <p><strong>Quiz answers never leave the page.</strong> Goal, weight, height, age, health, training and food answers stay only in the page memory, to build your plan on screen, and are gone when you close it. They are not sent to PostHog or to any advertiser (Meta, Google or TikTok), and name, email and WhatsApp are not sent either.</p>
+        <p><strong>Quiz answers sent at sign-up.</strong> While you answer, the answers (goal, weight, height, age, health, training and food) stay only in the page memory. When you fill in the sign-up form and tap "Continuar" (Continue), they are sent to our server (Supabase, server in the United States), together with your name, email, WhatsApp, your consents and the visit source (utm and fbclid), to build your plan and create your app account after payment. If there is no purchase, we delete the sign-up and the answers within 30 days. Quiz answers never go to PostHog or to advertisers.</p>
+        <p><strong>Offers, only with your permission.</strong> If you check the box "Quero receber descontos exclusivos, benefícios e dicas por e-mail e WhatsApp" (I want to receive exclusive discounts, benefits and tips by email and WhatsApp), we keep your name, email and WhatsApp for 12 months to send these messages, even if you do not buy. The box is unchecked by default and is not required. You can unsubscribe at any time through the link at the end of each email, by replying "sair" on WhatsApp or by writing to suporte@tribbofit.com.br.</p>
+        <p><strong>Sign-up event sent to Meta.</strong> When the sign-up is completed, our server tells Meta (Facebook and Instagram) that a sign-up came from an ad, to measure and improve our campaigns. What goes: your name, email and phone number encrypted (turned into an irreversible code, SHA-256), the ad click identifier (fbclid), the date, technical browser data (IP address and browser type) and, only if you accepted cookies, the browser identifier created by Meta (the _fbp cookie). No quiz answers and no health data go to Meta.</p>
+        <p><strong>Payment processed by Cakto.</strong> Payment happens in the Cakto checkout (Cakto Pagamentos), which receives your name, email and phone number pre-filled by us and collects the payment details (card, Pix and CPF). We do not receive or store your card number, CPF or address. Cakto tells us the payment result (approved, renewed, cancelled or refunded), the amount and the payment method, so we can grant and keep your access. Cakto itself also reports the purchase to Meta, under Cakto's privacy policy.</p>
 
         <h3>Cookie-free click counting</h3>
         <p>When you open a download link on the website (such as /ig, /tt or /download) or tap an App Store or Google Play button, we count that click on our server (Supabase, server in the United States), even without cookie consent. We only record: where the link came from (for example, "instagram / ad / launch / video 3"), the type of device (iPhone, Android or computer), which link was used, whether it was opened inside the Instagram or TikTok app, and the date and time. <strong>We do not record the IP address, do not use cookies and do not create any identifier</strong>, so it is not possible to know who clicked or to link two clicks from the same person. As with any internet access, the server provider receives the IP address to deliver the response and may keep it in temporary technical logs. The numbers are only used in aggregate, to learn which channels bring downloads, and are kept for up to 24 months.</p>
@@ -1058,7 +1080,7 @@
 
       <div class="footer">
         <p>© 2026 Tribbo Fit · <a href="mailto:suporte@tribbofit.com.br" style="color:var(--teal);text-decoration:none;">suporte@tribbofit.com.br</a></p>
-        <p style="margin-top:4px;">Last updated: November 8, 2026</p>
+        <p style="margin-top:4px;">Last updated: November 9, 2026</p>
       </div>
 
     </div><!-- /en -->

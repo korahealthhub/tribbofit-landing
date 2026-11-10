@@ -8,7 +8,7 @@
  */
 (function () {
   'use strict';
-  var AMBIENTE = 'dev'; // 'dev' ou 'prod'
+  var AMBIENTE = 'prod'; // 'dev' ou 'prod'
 
   var SUPABASE = {
     dev: 'https://wqdxxdwplaoyirdirjif.supabase.co',
