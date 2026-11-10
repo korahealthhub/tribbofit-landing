@@ -75,3 +75,6 @@ footer.ob-rodape { padding-top: 8px; padding-bottom: calc(env(safe-area-inset-bo
 .ob-abrir { padding: 0 16px; font-size: 16px; white-space: nowrap; }
 p.ob-errado { display: block; color: var(--cinza); font-size: 15px; line-height: 1.5; margin-top: 8px; }
 p.ob-errado a { color: var(--violeta); }
+/* Sem codigo na URL: caixa da ajuda no WhatsApp */
+.ob-ajuda h2 { font-size: 20px; line-height: 1.25; letter-spacing: -.015em; }
+.ob-ajuda .ob-abrir { margin-top: 14px; }

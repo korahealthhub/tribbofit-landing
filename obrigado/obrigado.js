@@ -7,7 +7,8 @@
  *   ready com o codigo vencido → aviso com o WhatsApp para liberar o acesso
  *   ready    → e-mail da conta e os 2 passos (no 2: "Já instalei: abrir meu plano", koraapp://entrar?acesso=, e o codigo com "Copiar")
  *   refunded → aviso + suporte
- *   404 ou sem ?acesso → "o código chega no seu e-mail" + suporte
+ *   sem ?acesso → "Pagamento aprovado!", o codigo foi para o e-mail, os 3 passos, as lojas e a ajuda no WhatsApp
+ *   404      → "o código chega no seu e-mail" + suporte
  * Nada guardado no navegador. Eventos (PostHog sem cookie): web_success_viewed, web_code_copied, web_store_clicked, web_app_open_clicked, web_whatsapp_clicked.
  */
 (function () {
@@ -67,11 +68,62 @@
       h('p', { class: 'ob-sub' }, 'Se preferir, escreva para ', h('a', { href: mailSuporte('Meu código de acesso venceu') }, SUPORTE), '.')));
   }
 
+  // Celular: botoes das lojas (a do proprio celular primeiro). Computador: QR codes.
+  var ua = navigator.userAgent;
+  var ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  var android = /Android/.test(ua);
+  var celular = ios || android;
+  var loja = function (tipo) {
+    var apple = tipo === 'apple';
+    var minha = apple ? ios : android;
+    return h('a', {
+      class: 'ob-loja' + (minha ? ' mine' : ''), href: apple ? F.lojas.apple : F.lojas.google, target: '_blank', rel: 'noopener',
+      onclick: function () { medir('web_store_clicked', { store: apple ? 'app_store' : 'google_play' }); },
+    },
+      minha && h('span', { class: 'ob-tag' }, 'Para o seu celular'),
+      h('img', { src: apple ? '/plano/assets/app-store.svg' : '/plano/assets/google-play.webp', alt: apple ? 'Baixar na App Store' : 'Disponível no Google Play' }));
+  };
+  var qr = function (tipo) {
+    var apple = tipo === 'apple';
+    return h('a', {
+      class: 'ob-qr', href: apple ? F.lojas.apple : F.lojas.google, target: '_blank', rel: 'noopener',
+      onclick: function () { medir('web_store_clicked', { store: apple ? 'app_store' : 'google_play' }); },
+    },
+      h('img', { class: 'qr', src: apple ? '/obrigado/assets/qr-app-store.svg' : '/obrigado/assets/qr-google-play.svg', alt: apple ? 'QR code da App Store' : 'QR code do Google Play', width: 150, height: 150 }),
+      h('img', { class: 'selo', src: apple ? '/plano/assets/app-store.svg' : '/plano/assets/google-play.webp', alt: '' }));
+  };
+  var ordem = android ? ['google', 'apple'] : ['apple', 'google'];
+  function baixeApp() {
+    return celular
+      ? h('div', { class: 'ob-lojas' }, ordem.map(loja))
+      : [h('p', { class: 'ob-qr-dica' }, 'Aponte a câmera do celular para o QR code da sua loja.'), h('div', { class: 'ob-qrs' }, ordem.map(qr))];
+  }
+  var passo = function (n, titulo, resto) {
+    return h('section', { class: 'ob-card ob-passo' },
+      h('span', { class: 'ob-num', 'aria-hidden': 'true' }, String(n)),
+      h('div', { class: 'ob-passo-txt' }, h('h2', null, titulo), resto));
+  };
+
+  // Sem ?acesso (pagina de obrigado padrao da Cakto, ate o redirecionamento com o codigo ser liberado):
+  // o codigo so chega por e-mail, entao a pagina explica os 3 passos e oferece ajuda no WhatsApp.
+  function semCodigo() {
+    pinta(
+      h('section', { class: 'ob-card' },
+        h('div', { class: 'ob-feito' },
+          h('span', { class: 'ob-ok', html: '<svg viewBox="0 0 24 24" fill="none" stroke="#0E1A1D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>' }),
+          h('h1', null, 'Pagamento aprovado!')),
+        h('p', { class: 'ob-sub' }, 'Enviamos o seu código de acesso para o e-mail que você usou na compra (confira também o lixo eletrônico).')),
+      passo(1, 'Baixe o app', baixeApp()),
+      passo(2, 'Abra o app e toque em "Tenho um código de acesso"', null),
+      passo(3, 'Cole o código que chegou no seu e-mail', h('p', { class: 'ob-sub' }, 'Você só digita as letras e os números, sem o TRB. Não precisa de senha.')),
+      h('section', { class: 'ob-card ob-ajuda' },
+        h('h2', null, 'O e-mail não chegou?'),
+        h('p', { class: 'ob-sub' }, 'Chame a gente no WhatsApp que enviamos o seu código.'),
+        h('a', { class: 'btn ob-abrir', href: whats(MSG_AJUDA), target: '_blank', rel: 'noopener', onclick: function () { medir('web_whatsapp_clicked'); } }, 'Pedir ajuda no WhatsApp'),
+        h('p', { class: 'ob-sub' }, 'Se preferir, escreva para ', h('a', { href: mailSuporte('Meu código de acesso') }, SUPORTE), '.')));
+  }
+
   function pronto(r) {
-    var ua = navigator.userAgent;
-    var ios = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
-    var android = /Android/.test(ua);
-    var celular = ios || android;
 
     // A pessoa digita so as letras e os numeros, sem o TRB: o "Copiar" copia essa parte; o TRB aparece mais claro.
     var semTrb = String(r.code).replace(/^TRB-?/i, '');
@@ -88,26 +140,6 @@
       if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(semTrb).then(feito, plano); else plano();
     });
 
-    var loja = function (tipo) {
-      var apple = tipo === 'apple';
-      var minha = apple ? ios : android;
-      return h('a', {
-        class: 'ob-loja' + (minha ? ' mine' : ''), href: apple ? F.lojas.apple : F.lojas.google, target: '_blank', rel: 'noopener',
-        onclick: function () { medir('web_store_clicked', { store: apple ? 'app_store' : 'google_play' }); },
-      },
-        minha && h('span', { class: 'ob-tag' }, 'Para o seu celular'),
-        h('img', { src: apple ? '/plano/assets/app-store.svg' : '/plano/assets/google-play.webp', alt: apple ? 'Baixar na App Store' : 'Disponível no Google Play' }));
-    };
-    var qr = function (tipo) {
-      var apple = tipo === 'apple';
-      return h('a', {
-        class: 'ob-qr', href: apple ? F.lojas.apple : F.lojas.google, target: '_blank', rel: 'noopener',
-        onclick: function () { medir('web_store_clicked', { store: apple ? 'app_store' : 'google_play' }); },
-      },
-        h('img', { class: 'qr', src: apple ? '/obrigado/assets/qr-app-store.svg' : '/obrigado/assets/qr-google-play.svg', alt: apple ? 'QR code da App Store' : 'QR code do Google Play', width: 150, height: 150 }),
-        h('img', { class: 'selo', src: apple ? '/plano/assets/app-store.svg' : '/plano/assets/google-play.webp', alt: '' }));
-    };
-    var ordem = android ? ['google', 'apple'] : ['apple', 'google'];
 
     var dias = 7;
     if (r.expires_at) { var ms = Date.parse(r.expires_at) - Date.now(); if (ms > 0) dias = Math.max(1, Math.round(ms / 86400000)); }
@@ -127,9 +159,7 @@
         h('span', { class: 'ob-num', 'aria-hidden': 'true' }, '1'),
         h('div', { class: 'ob-passo-txt' },
           h('h2', null, 'Baixe o app'),
-          celular
-            ? h('div', { class: 'ob-lojas' }, ordem.map(loja))
-            : [h('p', { class: 'ob-qr-dica' }, 'Aponte a câmera do celular para o QR code da sua loja.'), h('div', { class: 'ob-qrs' }, ordem.map(qr))])),
+          baixeApp())),
       h('section', { class: 'ob-card ob-passo' },
         h('span', { class: 'ob-num', 'aria-hidden': 'true' }, '2'),
         h('div', { class: 'ob-passo-txt' },
@@ -147,7 +177,7 @@
   // ─── Consulta ───────────────────────────────────────────────────────────────
   var m = /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\.([0-9a-f]{16,64})$/i.exec(new URLSearchParams(location.search).get('acesso') || '');
   if (!m) {
-    semAcesso('Pagamento recebido!', 'Seu código de acesso chega no e-mail que você usou na compra, com o passo a passo para entrar no app.');
+    semCodigo();
     return;
   }
   var corpo = JSON.stringify({ lead_id: m[1].toLowerCase(), token: m[2].toLowerCase() });
