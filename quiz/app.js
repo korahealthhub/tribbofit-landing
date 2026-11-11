@@ -2078,9 +2078,25 @@
   }
 
   // ─── So na web: cadastro (tela 48L) e ida para a Cakto ─────────────────────
-  const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,190}\.[^\s@]{2,}$/;
+  // E-mail valido: sem espacos, um @, parte antes do @ sem ponto no inicio ou no fim e sem dois pontos seguidos,
+  // dominio com pelo menos um ponto e terminacao so de letras (.com, .com.br, .io). Qualquer dominio real passa.
+  function emailValido(e) {
+    if (!e || e.length > 254 || /\s/.test(e)) return false;
+    const m = /^([^@]{1,64})@([^@]{1,253})$/.exec(e);
+    if (!m) return false;
+    const [, local, dom] = m;
+    if (!/^[a-z0-9!#$%&'*+/=?^_`{|}~.-]+$/i.test(local) || local.startsWith('.') || local.endsWith('.') || local.includes('..')) return false;
+    const partes = dom.split('.');
+    if (partes.length < 2) return false;
+    if (!partes.every((x) => /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/i.test(x))) return false;
+    return /^[a-z]{2,24}$/i.test(partes[partes.length - 1]);
+  }
   const DOMINIOS = ['gmail.com', 'hotmail.com', 'outlook.com', 'yahoo.com', 'yahoo.com.br', 'icloud.com', 'live.com', 'msn.com', 'me.com',
     'hotmail.com.br', 'outlook.com.br', 'uol.com.br', 'bol.com.br', 'terra.com.br', 'ig.com.br', 'globo.com', 'globomail.com'];
+  // Erros que a distancia de letras nao pega bem (dominio de outro pais que nao existe para esses provedores).
+  const DOMINIO_FIXO = { 'gmail.com.br': 'gmail.com', 'gmail.br': 'gmail.com', 'icloud.com.br': 'icloud.com', 'yahoo.br': 'yahoo.com.br' };
+  // Terminacao errada em qualquer dominio: empresa.con → empresa.com. (.co fica: e terminacao real.)
+  const FIM_ERRADO = { con: 'com', cmo: 'com', ocm: 'com', vom: 'com', xom: 'com', comm: 'com', coom: 'com', cpm: 'com', cim: 'com' };
   function distancia(x, y) {
     const d = Array.from({ length: x.length + 1 }, (_, i) => [i]);
     for (let j = 1; j <= y.length; j++) d[0][j] = j;
@@ -2094,13 +2110,19 @@
   function sugestaoEmail(email) {
     const m = /^([^\s@]+)@([^\s@]+)$/.exec(email.trim().toLowerCase());
     if (!m) return null;
-    const dom = m[2];
-    if (DOMINIOS.includes(dom)) return null;
+    let dom = m[2].replace(/^\.+|\.+$/g, '').replace(/\.{2,}/g, '.');
+    if (DOMINIOS.includes(dom)) return dom === m[2] ? null : `${m[1]}@${dom}`;
+    if (DOMINIO_FIXO[dom]) return `${m[1]}@${DOMINIO_FIXO[dom]}`;
     // Ate 2 letras de diferenca so em dominios longos; nos curtos (b.com, me.com) so 1, para nao sugerir errado.
     const limite = dom.length >= 8 ? 2 : 1;
     let melhor = null, menor = limite + 1;
     for (const d of DOMINIOS) { const n = distancia(dom, d); if (n < menor) { menor = n; melhor = d; } }
     if (!melhor && !dom.includes('.')) melhor = DOMINIOS.find((d) => d.split('.')[0] === dom) || null;
+    if (!melhor) {
+      // Terminacao errada num dominio qualquer (minhaempresa.con). Se o resto for um provedor conhecido com erro, ja sugere ele.
+      const pts = dom.split('.'), fim = FIM_ERRADO[pts[pts.length - 1]];
+      if (fim && pts.length > 1) { pts[pts.length - 1] = fim; const novo = pts.join('.'); melhor = sugestaoEmail(`${m[1]}@${novo}`)?.split('@')[1] || novo; }
+    }
     return melhor ? `${m[1]}@${melhor}` : null;
   }
   const soDigitos = (v) => String(v || '').replace(/\D/g, '');
@@ -2172,13 +2194,23 @@
     email.el.append(dica);
     const mostraErro = (f, msg) => { erroDe[f.input.id].textContent = msg || ''; f.input.setAttribute('aria-invalid', msg ? 'true' : 'false'); };
 
+    // So recria o botao quando a sugestao muda: ao tocar nele o campo perde o foco, e recriar ali perderia o toque.
+    let dicaAtual = null;
     function atualizaDica() {
       const s = sugestaoEmail(email.input.value);
+      if (s === dicaAtual) return;
+      dicaAtual = s;
       dica.replaceChildren(...(s ? [h('button', { type: 'button', class: 'dica-btn', onclick: () => { email.input.value = s; mostraErro(email, ''); atualizaDica(); } },
         `${L.suggest} `, h('b', null, s), '?')] : []));
     }
+    // Sugestao ja mostrada no envio: no segundo toque segue com o e-mail como esta (nao bloqueia dominio real).
+    let sugestaoVista = null;
     email.input.addEventListener('input', () => { mostraErro(email, ''); atualizaDica(); });
-    email.input.addEventListener('blur', atualizaDica);
+    email.input.addEventListener('blur', () => {
+      const e = email.input.value.trim().toLowerCase();
+      if (e && !emailValido(e)) mostraErro(email, L.errors.email);
+      atualizaDica();
+    });
     nome.input.addEventListener('input', () => mostraErro(nome, ''));
     whats.input.addEventListener('input', () => {
       const fim = whats.input.selectionStart === whats.input.value.length;
@@ -2230,7 +2262,9 @@
       const e = email.input.value.trim().toLowerCase();
       const w = soDigitos(whats.input.value).replace(/^55(?=\d{10,11}$)/, '');
       if (n.length < 2) { mostraErro(nome, L.errors.name); ok = false; }
-      if (!EMAIL_RE.test(e)) { mostraErro(email, L.errors.email); ok = false; }
+      const sug = sugestaoEmail(e);
+      if (!emailValido(e)) { mostraErro(email, L.errors.email); atualizaDica(); ok = false; }
+      else if (sug && sugestaoVista !== e) { sugestaoVista = e; mostraErro(email, L.errors.email); atualizaDica(); ok = false; }
       if (w.length < 10 || w.length > 11) { mostraErro(whats, L.errors.whatsapp); ok = false; }
       if (!ok) { const f = scrollEl.querySelector('[aria-invalid="true"]'); if (f) f.focus(); return null; }
       return { n, e, w };
