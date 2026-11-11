@@ -2182,13 +2182,19 @@
     const plano = F.cakto[planoWeb] ? planoWeb : 'anual';
     const cupom = plano === 'mensal' && lead.cupom ? lead.cupom.codigo : null;
     const callback = lead.id ? (lead.token ? `${lead.id}.${lead.token}` : lead.id) : null;
-    // Registra a ida a Cakto no lead (web-lead-checkout). Sem esperar a resposta: keepalive deixa o pedido
-    // terminar depois da troca de pagina, e text/plain evita a consulta previa de CORS. Falha aqui nunca trava a compra.
+    // Registra a ida a Cakto no lead (web-lead-checkout), sem esperar a resposta. sendBeacon primeiro: o navegador
+    // entrega o pedido mesmo depois de trocar de pagina (no Safari do iPhone, o fetch logo antes de sair pode se perder).
+    // Sem sendBeacon ou se ele recusar: fetch com keepalive. Corpo em text/plain (sem consulta previa de CORS).
+    // Falha aqui nunca trava a compra.
     if (lead.id && lead.token && F.leadCheckout) {
-      try {
-        fetch(F.leadCheckout, { method: 'POST', keepalive: true, credentials: 'omit', headers: { 'Content-Type': 'text/plain' },
-          body: JSON.stringify({ callback, plan: plano, coupon: cupom }) }).catch(() => {});
-      } catch (e) { /* segue para a Cakto */ }
+      const corpo = JSON.stringify({ callback, plan: plano, coupon: cupom });
+      let foi = false;
+      try { if (navigator.sendBeacon) foi = navigator.sendBeacon(F.leadCheckout, corpo); } catch (e) { foi = false; }
+      if (!foi) {
+        try {
+          fetch(F.leadCheckout, { method: 'POST', keepalive: true, credentials: 'omit', headers: { 'Content-Type': 'text/plain' }, body: corpo }).catch(() => {});
+        } catch (e) { /* segue para a Cakto */ }
+      }
     }
     const q = new URLSearchParams({ name: lead.name, email: lead.email, confirmEmail: lead.email, phone: lead.whatsapp });
     // Sem lead gravado (servidor fora ou limite de IP), vai sem callback: o webhook cria a conta pelo e-mail.
