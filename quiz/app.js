@@ -4,7 +4,8 @@
 // que recebe apenas o numero e o nome da tela, o palpite de preco e a loja; nunca as respostas.
 // Com TF.PAGAMENTO_ATIVO, o cadastro (tela 48L) manda as respostas, o contato e os aceites para o
 // Supabase (web-lead, js/funil.js), so quando a pessoa toca em "Continuar" (tela 48L); a revelacao do
-// preco leva para a Cakto. ?retomar=<lead_id>.<assinatura> le o lead de volta (web-lead-resume).
+// preco leva para a Cakto. ?retomar=<lead_id>.<assinatura> (ou o link curto do suporte, ?retomar=<token>&cupom=)
+// le o lead de volta (web-lead-resume). Cada ida a Cakto e registrada no lead (web-lead-checkout).
 (function () {
   'use strict';
   const { T, C } = TF;
@@ -22,8 +23,8 @@
   // Ficam so na memoria da pagina (TF.utm) e voltam para a /plano/ se a pessoa sair pelo topo.
   const URL_PARAMS = new URLSearchParams(location.search);
   TF.utm = Object.fromEntries(URL_PARAMS);
-  delete TF.utm.retomar; // link de volta do e-mail (?retomar=lead_id.assinatura): nao e UTM
-  const PARAMS_SITE = new URLSearchParams(URL_PARAMS); PARAMS_SITE.delete('retomar');
+  delete TF.utm.retomar; delete TF.utm.cupom; // link de volta (?retomar=, &cupom= do link curto): nao e UTM
+  const PARAMS_SITE = new URLSearchParams(URL_PARAMS); PARAMS_SITE.delete('retomar'); PARAMS_SITE.delete('cupom');
   const SITE = T.exit.home + (PARAMS_SITE.toString() ? `?${PARAMS_SITE}` : '');
 
   let a = TF.emptyAnswers();
@@ -663,6 +664,7 @@
       fitText(pre.querySelector('h1'), 2, 0.85);
       const b = document.getElementById('pre-btn');
       b.removeAttribute('id');
+      b.disabled = false; // ?retomar= desliga o botao enquanto consulta; link vencido ou invalido cai aqui
       b.onclick = () => next();
       return;
     }
@@ -2029,6 +2031,25 @@
     }, REDUCED ? 0 : V.stepMs);
   }
 
+  // Prazo do cupom em pt-BR, no horario de Brasilia: "hoje, 23h59", "amanha, 23h59", "sexta, 23h59" ou "23/11, 23h59".
+  function prazoCupom(iso) {
+    const d = new Date(iso);
+    if (!iso || isNaN(d)) return null;
+    const tz = { timeZone: 'America/Sao_Paulo' };
+    const dia = (x) => new Intl.DateTimeFormat('en-CA', { ...tz, year: 'numeric', month: '2-digit', day: '2-digit' }).format(x);
+    const dif = Math.round((Date.parse(dia(d)) - Date.parse(dia(new Date()))) / 86400000);
+    const p = Object.fromEntries(new Intl.DateTimeFormat('pt-BR', { ...tz, weekday: 'long', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
+      .formatToParts(d).map((x) => [x.type, x.value]));
+    const hora = `${p.hour}h${p.minute === '00' ? '' : p.minute}`;
+    const quando = dif === 0 ? 'hoje' : dif === 1 ? 'amanhã' : dif > 1 && dif < 7 ? p.weekday.split('-')[0] : `${p.day}/${p.month}`;
+    return `${quando}, ${hora}`;
+  }
+  // "1º mês por R$ 14,99, depois R$ 29,90/mês. Vale até sexta, 23h59" (sem prazo: so a primeira frase).
+  function linhaCupom(c, mensal) {
+    const prazo = prazoCupom(c.ate);
+    return `${T.priceReveal.couponA} ${c.preco}, ${T.priceReveal.couponB} ${mensal}${T.priceReveal.perMonth}.${prazo ? ` ${T.priceReveal.couponUntil} ${prazo}` : ''}`;
+  }
+
   // ─── Tela 49B, so na web: o preco revelado (no app ele aparece na paywall) ──
   // Os valores vem de preco.js (TF.PRECO); os cards seguem src/utils/planDisplay.ts (planCardLines).
   function PriceReveal() {
@@ -2058,6 +2079,7 @@
           h('div', { class: 'plans', role: escolhe ? 'radiogroup' : null },
             plan('anual', R.annual, `${brl(P.anual)}${R.perYear}`, `${brl(P.anualPorMes)}${R.perMonth}`, true, 150),
             plan('mensal', R.monthly, R.noCommitment, `${brl(P.mensal)}${R.perMonth}`, false, 300)),
+          escolhe && lead && lead.cupom && lead.cupom.preco && caption(linhaCupom(lead.cupom, brl(P.mensal)), 'gap12 center-txt'),
           caption(escolhe ? R.renewalPay : R.renewal, 'gap12 center-txt'),
         ],
         // Com pagamento: garantia e cancelamento acima do botao; nota e numero de pessoas junto dele; Pix e cartao embaixo.
@@ -2152,25 +2174,40 @@
     } catch (e) { return null; }
   };
   // Checkout da Cakto ja preenchido. callback = lead_id.assinatura (so letras, numeros, - e .; 69 caracteres).
+  // Cupom (so do link curto, validado pelo servidor): vai so no Mensal, em &coupon=.
   function irParaCakto() {
     const F = window.TF_FUNIL;
     if (!lead) { goTo('lead_form'); return; }
     medir('web_quiz_checkout_started');
+    const plano = F.cakto[planoWeb] ? planoWeb : 'anual';
+    const cupom = plano === 'mensal' && lead.cupom ? lead.cupom.codigo : null;
+    const callback = lead.id ? (lead.token ? `${lead.id}.${lead.token}` : lead.id) : null;
+    // Registra a ida a Cakto no lead (web-lead-checkout). Sem esperar a resposta: keepalive deixa o pedido
+    // terminar depois da troca de pagina, e text/plain evita a consulta previa de CORS. Falha aqui nunca trava a compra.
+    if (lead.id && lead.token && F.leadCheckout) {
+      try {
+        fetch(F.leadCheckout, { method: 'POST', keepalive: true, credentials: 'omit', headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ callback, plan: plano, coupon: cupom }) }).catch(() => {});
+      } catch (e) { /* segue para a Cakto */ }
+    }
     const q = new URLSearchParams({ name: lead.name, email: lead.email, confirmEmail: lead.email, phone: lead.whatsapp });
     // Sem lead gravado (servidor fora ou limite de IP), vai sem callback: o webhook cria a conta pelo e-mail.
-    if (lead.id) q.set('callback', lead.token ? `${lead.id}.${lead.token}` : lead.id);
+    if (callback) q.set('callback', callback);
     for (const [k, val] of Object.entries(utmDoQuiz())) q.set(k, val);
+    if (cupom) q.set('coupon', cupom);
     // Voltar da Cakto: se o navegador recarregar o quiz, ele abre direto na revelacao do preco (web-lead-resume).
     // So troca o endereco da pagina atual; nada fica guardado no navegador. Sem lead, fica como esta.
+    // Link curto: volta pelo proprio token curto (e o cupom da URL, que o servidor confere de novo).
     const sig = lead.id && (lead.resumeSig || lead.token);
-    if (sig) {
+    if (lead.curto || sig) {
       try {
-        const volta = new URLSearchParams({ retomar: `${lead.id}.${sig}` });
+        const volta = new URLSearchParams(lead.curto ? { retomar: lead.curto } : { retomar: `${lead.id}.${sig}` });
+        if (lead.curto && lead.cupomUrl) volta.set('cupom', lead.cupomUrl);
         for (const [k, val] of Object.entries(utmDoQuiz())) volta.set(k, val);
         history.replaceState(history.state, '', `${location.pathname}?${volta}`);
       } catch (e) { /* sem troca de endereco, segue normal */ }
     }
-    location.href = `${F.cakto[planoWeb] || F.cakto.anual}?${q}`;
+    location.href = `${F.cakto[plano]}?${q}`;
   }
 
   // Tela 48L, so na web com TF.PAGAMENTO_ATIVO: logo depois do resultado do plano e antes do jogo do preco.
@@ -2353,18 +2390,26 @@
   // Link de volta: /quiz/?retomar=<lead_id>.<assinatura> abre direto na revelacao do preco com as respostas
   // daquele lead (funcao web-lead-resume do Supabase). Link invalido, vencido ou sem resposta: quiz do comeco.
   // Contrato: POST { lead_id, token } → 200 { name, email, whatsapp, plan, answers, handoff_token? } | 404/410.
+  // Link curto do suporte: ?retomar=<token de 12 letras, sem ponto>[&cupom=<codigo>] → POST { token, cupom? };
+  // a resposta traz tambem lead_id, coupon, coupon_price e coupon_until. O cupom da tela vem SO da resposta.
   async function retomar() {
     const F = window.TF_FUNIL;
-    const m = /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\.([0-9a-f]{16,64})$/i.exec(URL_PARAMS.get('retomar') || '');
-    if (!m || !TF.PAGAMENTO_ATIVO || !F) return false;
+    const bruto = (URL_PARAMS.get('retomar') || '').trim();
+    const curto = !bruto.includes('.') && /^[A-Za-z0-9_-]{12}$/.test(bruto) ? bruto : null;
+    const m = curto ? null : /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\.([0-9a-f]{16,64})$/i.exec(bruto);
+    if ((!m && !curto) || !TF.PAGAMENTO_ATIVO || !F) return false;
+    const cupomUrl = curto ? (URL_PARAMS.get('cupom') || '').trim().slice(0, 40) || null : null;
+    const pedido = curto ? { token: curto, ...(cupomUrl ? { cupom: cupomUrl } : {}) } : { lead_id: m[1].toLowerCase(), token: m[2].toLowerCase() };
     try {
       const ctl = new AbortController();
       const limite = setTimeout(() => ctl.abort(), 8000);
-      const res = await fetch(F.leadResume, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lead_id: m[1].toLowerCase(), token: m[2].toLowerCase() }), credentials: 'omit', signal: ctl.signal });
+      const res = await fetch(F.leadResume, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pedido), credentials: 'omit', signal: ctl.signal });
       clearTimeout(limite);
       if (!res.ok) return false;
       const d = await res.json();
       if (!d || !d.answers || typeof d.answers !== 'object' || !d.email) return false;
+      const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+      if (curto && !(typeof d.lead_id === 'string' && UUID.test(d.lead_id))) return false;
       const base = TF.emptyAnswers();
       for (const k of Object.keys(base)) if (d.answers[k] !== undefined && d.answers[k] !== null) base[k] = d.answers[k];
       if (d.answers.priceExpectationValue != null) base.priceGuess = d.answers.priceExpectationValue;
@@ -2372,8 +2417,14 @@
       if (d.plan === 'mensal' || d.plan === 'anual') planoWeb = d.plan;
       // A assinatura do link do e-mail (resume) nao vale na /obrigado/: usa o handoff_token se o servidor mandar;
       // sem ele, o callback leva so o lead_id (a /obrigado/ entao avisa que o codigo chega por e-mail).
-      lead = { id: m[1].toLowerCase(), resumeSig: m[2].toLowerCase(), token: typeof d.handoff_token === 'string' && /^[0-9a-f]{16,64}$/i.test(d.handoff_token) ? d.handoff_token.toLowerCase() : null,
-        name: d.name || a.fullName || '', email: d.email, whatsapp: soDigitos(d.whatsapp || '') };
+      lead = { id: curto ? d.lead_id.toLowerCase() : m[1].toLowerCase(), resumeSig: curto ? null : m[2].toLowerCase(),
+        token: typeof d.handoff_token === 'string' && /^[0-9a-f]{16,64}$/i.test(d.handoff_token) ? d.handoff_token.toLowerCase() : null,
+        name: d.name || a.fullName || '', email: d.email, whatsapp: soDigitos(d.whatsapp || ''), curto, cupomUrl };
+      // Cupom aceito pelo servidor: abre no Mensal. Sem cupom na resposta (mesmo com cupom na URL): preco normal, sem aviso.
+      if (curto && typeof d.coupon === 'string' && /^[A-Za-z0-9_-]{1,40}$/.test(d.coupon)) {
+        lead.cupom = { codigo: d.coupon, preco: typeof d.coupon_price === 'string' ? d.coupon_price.slice(0, 20) : null, ate: typeof d.coupon_until === 'string' ? d.coupon_until : null };
+        planoWeb = 'mensal';
+      }
       medir('web_quiz_resumed');
       return true;
     } catch (e) { return false; }

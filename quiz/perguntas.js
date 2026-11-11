@@ -586,6 +586,8 @@ window.TF = window.TF || {};
       guaranteeA: 'Garantia de 7 dias:', guaranteeB: 'não gostou, devolvemos o valor', cancelAnytime: 'Cancele quando quiser',
       rating: '4,8', ratingTail: 'na App Store · mais de 5 mil pessoas', card: 'Cartão', secure: 'Pagamento seguro pela Cakto',
       vsApps: 'contra cerca de R$43 por mês em 3 apps separados',
+      // Linha do cupom (link curto do suporte): "1º mês por R$ 14,99, depois R$ 29,90/mês. Vale até sexta, 23h59"
+      couponA: '1º mês por', couponB: 'depois', couponUntil: 'Vale até',
     },
     // Termos e privacidade: mesmos enderecos de src/utils/legalLinks.ts, no proprio site.
     links: { terms: '/termos/', privacy: '/privacidade/' },

@@ -22,6 +22,8 @@
     acessoStatus: SUPABASE[AMBIENTE] + '/functions/v1/web-access-status',
     // Link de volta (?retomar=): lê o lead pelo lead_id e a assinatura.
     leadResume: SUPABASE[AMBIENTE] + '/functions/v1/web-lead-resume',
+    // Ida à Cakto (toque no botão de comprar): registra no lead, sem esperar a resposta.
+    leadCheckout: SUPABASE[AMBIENTE] + '/functions/v1/web-lead-checkout',
     cakto: {
       mensal: 'https://pay.cakto.com.br/vck2kfj_1298134',
       anual: 'https://pay.cakto.com.br/cons8xz_1298173'
