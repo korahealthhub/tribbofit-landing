@@ -538,7 +538,7 @@ body { font-size: 17px; line-height: 1.55; }
 .field-erro:empty { display: none; }
 .input[aria-invalid="true"] { border-color: var(--amber); }
 .email-dica:empty { display: none; }
-.dica-btn { margin-top: 8px; padding: 6px 12px; border-radius: 100px; background: var(--lilas); color: var(--teal); font-size: 14px; line-height: 20px; text-align: left; }
+.dica-btn { margin-top: 8px; padding: 6px 12px; border-radius: 100px; background: var(--lilas); color: var(--teal); font-size: 14px; line-height: 20px; text-align: left; max-width: 100%; overflow-wrap: anywhere; }
 .lead-erro { margin-top: 0; font-size: 14px; line-height: 20px; }
 .lead-erro:empty { display: none; }
 .isca { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
