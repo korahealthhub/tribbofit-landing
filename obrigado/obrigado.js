@@ -57,15 +57,15 @@
     pinta(h('section', { class: 'ob-card' },
       h('h1', null, titulo),
       h('p', { class: 'ob-sub' }, texto),
-      h('p', { class: 'ob-sub' }, 'Não chegou? Confira o spam ou escreva para ', h('a', { href: mailSuporte('Meu código de acesso') }, SUPORTE), '.')));
+      h('p', { class: 'ob-sub' }, 'Não chegou? Confira o spam ou escreva para ', h('a', { href: mailSuporte('Meu código de login') }, SUPORTE), '.')));
   }
 
   function vencido() {
     pinta(h('section', { class: 'ob-card' },
-      h('h1', null, 'Este código venceu.'),
-      h('p', { class: 'ob-sub' }, 'Chame a gente no WhatsApp que liberamos seu acesso na hora.'),
+      h('h1', null, 'Este código de login venceu.'),
+      h('p', { class: 'ob-sub' }, 'No app, toque em Já sou assinante e depois em Receber código no e-mail do pagamento. Ou chame a gente no WhatsApp.'),
       h('a', { class: 'btn ob-abrir', href: whats(MSG_AJUDA), target: '_blank', rel: 'noopener', onclick: function () { medir('web_whatsapp_clicked'); } }, 'Chamar no WhatsApp'),
-      h('p', { class: 'ob-sub' }, 'Se preferir, escreva para ', h('a', { href: mailSuporte('Meu código de acesso venceu') }, SUPORTE), '.')));
+      h('p', { class: 'ob-sub' }, 'Se preferir, escreva para ', h('a', { href: mailSuporte('Meu código de login venceu') }, SUPORTE), '.')));
   }
 
   // Celular: botoes das lojas (a do proprio celular primeiro). Computador: QR codes.
@@ -112,15 +112,16 @@
         h('div', { class: 'ob-feito' },
           h('span', { class: 'ob-ok', html: '<svg viewBox="0 0 24 24" fill="none" stroke="#0E1A1D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>' }),
           h('h1', null, 'Pagamento aprovado!')),
-        h('p', { class: 'ob-sub' }, 'Enviamos o seu código de acesso para o e-mail que você usou na compra (confira também o lixo eletrônico).')),
+        h('p', { class: 'ob-sub' }, 'Enviamos o seu código de login para o e-mail do pagamento. Confira também o spam.')),
       passo(1, 'Baixe o app', baixeApp()),
-      passo(2, 'Abra o app e toque em "Tenho um código de acesso"', null),
-      passo(3, 'Cole o código que chegou no seu e-mail', h('p', { class: 'ob-sub' }, 'Você só digita as letras e os números, sem o TRB. Não precisa de senha.')),
+      passo(2, 'Na primeira tela do app, toque em Já sou assinante (em versões antigas: Tenho um código de acesso).',
+        h('p', { class: 'ob-aviso' }, h('b', null, 'Não toque em Criar meu plano:'), ' sua assinatura já está ativa, não assine de novo no app.')),
+      passo(3, 'Cole o código de login', h('p', { class: 'ob-sub' }, 'Pode colar com ou sem o TRB. Não precisa de senha.')),
       h('section', { class: 'ob-card ob-ajuda' },
         h('h2', null, 'O e-mail não chegou?'),
         h('p', { class: 'ob-sub' }, 'Chame a gente no WhatsApp que enviamos o seu código.'),
         h('a', { class: 'btn ob-abrir', href: whats(MSG_AJUDA), target: '_blank', rel: 'noopener', onclick: function () { medir('web_whatsapp_clicked'); } }, 'Pedir ajuda no WhatsApp'),
-        h('p', { class: 'ob-sub' }, 'Se preferir, escreva para ', h('a', { href: mailSuporte('Meu código de acesso') }, SUPORTE), '.')));
+        h('p', { class: 'ob-sub' }, 'Se preferir, escreva para ', h('a', { href: mailSuporte('Meu código de login') }, SUPORTE), '.')));
   }
 
   function pronto(r) {
@@ -148,31 +149,25 @@
       h('section', { class: 'ob-card' },
         h('div', { class: 'ob-feito' },
           h('span', { class: 'ob-ok', html: '<svg viewBox="0 0 24 24" fill="none" stroke="#0E1A1D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>' }),
-          h('h1', null, 'Pronto! Seu acesso está liberado.')),
+          h('h1', null, 'Pagamento aprovado. Seu plano está sendo montado.')),
         r.email && h('div', { class: 'ob-conta' },
           h('p', { class: 'ob-rot' }, 'Sua conta'),
           h('p', { class: 'ob-email' }, r.email.split('@')[0], r.email.includes('@') ? h('wbr') : null, r.email.includes('@') ? '@' + r.email.split('@').slice(1).join('@') : null),
           h('p', { class: 'ob-errado' }, 'Está errado? ',
             h('a', { href: whats(MSG_AJUDA), target: '_blank', rel: 'noopener', onclick: function () { medir('web_whatsapp_clicked'); } }, 'Fale com a gente no WhatsApp'),
             ' ou escreva para ', h('a', { href: mailSuporte('E-mail errado na compra') }, SUPORTE), '.'))),
-      h('section', { class: 'ob-card ob-passo' },
-        h('span', { class: 'ob-num', 'aria-hidden': 'true' }, '1'),
-        h('div', { class: 'ob-passo-txt' },
-          h('h2', null, 'Baixe o app'),
-          baixeApp())),
-      h('section', { class: 'ob-card ob-passo' },
-        h('span', { class: 'ob-num', 'aria-hidden': 'true' }, '2'),
-        h('div', { class: 'ob-passo-txt' },
-          h('h2', null, 'Abra o app e toque em ', h('b', null, 'Tenho um código de acesso'), '.'),
-          h('p', { class: 'ob-sub' }, 'Você só digita as letras e os números, sem o TRB.'),
-          // No celular: abre o app direto com o codigo (koraapp://entrar?acesso=...). O codigo e o Copiar ficam logo abaixo como alternativa.
-          celular && h('a', { class: 'btn ob-abrir', href: 'koraapp://entrar?acesso=' + encodeURIComponent(r.code), onclick: function () { medir('web_app_open_clicked'); } }, 'Já instalei: abrir meu plano'),
-          h('div', { class: 'ob-codigo-box' },
-            h('p', { class: 'ob-rot' }, 'Seu código de acesso'),
-            h('div', { class: 'ob-codigo-linha' }, codigoEl, btnCopiar)),
-          h('p', { class: 'ob-semsenha' }, 'Você não precisa de senha.'),
-          h('p', { class: 'ob-validade' }, 'O código vale por ' + dias + (dias === 1 ? ' dia' : ' dias') + ' e também foi para o seu e-mail.'))));
-  }
+      // O codigo com Copiar fica no alto; depois as lojas e o passo a passo no app.
+      h('section', { class: 'ob-card' },
+        h('div', { class: 'ob-codigo-box' },
+          h('p', { class: 'ob-rot' }, 'Seu código de login'),
+          h('div', { class: 'ob-codigo-linha' }, codigoEl, btnCopiar)),
+        h('p', { class: 'ob-validade' }, 'Vale por ' + dias + (dias === 1 ? ' dia' : ' dias'))),
+      passo(1, 'Baixe o app', baixeApp()),
+      passo(2, 'Na primeira tela do app, toque em Já sou assinante (em versões antigas: Tenho um código de acesso).', [
+        h('p', { class: 'ob-aviso' }, h('b', null, 'Não toque em Criar meu plano:'), ' sua assinatura já está ativa, não assine de novo no app.'),
+        // No celular: abre o app direto com o codigo (koraapp://entrar?acesso=...).
+        celular && h('a', { class: 'btn ob-abrir', href: 'koraapp://entrar?acesso=' + encodeURIComponent(r.code), onclick: function () { medir('web_app_open_clicked'); } }, 'Já instalei: abrir meu plano')]),
+      passo(3, 'Cole o código de login', h('p', { class: 'ob-sub' }, 'Pode colar com ou sem o TRB. Não precisa de senha.')));  }
 
   // ─── Consulta ───────────────────────────────────────────────────────────────
   var m = /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\.([0-9a-f]{16,64})$/i.exec(new URLSearchParams(location.search).get('acesso') || '');
@@ -191,7 +186,7 @@
     fetch(F.acessoStatus, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: corpo, credentials: 'omit', cache: 'no-store' })
       .then(function (res) { return res.json().then(function (j) { return { s: res.status, j: j }; }, function () { return { s: res.status, j: {} }; }); })
       .then(function (r) {
-        if (r.s === 404) { acabou = true; semAcesso('Não achamos esse acesso', 'O link pode estar incompleto. Seu código de acesso também chega no e-mail que você usou na compra.'); return; }
+        if (r.s === 404) { acabou = true; semAcesso('Não achamos esse pagamento', 'O link pode estar incompleto. Seu código de login também chega no e-mail do pagamento.'); return; }
         if (r.s === 200 && (r.j.status === 'expired' || (r.j.status === 'ready' && r.j.expires_at && Date.parse(r.j.expires_at) < Date.now()))) { acabou = true; vencido(); return; }
         if (r.s === 200 && r.j.status === 'ready' && r.j.code) { acabou = true; pronto(r.j); return; }
         if (r.s === 200 && r.j.status === 'refunded') { acabou = true; semAcesso('Este pagamento foi estornado', 'Se isso foi um engano, fale com a gente que resolvemos.'); return; }
@@ -201,7 +196,7 @@
   }
   function agenda() {
     var passou = Date.now() - inicio;
-    if (passou > 30 * 60000) { acabou = true; semAcesso('Seu código chega no seu e-mail', 'A confirmação está demorando mais do que o normal. Assim que o pagamento for confirmado, o código chega no e-mail que você usou na compra.'); return; }
+    if (passou > 30 * 60000) { acabou = true; semAcesso('Seu código chega no e-mail do pagamento', 'A confirmação está demorando mais do que o normal. Assim que o pagamento for confirmado, o código de login chega no e-mail do pagamento.'); return; }
     if (passou > 2 * 60000) mostraPix();
     setTimeout(consulta, passou < 2 * 60000 ? 3000 : 10000);
   }

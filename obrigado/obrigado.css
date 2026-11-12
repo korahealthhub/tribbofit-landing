@@ -78,3 +78,7 @@ p.ob-errado a { color: var(--violeta); }
 /* Sem codigo na URL: caixa da ajuda no WhatsApp */
 .ob-ajuda h2 { font-size: 20px; line-height: 1.25; letter-spacing: -.015em; }
 .ob-ajuda .ob-abrir { margin-top: 14px; }
+
+/* Aviso do passo 2: nao assinar de novo no app. */
+.ob-aviso { margin-top: 8px; padding: 10px 12px; border-radius: 12px; background: #FFF4E5; color: #5A3A00; font-size: 14px; line-height: 20px; }
+.ob-aviso b { font-weight: 700; }

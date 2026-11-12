@@ -29,7 +29,7 @@
       anual: 'https://pay.cakto.com.br/cons8xz_1298173'
     },
     // Versão dos Termos publicada em /termos/ (gravada junto do aceite).
-    termosVersao: '1.1',
+    termosVersao: '1.2',
     suporte: 'suporte@tribbofit.com.br',
     // WhatsApp do Tribbo Fit (+55 11 94926-8402), só dígitos.
     whatsapp: '5511949268402',
