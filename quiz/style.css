@@ -839,14 +839,6 @@ body.fim .q-title { font-weight: 800; letter-spacing: -0.02em; }
   .fx-cd-n { font-size: 18px; padding: 5px 5px; min-width: 27px; }
   .fx-cd-sep { font-size: 16px; padding-bottom: 11px; }
 }
-/* So no preco com oferta: celular menor ao lado do titulo, para o Mensal e o botao caberem na primeira tela. */
-body.fim-oferta #top { padding-top: 12px; padding-bottom: 4px; min-height: 0; }
-.fx-hero-oferta { flex-direction: row; gap: 14px; align-items: center; padding: 4px 4px 0; }
-.fx-hero-oferta .fx-cel { width: 74px; height: 140px; border-radius: 16px; padding: 4px; box-shadow: 0 10px 22px rgba(18,20,23,0.18); }
-.fx-hero-oferta .fx-cel .cel-tela { border-radius: 12px; }
-.fx-hero-oferta .fx-hero-txt { text-align: left; align-items: flex-start; gap: 6px; }
-.fx-hero-oferta .fx-h1-preco { font-size: 23px; }
-.fx-hero-oferta .fx-hero-txt p { line-height: 1.35; }
 /* Link de volta (?retomar=): tela de carregamento no lugar da tela inicial ate a resposta chegar (quiz/retomar.js).
    No fundo e nas cores do fim do funil, para nao piscar ao abrir o preco. */
 #carregando { display: none; }

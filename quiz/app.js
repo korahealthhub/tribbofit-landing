@@ -1944,11 +1944,13 @@
     const nome = (a.displayName || '').trim() || (a.fullName || '').trim().split(/\s+/)[0] || '';
     const date = (kind === 'lose' || kind === 'gain') && a.targetDate ? TF.fromIsoDate(a.targetDate) : null;
     const mes = date ? new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(date) : null;
-    return { kind, kg: TF.formatKg(Math.round(diff * 10) / 10), alvo: a.targetWeightKg != null ? TF.formatKg(a.targetWeightKg) : null, nome, mes };
+    return { kind, dif: diff, kg: TF.formatKg(Math.round(diff * 10) / 10), alvo: a.targetWeightKg != null ? TF.formatKg(a.targetWeightKg) : null, nome, mes };
   }
   // "Roberto, seu plano..." ou, sem nome, "Seu plano...".
   const comNome = (txt, nome) => (nome ? txt.replace('{nome}', nome) : txt.replace('{nome}, s', 'S'));
-  const tituloMeta = (m, textos) => ({ lose: textos.lose, gain: textos.gain, maintain: textos.keep, health: textos.health })[m.kind].replace('{kg}', m.kg);
+  // Meta a menos de 1 kg do peso (ex.: 88,1 → 88): sem o numero ("Seu plano está pronto"), nada de "perder 0,1 kg".
+  const tituloMeta = (m, textos) => ((m.kind === 'lose' || m.kind === 'gain') && m.dif < 1 && textos.ready ? textos.ready
+    : ({ lose: textos.lose, gain: textos.gain, maintain: textos.keep, health: textos.health })[m.kind].replace('{kg}', m.kg));
 
   // Cardapio real de hoje (o mesmo motor e a mesma semente que o app usa no primeiro dia): refeicoes e itens.
   // Refeicoes que podem ir no prato da foto (no mesmo dia, o almoco tem preferencia). O selo mostra a refeicao certa
@@ -2326,8 +2328,7 @@
           h('span', null, pctOferta && h('i', null, B.off.replace('{pct}', pctOferta)), B.line.replace('{preco}', precoOferta))),
         relogio);
       topEl.before(faixa);
-      document.body.classList.add('fim-oferta');
-      cleanups.push(() => { faixa.remove(); document.body.classList.remove('fim-oferta'); });
+      cleanups.push(() => faixa.remove());
     }
 
     // Escolha de plano (Anual em cima): aparece logo depois do titulo e de novo no fim, completa e com o botao.
@@ -2386,7 +2387,7 @@
 
     paint({
       body: [
-        h('div', { class: oferta ? 'fx-hero fx-hero-oferta' : 'fx-hero' }, celularApp(),
+        h('div', { class: 'fx-hero' }, celularApp(),
           h('div', { class: 'fx-hero-txt' }, h('h1', { class: 'fx-h1 fx-h1-preco', tabindex: '-1' }, tituloMeta(m, X.title)), h('p', null, X.subtitle))),
         escolhaTopo,
         h('div', { class: 'fx-card fx-gap14 fx-mt24' }, h('h2', { class: 'fx-h2b' }, X.get.title),

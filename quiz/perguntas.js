@@ -592,6 +592,7 @@ window.TF = window.TF || {};
           gain: 'Seu plano para ganhar {kg} kg está pronto',
           keep: 'Seu plano para manter seu peso está pronto',
           health: 'Seu plano para ter mais saúde está pronto',
+          ready: 'Seu plano está pronto', // perder ou ganhar menos de 1 kg
         },
         subtitle: 'Tudo no app Tribbo Fit, pra você seguir dia\u00a0a\u00a0dia.', // \u00a0: "dia a dia" nunca quebra
         phoneAlt: 'O app Tribbo Fit no celular: refeição registrada, treino montado e treino guiado',
