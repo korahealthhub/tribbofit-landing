@@ -682,7 +682,7 @@ body.fim .btn[disabled] { background: #ECE9E6; color: #A3ABA9; box-shadow: none;
 body.fim .card { border-radius: 20px; }
 body.fim #foot:not(:empty) { background: linear-gradient(180deg, rgba(243,240,236,0) 0%, #F3F0EC 30%); padding-top: 16px; }
 
-.fx-faixa { flex: none; background: #121417; color: #E2F70F; text-align: center; font-size: 13px; font-weight: 700; padding: 10px 16px; margin-top: calc(-1 * env(safe-area-inset-top)); padding-top: calc(10px + env(safe-area-inset-top)); }
+.fx-faixa { flex: none; display: flex; flex-direction: column; align-items: center; gap: 2px; background: #121417; color: #FFFFFF; text-align: center; font-size: 13px; font-weight: 500; padding: 10px 16px; margin-top: calc(-1 * env(safe-area-inset-top)); padding-top: calc(10px + env(safe-area-inset-top)); }
 .fx-topo { display: flex; flex-direction: column; gap: 10px; padding: 8px 4px 0; }
 .fx-selo { align-self: flex-start; font-size: 12px; font-weight: 600; color: var(--fx-roxo); background: var(--fx-roxo-lt); padding: 6px 10px; border-radius: 999px; }
 .fx-h1 { margin: 0; font-size: 28px; line-height: 1.15; font-weight: 800; letter-spacing: -0.02em; color: var(--fx-txt); text-wrap: balance; }
@@ -817,3 +817,5 @@ body.fim .q-title { font-weight: 800; letter-spacing: -0.02em; }
 .fx-stats3 .fx-stat b { font-size: 18px; }
 .fx-stats3 .fx-stat { padding: 12px 10px; }
 .fx-stats3 .fx-stat span { font-size: 11.5px; white-space: nowrap; }
+.fx-faixa b { font-size: 17px; font-weight: 800; color: #E2F70F; letter-spacing: -0.01em; }
+.fx-faixa span { color: #D5D8DD; }

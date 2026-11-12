@@ -595,7 +595,7 @@ window.TF = window.TF || {};
         },
         subtitle: 'Tudo no app Tribbo Fit, pra você seguir dia a dia.',
         phoneAlt: 'O app Tribbo Fit no celular: refeição registrada, treino montado e treino guiado',
-        offerUntil: 'Seu desconto vale até {prazo}',
+        offerTitle: 'Oferta especial pra você', offerUntil: 'Vale até {prazo}',
         choose: 'Escolha seu plano', annual: 'Anual', monthly: 'Mensal', perYear: 'por ano', perMonth: 'por mês', perMonthShort: '/mês',
         save: 'Economize {pct}%', noCommitment: 'Sem fidelidade', offerTag: '{pct}% OFF no 1º mês', firstMonth: 'no 1º mês', then: 'depois',
         buttonOffer: 'Começar por {preco}',

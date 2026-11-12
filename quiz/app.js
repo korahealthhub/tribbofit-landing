@@ -2299,14 +2299,14 @@
     const porDia = brl(Math.ceil((P.anual / 365) * 10) / 10);
     planoWeb = oferta ? 'mensal' : 'anual';
 
-    // Faixa do prazo do desconto, acima do topo.
+    // Faixa do topo, so com a oferta confirmada pelo servidor: "Oferta especial pra voce" em destaque e o prazo embaixo.
     if (oferta) {
       const prazo = prazoCupom(lead.cupom.ate);
-      if (prazo) {
-        const faixa = h('div', { class: 'fx-faixa', role: 'note' }, X.offerUntil.replace('{prazo}', prazo));
-        topEl.before(faixa);
-        cleanups.push(() => faixa.remove());
-      }
+      const faixa = h('div', { class: 'fx-faixa', role: 'note' },
+        h('b', null, X.offerTitle),
+        prazo && h('span', null, X.offerUntil.replace('{prazo}', prazo)));
+      topEl.before(faixa);
+      cleanups.push(() => faixa.remove());
     }
 
     // Escolha de plano (Anual em cima): aparece logo depois do titulo e de novo no fim, completa e com o botao.
