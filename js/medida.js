@@ -24,7 +24,7 @@
   'use strict';
   var KEY = 'phc_kUMmnj2VXm86CNuUUAx56gY74qkYoczupVb4frwhdryV';
   var URL_CAPTURA = 'https://us.i.posthog.com/i/v0/e/';
-  var PERMITIDAS = ['page', 'button', 'step_number', 'step_name', 'guess', 'store'];
+  var PERMITIDAS = ['page', 'button', 'step_number', 'step_name', 'guess', 'store', 'plan', 'offer']; // plan: mensal ou anual; offer: oferta do link curto (sim ou nao)
 
   function novoId() {
     try { if (crypto.randomUUID) return crypto.randomUUID(); } catch (e) {}

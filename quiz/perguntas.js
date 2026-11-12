@@ -370,7 +370,9 @@ window.TF = window.TF || {};
     gender: { title: 'Como você se identifica?', subtitle: 'Usamos isso para calcular quanta energia seu corpo precisa.', note: 'Vamos usar uma média nos cálculos.' },
     birth: { title: 'Qual é a sua data de nascimento?', subtitle: 'A idade muda o quanto seu corpo gasta de energia.', underage: 'Por enquanto, o Tribbo Fit é para pessoas a partir de 18 anos.' },
     height: { title: 'Qual é a sua altura?' },
-    weight: { title: 'Qual é o seu peso atual?', subtitle: 'Sem julgamentos. É só o ponto de partida.', bmiTitle: 'Seu IMC é de' },
+    weight: { title: 'Qual é o seu peso atual?', subtitle: 'Sem julgamentos. É só o ponto de partida.', bmiTitle: 'Seu IMC é de',
+      // So na web: trava de dados impossiveis (IMC fora de 13 a 70)
+      impossible: 'Confira seu peso e sua altura. Esse peso não é possível para a sua altura.' },
     bmiMessage: {
       below: 'Seu plano vai priorizar força e energia, no ritmo certo para você.',
       healthy: 'Você está numa faixa saudável. Agora é cuidar da rotina para ganhar ainda mais disposição.',
@@ -381,10 +383,14 @@ window.TF = window.TF || {};
       title: 'Qual peso você quer alcançar?', keep: 'Quero manter meu peso atual', loseA: 'Você vai perder', loseB: 'do seu peso', gainA: 'Você vai ganhar', bmi: 'Seu IMC na meta:',
       gainMsg: 'Com treino e alimentação certos, esse ganho vem em músculo.', bigMsg: 'Uma meta ambiciosa. Vamos chegar lá em etapas.', okMsg: 'Uma meta realista, que já traz benefícios para a saúde.',
       belowA: 'Esse peso fica abaixo da faixa saudável para a sua altura. Escolha um valor a partir de', wrongLose: 'Para perder peso, a meta precisa ser menor que o peso atual.', wrongGain: 'Para ganhar massa, a meta precisa ser maior que o peso atual.',
+      // So na web: trava de dados impossiveis (IMC da meta fora de 13 a 70)
+      impossible: 'Confira sua meta. Esse peso não é possível para a sua altura.',
     },
     pace: {
       title: 'Em que ritmo você quer chegar lá?', custom: 'Escolher minha data', badge: 'Recomendado', perWeek: 'kg por semana', inDays: 'em', days: 'dias',
       unsafeA: 'Essa data exige mais de 1% do seu peso por semana. A data segura mais próxima é', use: 'Usar', reference: 'Referência: Helms e colegas, 2014.',
+      // So na web: data escolhida a mao com mais de 3 anos
+      tooFar: 'Confira a data. Escolha uma data em até 3 anos.',
     },
     activity: { title: 'Quanto você se movimenta no dia a dia?' },
     sleep: {
@@ -541,6 +547,116 @@ window.TF = window.TF || {};
       wholeBody: 'Corpo inteiro', goalRow: 'Objetivo', goalReach: ['Chegar a', 'kg até'], goalHealth: 'Cuidar da saúde e da disposição', goalKeep: ['Manter', 'kg com mais energia'],
       rows: { weight: 'Peso atual', days: 'Dias por semana', duration: 'Duração do treino', focus: 'Foco', meals: 'Refeições por dia', supplements: 'Suplementos e remédios', sleep: 'Sono' },
     },
+    // So na web: fim do funil (48 "plano pronto" e 49B preco). Vende o resultado e a solucao da dor; funcoes do app
+    // so como prova, embaixo de cada beneficio. {kg}, {min} e {nome} sao trocados no app.js.
+    fim: {
+      // Fim do funil na web (prototipo aprovado em 12/11/2026: Main, Preco e PrecoOferta). Passo 1 = plano pronto, 2 = preco.
+      step: 'Passo {n} de 2',
+      // 48: plano pronto. Titulo por objetivo; sem nome, comeca em "Seu plano".
+      badge: 'Feito com as suas respostas',
+      title: {
+        lose: '{nome}, seu plano de emagrecimento está pronto',
+        gain: '{nome}, seu plano para ganhar massa está pronto',
+        keep: '{nome}, seu plano para manter seu peso está pronto',
+        health: '{nome}, seu plano para ter mais saúde está pronto',
+      },
+      // 48: subtitulo com o desejo da pessoa (mainMotivation)
+      desire: {
+        energy: 'Para você acordar com disposição e chegar ao fim do dia com energia.',
+        body_confidence: 'Para você se olhar no espelho e gostar do que vê.',
+        health: 'Para você cuidar da sua saúde com uma rotina que dura.',
+        clothes: 'Para você usar as roupas que quer e se sentir bem nelas.',
+        clothesLose: 'Para você voltar a caber nas suas roupas.',
+        self_confidence: 'Para você ganhar confiança, um passo de cada vez.',
+        special_occasion: 'Para você chegar bem no seu grande dia.',
+      },
+      forecast: { title: 'Sua previsão', now: 'Hoje', reachA: 'Seguindo o plano, você pode chegar aos', reachB: 'por volta de', estimate: 'Estimativa. O resultado depende da sua rotina.' },
+      food: {
+        title: 'Sua alimentação', emoji: '🍽️',
+        stats: { kcal: 'por dia', protein: 'de proteína', water: 'de água', meals: 'refeições', mealsSub: 'por dia' },
+        parts: { veg: 'Legumes', carb: 'Carboidratos', protein: 'Proteína' },
+        plateTitle: 'Um prato do seu plano', photoNote: 'Foto ilustrativa',
+        macros: { kcal: 'kcal', protein: 'proteína', carbs: 'carboidrato', fat: 'gordura' },
+        swap: 'Não curtiu algum alimento? Troque ou gere um novo cardápio no app.',
+        weekTitle: 'Sua semana', weekLocked: 'Os outros {n} dias da semana estão guardados no app',
+        self: 'Você monta suas refeições no app, com as metas de calorias e proteína de cada uma.',
+        nutritionist: 'Você importa o plano do seu nutricionista no app e acompanha cada refeição.',
+      },
+      training: { title: 'Seu treino', emoji: '🏋️', name: 'Treino', kcal: '🔥 gasto estimado de {kcal} kcal', locked: 'Guardado no app', own: 'Você monta o seu treino no app ou importa o do seu profissional.' },
+      adjust: 'Ajustar minhas respostas',
+      button: 'Quero meu plano',
+      // 49B: preco
+      price: {
+        title: {
+          lose: 'Seu plano para perder {kg} kg está pronto',
+          gain: 'Seu plano para ganhar {kg} kg está pronto',
+          keep: 'Seu plano para manter seu peso está pronto',
+          health: 'Seu plano para ter mais saúde está pronto',
+        },
+        subtitle: 'Tudo no app Tribbo Fit, pra você seguir dia a dia.',
+        phoneAlt: 'O app Tribbo Fit no celular: refeição registrada, treino montado e treino guiado',
+        offerUntil: 'Seu desconto vale até {prazo}',
+        choose: 'Escolha seu plano', annual: 'Anual', monthly: 'Mensal', perYear: 'por ano', perMonth: 'por mês', perMonthShort: '/mês',
+        save: 'Economize {pct}%', noCommitment: 'Sem fidelidade', offerTag: '{pct}% OFF no 1º mês', firstMonth: 'no 1º mês', then: 'depois',
+        buttonOffer: 'Começar por {preco}',
+        todayAnnual: 'Hoje: {anual} · renova em 1 ano · cancele quando quiser',
+        todayMonthly: 'Hoje: {mensal} · renova todo mês · cancele quando quiser',
+        todayOffer: 'Hoje: {oferta} · depois {mensal}/mês · cancele quando quiser',
+        get: {
+          title: 'O que você recebe no app',
+          items: [
+            ['📅', 'Cardápio do dia', 'Com as porções certas pra sua meta.'],
+            ['🏋️', 'Treinos da semana prontos', 'Vídeo de cada exercício e controle de carga.'],
+            ['🤖', 'Um assistente com IA', 'Te acompanha, responde dúvidas e manda lembretes.'],
+            ['📸', 'Registre suas refeições em segundos', 'Por foto, voz, texto ou código de barras, e veja as calorias na hora.'],
+            ['🔄', 'Troca de alimentos', 'Não gostou? Troca mantendo as calorias.'],
+            ['💧', 'Água, sono e metas do dia', 'Com lembretes no celular.'],
+            ['🎯', 'Gere novos planos quando quiser', 'Mudou o objetivo? Crie uma nova ficha de treino e um novo plano alimentar no app.'],
+            ['📈', 'Sua evolução e conquistas', 'Gráficos da sua evolução por semana e por mês, histórico dos últimos 3 meses e conquistas a cada meta batida.'],
+            ['👥', 'Comunidade com o fundador', 'Contato direto com quem faz o app.'],
+          ],
+        },
+        never: {
+          title: 'Nunca mais',
+          items: ['Chegar na academia sem saber o que treinar', 'Comer sem saber quanto está comendo', 'Treinar sem saber se está evoluindo', 'Largar tudo na segunda semana'],
+        },
+        // Bloco escuro: 3 linhas com as respostas da pessoa (triedBefore, mainObstacle, mainMotivation + meta).
+        told: {
+          title: 'Personalizado para você',
+          tried: {
+            again: ['Você já tentou outras vezes', 'Agora o assistente te acompanha e te lembra todo dia.'],
+            first: ['Você está começando agora', 'O app te diz o que fazer em cada treino e refeição.'],
+          },
+          obstacle: {
+            money: ['Você se preocupa com o preço', 'No anual, menos de {dia} por dia.'],
+            moneyOffer: ['Você se preocupa com o preço', 'Seu 1º mês sai por {oferta}.'],
+            time: ['Você tem pouco tempo', 'Treinos de {min} minutos nos seus dias.'],
+            motivation: ['Sua motivação some', 'Lembretes e acompanhamento pra você não parar.'],
+            dont_know: ['Você não sabe por onde começar', 'Tudo pronto: é só abrir e seguir.'],
+            forget: ['Você esquece da rotina', 'Lembretes na hora certa do treino, da água e das refeições.'],
+          },
+          motivation: {
+            energy: 'Você quer mais disposição',
+            body_confidence: 'Você quer gostar do que vê no espelho',
+            health: 'Você quer cuidar da sua saúde',
+            clothes: 'Você quer caber nas suas roupas',
+            self_confidence: 'Você quer ganhar confiança',
+            special_occasion: 'Você quer chegar bem no seu grande dia',
+          },
+          goal: 'Seu plano tem meta e prazo: {kg} kg em {mes}.',
+          noGoal: 'Seu plano já tem cardápio, treino e metas do dia.',
+        },
+        guarantee: { emoji: '🛡️', title: '7 dias de garantia', txt: 'Não gostou? Devolvemos o valor integral.' },
+        faq: [
+          ['É um aplicativo?', 'Sim. Você baixa o Tribbo Fit no iPhone ou no Android e encontra seu plano pronto lá dentro.'],
+          ['Como eu entro depois de pagar?', 'Na hora você recebe um código de login nesta página e no seu e-mail. Abra o app, toque em Já sou assinante (se aparecer Tenho um código de acesso, toque nele) e cole o código de login. Não precisa assinar de novo no app.'],
+          ['Posso cancelar quando quiser?', 'Sim. E nos primeiros 7 dias devolvemos 100% do valor.'],
+          ['E se meu objetivo mudar?', 'Você cria um novo plano no app quando quiser.'],
+        ],
+        proof: '⭐ 4,8 na App Store · mais de 5 mil pessoas · Pix ou cartão',
+      },
+      buttonPay: 'Desbloquear meu plano',
+    },
     // So na web: cadastro (tela 48L, com TF.PAGAMENTO_ATIVO), depois do resultado e antes do preco. Envia para o web-lead.
     leadForm: {
       title: 'Seu plano está pronto. Para quem é?', subtitle: 'Deixe seu contato para criar sua conta e liberar o seu plano.', name: 'Nome', email: 'E-mail', whatsapp: 'WhatsApp',
@@ -579,15 +695,13 @@ window.TF = window.TF || {};
     },
     // So na web: a revelacao do preco (no app o preco aparece na paywall). Cards com os textos de src/utils/planDisplay.ts.
     priceReveal: {
-      guess: 'Seu palpite:', titleA: 'Seu plano sai por', titleB: 'por mês', annual: 'Anual', monthly: 'Mensal', best: 'Melhor opção', noCommitment: 'Sem compromisso',
+      guess: 'Seu palpite:', titleA: 'Seu plano sai por', titleB: 'por mês', choose: 'Escolha seu plano', annual: 'Anual', monthly: 'Mensal', best: 'Melhor opção', noCommitment: 'Sem compromisso',
       perMonth: '/mês', perYear: '/ano', renewal: 'Renova automaticamente; cancele quando quiser.', button: 'Continuar',
       // Com o pagamento ligado (TF.PAGAMENTO_ATIVO):
       buttonPay: 'Assinar e receber meu plano', mostChosen: 'Mais escolhido', renewalPay: 'Renovação automática ao fim de cada período.',
       guaranteeA: 'Garantia de 7 dias:', guaranteeB: 'não gostou, devolvemos o valor', cancelAnytime: 'Cancele quando quiser',
       rating: '4,8', ratingTail: 'na App Store · mais de 5 mil pessoas', card: 'Cartão', secure: 'Pagamento seguro pela Cakto',
       vsApps: 'contra cerca de R$43 por mês em 3 apps separados',
-      // Linha do cupom (link curto do suporte): "1º mês por R$ 14,99, depois R$ 29,90/mês. Vale até sexta, 23h59"
-      couponA: '1º mês por', couponB: 'depois', couponUntil: 'Vale até',
     },
     // Termos e privacidade: mesmos enderecos de src/utils/legalLinks.ts, no proprio site.
     links: { terms: '/termos/', privacy: '/privacidade/' },

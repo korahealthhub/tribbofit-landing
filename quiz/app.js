@@ -15,6 +15,10 @@
   const scrollEl = document.getElementById('scroll');
   const footEl = document.getElementById('foot');
   const topEl = document.getElementById('top');
+  // Fim do funil (plano pronto e preco): "Passo n de 2" no topo e o nome ao lado do logo (so com body.fim, ver modoFim).
+  const passoEl = document.createElement('span'); passoEl.id = 'passo'; topEl.append(passoEl);
+  const marcaEl = document.createElement('span'); marcaEl.id = 'marca'; marcaEl.textContent = 'Tribbo Fit';
+  { const lg = document.getElementById('logo'); if (lg) lg.after(marcaEl); }
   const backEl = document.getElementById('back');
   const barEl = document.getElementById('bar');
   const barFill = document.getElementById('bar-fill');
@@ -302,7 +306,7 @@
 
   // ─── Carregamento sob demanda (so na web) ───────────────────────────────────
   // Os arquivos pesados so baixam perto da tela que usa, para a primeira tela abrir rapido.
-  const LAZY = { pain: ['corpo.js'], focus: ['corpo.js'], food_summary: ['alimentos.js', 'cardapio.js'], plan_summary: ['alimentos.js', 'cardapio.js'],
+  const LAZY = { pain: ['corpo.js'], focus: ['corpo.js'], food_summary: ['alimentos.js', 'cardapio.js'], plan_summary: ['alimentos.js', 'cardapio.js', 'exercicios.js'],
     bodyweight: ['exercicios.js'], training_summary: ['exercicios.js'], how_it_works: ['exercicios.js'] };
   const scripts = {};
   function loadScript(src) {
@@ -813,20 +817,28 @@
   function bmiBanner(ic, title, value, lines) {
     return banner({ ic, title, key: 'bmi', children: [bmiBar(value), lines.map((l) => h('p', { class: 'banner-txt', style: { marginTop: '4px' } }, l))] });
   }
+  // So na web: trava de dados impossiveis. IMC (peso atual ou meta) fora de 13 a 70 nao avanca.
+  const IMC_MIN = 13, IMC_MAX = 70;
+  const imcPossivel = (kg, cm) => { if (kg == null || cm == null) return true; const b = TF.bmi(kg, cm); return b >= IMC_MIN && b <= IMC_MAX; };
   function Weight() {
     if (a.weightKg == null) a.weightKg = defaultWeightKg(a.gender);
     const slot = h('div', { class: 'gap16' });
+    const btn = primary('Continuar', () => { if (imcPossivel(a.weightKg, a.heightCm)) confirmThen(TF.bodyDataConfirmation({ weight: a.weightKg }), () => next()); });
     const drawSlot = () => {
       if (a.heightCm == null) return;
       const b = TF.bmi(a.weightKg, a.heightCm);
-      slot.replaceChildren(bmiBanner('body-outline', [`${T.weight.bmiTitle} `, h('span', { class: 'hl' }, TF.formatBmi(b))], b, [T.bmiMessage[TF.bmiBand(b)]]));
+      const ok = imcPossivel(a.weightKg, a.heightCm);
+      btn.disabled = !ok;
+      slot.replaceChildren(ok
+        ? bmiBanner('body-outline', [`${T.weight.bmiTitle} `, h('span', { class: 'hl' }, TF.formatBmi(b))], b, [T.bmiMessage[TF.bmiBand(b)]])
+        : h('p', { class: 'error', 'aria-live': 'polite' }, T.weight.impossible));
     };
     drawSlot();
     paint({
       fill: true,
       body: [header(T.weight.title, T.weight.subtitle), h('div', { class: 'middle' },
         ruler({ min: TF.MIN_WEIGHT_KG, max: TF.MAX_WEIGHT_KG, step: 0.1, majorEvery: 10, value: a.weightKg, unit: 'kg', label: 'Peso atual em quilos', onChange: (v) => { a.weightKg = v; drawSlot(); } }), slot)],
-      footer: [primary('Continuar', () => confirmThen(TF.bodyDataConfirmation({ weight: a.weightKg }), () => next()))],
+      footer: [btn],
     });
   }
 
@@ -849,6 +861,7 @@
   function targetWeightProblem(goal, currentKg, targetKg, heightCm) {
     if (targetKg == null || currentKg == null || heightCm == null || !goal) return null;
     if (!TF.isPlausibleWeight(targetKg)) return TF.WEIGHT_ERROR;
+    if (!imcPossivel(targetKg, heightCm)) return T.target.impossible;
     const issue = TF.targetWeightIssue({ goal, currentKg, targetKg, heightCm });
     if (!issue) return null;
     if (issue.kind === 'below_healthy') return `${T.target.belowA} ${issue.minKg} kg.`;
@@ -899,8 +912,11 @@
     const currentKg = a.weightKg, targetKg = a.targetWeightKg;
     const dir = TF.weightDirection(currentKg, targetKg);
     const minDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7, 12);
-    let picking = false, unsafe = null;
+    const maxDate = new Date(today.getFullYear() + 3, today.getMonth(), today.getDate(), 12); // so na web: ate 3 anos
+    let picking = false, unsafe = null, tooFar = false;
     const pickDate = (picked) => {
+      tooFar = picked.getTime() > maxDate.getTime();
+      if (tooFar) { unsafe = null; draw(); scrollToEnd(); return; }
       const date = picked.getTime() < minDate.getTime() ? minDate : picked;
       const check = TF.checkCustomDate(today, date, currentKg, targetKg);
       if (check.ok) { unsafe = null; update({ pace: 'custom', targetDate: TF.toIsoDate(date) }); draw(); return; }
@@ -911,7 +927,7 @@
     const draw = () => {
       const customDate = a.pace === 'custom' && a.targetDate ? TF.fromIsoDate(a.targetDate) : null;
       const suggested = TF.targetDateFor(today, currentKg, targetKg, TF.paceRate(dir, 'recommended'));
-      const pickerValue = new Date(Math.max((customDate ?? suggested).getTime(), minDate.getTime()));
+      const pickerValue = new Date(Math.min(Math.max((customDate ?? suggested).getTime(), minDate.getTime()), maxDate.getTime()));
       paint({
         body: [
           header(T.pace.title),
@@ -921,16 +937,17 @@
               const date = TF.targetDateFor(today, currentKg, targetKg, rate);
               return optionCard({
                 label: o.label, desc: o.desc, badge: o.value === 'recommended' ? T.pace.badge : null, selected: a.pace === o.value,
-                onPress: () => { unsafe = null; picking = false; update({ pace: o.value, targetDate: TF.toIsoDate(date) }); draw(); },
+                onPress: () => { unsafe = null; tooFar = false; picking = false; update({ pace: o.value, targetDate: TF.toIsoDate(date) }); draw(); },
                 children: paceLines(TF.weeklyKg(currentKg, rate), date, TF.daysUntil(today, date), today),
               });
             }),
             optionCard({ label: T.pace.custom, selected: a.pace === 'custom', onPress: () => { picking = true; draw(); const i = scrollEl.querySelector('.date-native'); if (i) { i.focus(); try { i.showPicker?.(); } catch (e) { /* sem seletor: segue o campo */ } } }, children: customDate ? paceLines(null, customDate, TF.daysUntil(today, customDate), today) : null }),
           ]),
           picking && h('input', {
-            class: 'date-native', type: 'date', value: TF.toIsoDate(pickerValue), min: TF.toIsoDate(minDate), 'aria-label': T.pace.custom,
+            class: 'date-native', type: 'date', value: TF.toIsoDate(pickerValue), min: TF.toIsoDate(minDate), max: TF.toIsoDate(maxDate), 'aria-label': T.pace.custom,
             onchange: (e) => { if (e.target.value) pickDate(TF.fromIsoDate(e.target.value)); },
           }),
+          tooFar && h('p', { class: 'error', 'aria-live': 'polite' }, T.pace.tooFar),
           unsafe && h('div', { class: 'gap16' }, banner({
             ic: 'information-circle-outline', key: 'unsafe',
             text: [`${T.pace.unsafeA} `, h('span', { class: 'strong' }, TF.formatDateLong(unsafe, today)), '.'],
@@ -1917,11 +1934,139 @@
     const [hh, m] = (s?.bedtime ?? '23:00').split(':').map(Number);
     return TF.formatClock(hh * 60 + m);
   }
+  // ─── Fim do funil na web (48 e 49B): fala do resultado que a pessoa quer, com o plano real dela ──
+  // Meta para os titulos: 'lose' / 'gain' (com meta de peso e data), 'maintain' ou 'health'. kg = quanto falta.
+  function metaFim() {
+    let kind = projectionKind();
+    if (kind === 'maintain' && !(a.weightKg > 0)) kind = 'health'; // sem peso nas respostas: nada de "manter 0 kg"
+    if (kind === 'change') kind = a.targetWeightKg < a.weightKg ? 'lose' : 'gain';
+    const diff = kind === 'lose' || kind === 'gain' ? Math.abs(a.weightKg - a.targetWeightKg) : 0;
+    const nome = (a.displayName || '').trim() || (a.fullName || '').trim().split(/\s+/)[0] || '';
+    const date = (kind === 'lose' || kind === 'gain') && a.targetDate ? TF.fromIsoDate(a.targetDate) : null;
+    const mes = date ? new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(date) : null;
+    return { kind, kg: TF.formatKg(Math.round(diff * 10) / 10), alvo: a.targetWeightKg != null ? TF.formatKg(a.targetWeightKg) : null, nome, mes };
+  }
+  // "Roberto, seu plano..." ou, sem nome, "Seu plano...".
+  const comNome = (txt, nome) => (nome ? txt.replace('{nome}', nome) : txt.replace('{nome}, s', 'S'));
+  const tituloMeta = (m, textos) => ({ lose: textos.lose, gain: textos.gain, maintain: textos.keep, health: textos.health })[m.kind].replace('{kg}', m.kg);
+
+  // Cardapio real de hoje (o mesmo motor e a mesma semente que o app usa no primeiro dia): refeicoes e itens.
+  // Refeicoes que podem ir no prato da foto (no mesmo dia, o almoco tem preferencia). O selo mostra a refeicao certa
+  // ("Almoço · 12h30" ou "Jantar · 19h30"), e o cardapio abaixo traz as outras refeicoes do dia.
+  const PRATO_REFEICOES = ['lunch', 'dinner'];
+  // A refeicao combina com a foto do prato quando tem a proteina da foto (frango; nos pratos sem carne, grao-de-bico
+  // ou tofu), arroz e feijao.
+  function combinaComFoto(m, kind) {
+    const tem = (re) => m.items.some((it) => re.test(it.name));
+    const proteina = kind.veg ? tem(/gr[aã]o-de-bico|tofu/i) : m.items.some((it) => it.group === 'protein' && /frango/i.test(it.name));
+    return proteina && tem(/^arroz/i) && tem(/^feij[aã]o/i);
+  }
+  // Proteinas comuns (as que podem aparecer abertas no plano pronto): frango, patinho, carne moida, file bovino, ovo
+  // e peixe. Miudos, musculo, lombo etc. ficam so no app (assustam no primeiro contato).
+  const PROTEINA_COMUM = /frango|patinho|carne mo[ií]da|fil[eé] (bovino|mignon)|^ovo|ovos|peixe|til[aá]pia|merluza|pescada|salm[aã]o|atum|sardinha/i;
+  const proteinaComum = (m) => m.items.some((it) => it.group === 'protein' && PROTEINA_COMUM.test(it.name));
+  // Cardapio de exemplo (o mesmo motor que o app usa). Prato: das refeicoes almoco e jantar dos 7 dias, a partir de
+  // hoje, a primeira com proteina comum que combina com a foto (frango, arroz e feijao); senao a primeira com
+  // proteina comum; senao a primeira que combina com a foto; senao o almoco de hoje.
+  function cardapioDeHoje() {
+    if ((TF.mealSetupOf(a) ?? 'auto') !== 'auto') return null;
+    const draft = TF.suggestedPlanOf(a, menuSeed);
+    const kind = TF.plateKind(a.goal, a.dietType);
+    const clock = (m) => TF.formatClock(Number(m.scheduled_time.slice(0, 2)) * 60 + Number(m.scheduled_time.slice(3, 5)));
+    const doDia = (di) => {
+      const day = draft.week[di];
+      const meals = draft.meals.map((m, i) => ({ name: m.name, time: clock(m), code: day[i]?.code, items: day[i]?.items ?? [], kcal: day[i]?.kcal ?? m.total_kcal, proteinG: day[i]?.proteinG ?? 0, carbsG: day[i]?.carbsG ?? 0, fatG: day[i]?.fatG ?? 0 }));
+      return { meals };
+    };
+    const hoje = TF.menuDayOf(todayIso());
+    const candidatas = [];
+    for (let k = 0; k < 7; k++) {
+      const di = (hoje + k) % 7;
+      const d = doDia(di);
+      for (const m of d.meals) if (PRATO_REFEICOES.includes(m.code)) candidatas.push({ d, m });
+    }
+    const achou = candidatas.find((c) => proteinaComum(c.m) && combinaComFoto(c.m, kind))
+      ?? candidatas.find((c) => proteinaComum(c.m))
+      ?? candidatas.find((c) => combinaComFoto(c.m, kind));
+    if (achou) return { meals: achou.d.meals, lunch: achou.m, doDia, hoje };
+    const d = doDia(hoje);
+    return { meals: d.meals, lunch: d.meals.find((m) => m.code === 'lunch') ?? [...d.meals].sort((x, y) => y.kcal - x.kcal)[0], doDia, hoje };
+  }
+
+  const gramas = (it) => (it.grams ? `${Math.round(it.grams)} g` : it.amount);
+  // Visual do fim do funil (prototipo aprovado): fundo, botao e "Passo n de 2" no topo no lugar da barra.
+  // passo 1 = plano pronto (logo e nome), 2 = preco (seta de voltar), 0 = so o visual (contato). Sai ao trocar de tela.
+  function modoFim(passo) {
+    const b = document.body.classList;
+    b.add('fim'); b.toggle('fim-1', passo === 1); b.toggle('fim-2', passo === 2);
+    passoEl.textContent = passo ? T.fim.step.replace('{n}', passo) : '';
+    cleanups.push(() => { b.remove('fim', 'fim-1', 'fim-2'); passoEl.textContent = ''; });
+  }
+  const fxCard = (cls, kids) => h('div', { class: `fx-card${cls ? ` ${cls}` : ''}` }, kids);
+  const fxCap = (txt) => h('span', { class: 'fx-cap' }, txt);
+  // "Um prato do seu plano": a foto do prato do modelo (ilustrativa), os numeros da refeicao real (almoco ou jantar)
+  // e os alimentos com as gramas. O plano tem calorias, proteina, carboidrato e gordura (sem fibra).
+  function pratoDoPlano(ref) {
+    const F = T.fim.food;
+    const kind = TF.plateKind(a.goal, a.dietType);
+    const def = T.plates[kind.model][kind.veg ? 'veg' : 'meat'];
+    const g = (n) => `${Math.round(n || 0)} g`;
+    const num = (valor, rot) => h('div', { class: 'fx-num' }, h('b', null, valor), h('span', null, rot));
+    return [
+      h('div', { class: 'fx-linha' }, fxCap(F.plateTitle), h('span', { class: 'fx-chip' }, ref.name)),
+      h('div', { class: 'fx-prato', role: 'img', 'aria-label': `${F.plateTitle}, ${ref.name}. ${F.photoNote}` },
+        h('div', { class: 'fx-prato-foto' }, h('img', { src: def.src, alt: '', width: 600, height: 600, decoding: 'async' })),
+        h('span', { class: 'fx-ilustra' }, F.photoNote)),
+      h('div', { class: 'fx-nums' },
+        num(TF.formatKcal(ref.kcal), F.macros.kcal), num(g(ref.proteinG), F.macros.protein),
+        num(g(ref.carbsG), F.macros.carbs), num(g(ref.fatG), F.macros.fat)),
+      h('ul', { class: 'fx-alimentos' }, ref.items.map((it) => h('li', null, h('span', null, it.name), h('b', null, gramas(it))))),
+      h('p', { class: 'fx-troca' }, `🔄 ${F.swap}`),
+    ];
+  }
+  // Cadeado discreto dos cards guardados no app.
+  const cadeado = () => svg('svg', { class: 'fx-cadeado', width: 16, height: 16, viewBox: '0 0 24 24', 'aria-hidden': 'true' },
+    svg('rect', { x: 5, y: 11, width: 14, height: 10, rx: 2.5, fill: 'currentColor' }),
+    svg('path', { d: 'M8 11V8a4 4 0 0 1 8 0v3', fill: 'none', stroke: 'currentColor', 'stroke-width': 2.2, 'stroke-linecap': 'round' }));
+  const DIAS_SEMANA = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+  // "Sua semana": dos 7 dias a partir de hoje, abertos so os 3 primeiros que tem almoco ou jantar com proteina comum
+  // (mostra essa refeicao); os outros 4 em cards desfocados com cadeado (o cardapio real, guardado no app).
+  function semanaDoPlano(menu) {
+    const F = T.fim.food;
+    const resumo = (ref) => {
+      const nomes = ref.items.filter((it) => ['carb', 'legume', 'bread', 'protein'].includes(it.group)).slice(0, 3).map((it) => it.name);
+      return joinPt(nomes.map((n, i) => (i ? n.toLowerCase() : n)));
+    };
+    const dias = [0, 1, 2, 3, 4, 5, 6].map((k) => {
+      const di = (menu.hoje + k) % 7;
+      const { meals } = menu.doDia(di);
+      const lunch = meals.find((x) => x.code === 'lunch'), dinner = meals.find((x) => x.code === 'dinner');
+      const comum = [lunch, dinner].find((x) => x && proteinaComum(x));
+      const ref = comum ?? lunch ?? [...meals].sort((x, y) => y.kcal - x.kcal)[0];
+      return { dia: DIAS_SEMANA[di], txt: resumo(ref), comum: !!comum };
+    });
+    const abertos = dias.filter((x) => x.comum).slice(0, 3);
+    const fechados = dias.filter((x) => !abertos.includes(x)).slice(0, 4);
+    return [
+      fxCap(F.weekTitle),
+      abertos.map((x) => h('div', { class: 'fx-dia' }, h('span', null, x.dia), h('span', null, x.txt))),
+      h('div', { class: 'fx-guardados', role: 'img', 'aria-label': F.weekLocked.replace('{n}', fechados.length) },
+        fechados.map((x) => h('div', { class: 'fx-guardado', 'aria-hidden': 'true' },
+          h('div', { class: 'fx-guardado-top' }, h('b', null, x.dia), cadeado()),
+          h('span', { class: 'fx-borrado' }, x.txt)))),
+    ];
+  }
+  // Dias de treino na semana (o app sugere estes; a pessoa muda no app).
+  const DIAS_TREINO = { 1: [0], 2: [0, 3], 3: [0, 2, 4], 4: [0, 1, 3, 4], 5: [0, 1, 2, 3, 4], 6: [0, 1, 2, 3, 4, 5], 7: [0, 1, 2, 3, 4, 5, 6] };
+
+  // ─── Tela 48: plano pronto (prototipo Main): previsao, alimentacao (metas, um prato do plano, semana) e treino ──
   function PlanSummary() {
-    const S = T.summary;
+    const S = T.summary, F = T.fim;
+    medir('web_quiz_plan_ready_viewed');
+    modoFim(1);
     const t = TF.targetsOf(a);
     const e = t.energy;
-    const name = a.displayName.trim();
+    const m = metaFim();
     const serious = TF.hasSerious(a);
     const noAiPlan = !(a.planSetupChoice === 'ai' && !serious); // wantsGeneratedPlan (workoutGeneration.ts)
     const edit = (id, chain) => goTo(id, { returnTo: 'plan_summary', chain });
@@ -1933,59 +2078,108 @@
       : a.goal === 'improve_health' && !t.noDeficit ? S.goalHealth : `${S.goalKeep[0]} ${TF.formatKg(weight)} ${S.goalKeep[1]}`;
     const focus = a.muscleFocus.filter((f) => f !== 'none');
     const focusLabel = focus.length === 0 ? S.wholeBody : joinPt(focus.map((f) => TF.optionLabel(TF.FOCUS_OPTIONS, f) || f));
-    const sessionTitle = preview ? `Treino ${preview.session.letter} · ${preview.session.label}` : `Treino A · ${focusLabel}`;
-    const sessionMinutes = preview?.session.minutes ?? a.workoutDuration ?? 45;
-    const benefits = TF.planBenefitCards(a);
-    const motivation = TF.motivationLine(a.mainMotivation);
-    const setup = TF.mealSetupOf(a);
-    const up = (d, cls, kids) => h('div', { class: `${cls} fade-up`, style: { animationDelay: `${d}ms` } }, kids);
+    const minutes = preview?.session.minutes ?? a.workoutDuration ?? 45;
     const sleepGoal = String(a.sleepGoalHours).replace('.', ',');
-    let todayMenu = null;
-    if (setup === 'auto') {
-      const draft = TF.suggestedPlanOf(a, menuSeed);
-      const day = draft.week[TF.menuDayOf(todayIso())];
-      todayMenu = [
-        h('div', { class: 'divider' }),
-        h('p', { class: 'card-label' }, S.todayMenu),
-        h('div', { class: 'menu-compact' }, draft.meals.map((m, i) => h('div', { class: 'menu-meal' },
-          h('b', null, `${m.name} · ${TF.formatClock(Number(m.scheduled_time.slice(0, 2)) * 60 + Number(m.scheduled_time.slice(3, 5)))}`),
-          h('span', null, day[i].items.map((it) => `${it.name} (${it.amount})`).join(', '))))),
-      ];
+    const desire = a.mainMotivation === 'clothes' && a.goal === 'lose_weight' ? F.desire.clothesLose : F.desire[a.mainMotivation] || null;
+    const menu = cardapioDeHoje();
+    const setup = TF.mealSetupOf(a) ?? 'auto';
+    const up = (d, el) => { el.classList.add('fade-up'); el.style.animationDelay = `${d}ms`; return el; };
+
+    // Previsao: o grafico do onboarding do app (linha branca, area amarela, balao da meta), em card escuro.
+    // So com meta de peso e data. Mesmos pontos da tela de previsao do quiz (TF.projectionPoints).
+    let previsao = null;
+    if ((m.kind === 'lose' || m.kind === 'gain') && m.mes && m.alvo) {
+      const P = F.forecast;
+      const target = a.targetWeightKg;
+      const data = TF.fromIsoDate(a.targetDate);
+      const points = TF.projectionPoints(weight, target, 12).map((p) => p.kg);
+      previsao = up(60, fxCard('fx-escuro fx-graf fx-gap12', [
+        h('span', { class: 'fx-cap' }, P.title),
+        lineChart({
+          series: [{ values: points, color: '#FFFFFF', fill: true, fillColor: '#E2F408' }], yDomain: weightDomain(weight, target), haloAt: [0, 4, 8, points.length - 1],
+          startLabel: `${TF.formatKg(weight)} kg`, endBalloon: `${TF.formatKg(target)} kg`,
+          label: `${P.now} ${TF.formatKg(weight)} kg, ${m.alvo} kg ${P.reachB} ${m.mes}`,
+        }),
+        chartEnds(P.now, TF.formatDateLong(data, new Date())),
+        h('p', { class: 'fx-txt15' }, `${P.reachA} `, h('b', null, `${m.alvo} kg ${P.reachB} ${m.mes}`), '.'),
+        h('span', { class: 'fx-pequeno' }, P.estimate),
+      ]));
     }
+
+    const FD = F.food;
+    const stat = (emo, valor, sub) => h('div', { class: 'fx-stat' }, h('div', { class: 'fx-emo' }, emo), h('b', null, valor), h('span', null, sub));
+    const alimentacao = up(140, fxCard('fx-gap16', [
+      h('h2', { class: 'fx-h2' }, `${FD.emoji} ${FD.title}`),
+      h('div', { class: 'fx-stats' },
+        stat('🔥', `${TF.formatKcal(e.kcal)} kcal`, FD.stats.kcal),
+        stat('🥩', `${Math.round(e.proteinG)} g`, FD.stats.protein),
+        stat('💧', `${TF.formatLiters(t.waterMl)} L`, FD.stats.water),
+        stat('🍽️', `${a.mealCount ?? 3} ${FD.stats.meals}`, FD.stats.mealsSub)),
+      menu && h('div', { class: 'fx-secao' }, pratoDoPlano(menu.lunch)),
+      menu && h('div', { class: 'fx-secao fx-gap8' }, semanaDoPlano(menu)),
+      !menu && h('p', { class: 'fx-secao fx-txt14' }, setup === 'nutritionist' ? FD.nutritionist : FD.self),
+    ]));
+
+    const FT = F.training;
+    let treino;
+    if (noAiPlan) {
+      treino = up(220, fxCard('fx-gap14', [h('h2', { class: 'fx-h2' }, `${FT.emoji} ${FT.title}`), h('p', { class: 'fx-txt14' }, FT.own)]));
+    } else {
+      const dias = Math.min(7, Math.max(1, a.workoutDays ?? 3));
+      const marcados = DIAS_TREINO[dias];
+      const mostra = dias <= 5 ? 5 : dias;
+      // Gasto estimado: a conta do app (utils/workoutKcal.ts, estimatedKcal): MET x peso x minutos / 60, de 10 em 10,
+      // sem peso 70 kg. MET 5: o padrao do app quando o exercicio nao tem MET (o site nao tem o MET de cada um).
+      const kg = a.weightKg > 0 ? a.weightKg : 70;
+      const kcalTreino = Math.round((5 * kg * (minutes / 60)) / 10) * 10;
+      // Outros treinos da semana (B, C...): nome real; os exercicios ficam guardados no app (barras desfocadas).
+      const outros = [];
+      for (const s of preview.week) if (s.letter && s.letter !== preview.session.letter && !outros.some((o) => o.letter === s.letter)) outros.push(s);
+      const ex = preview.exercises.slice(0, 3);
+      treino = up(220, fxCard('fx-gap14', [
+        h('h2', { class: 'fx-h2' }, `${FT.emoji} ${FT.title}`),
+        h('div', { class: 'fx-dias' }, DIAS_SEMANA.slice(0, mostra).map((d, i) => h('span', { class: marcados.includes(i) ? 'on' : null }, d))),
+        h('div', { class: 'fx-txt15' }, h('b', null, `${FT.name} ${preview.session.letter}`), ` · ${preview.session.label}`),
+        h('p', { class: 'fx-txt14 fx-gasto' }, `${minutes} min · ${FT.kcal.replace('{kcal}', TF.formatKcal(kcalTreino))}`),
+        h('div', { class: 'fx-exs' }, ex.map((x) => {
+          const src = TF.gifDe && TF.gifDe(x.name);
+          return h('div', { class: 'fx-ex' },
+            h('div', { class: 'fx-gif' }, src ? h('img', { src, alt: '', loading: 'lazy', decoding: 'async', width: 120, height: 120 }) : icon('barbell-outline', 28, '#6B6F76')),
+            h('span', null, `${x.name} · ${x.sets}×${x.reps}`));
+        })),
+        outros.length > 0 && h('div', { class: 'fx-guardados' }, outros.map((o) => h('div', { class: 'fx-guardado', 'aria-label': `${FT.name} ${o.letter} · ${o.label}. ${FT.locked}` },
+          h('div', { class: 'fx-guardado-top' }, h('b', null, `${FT.name} ${o.letter} · ${o.label}`), cadeado()),
+          h('div', { class: 'fx-barras', 'aria-hidden': 'true' }, h('i'), h('i'), h('i'))))),
+      ]));
+    }
+
+    const ajustar = adjustAnswers([
+      { topic: S.goalRow, value: goalValue, go: () => edit('goal', ['target_weight', 'pace']) },
+      { topic: S.rows.weight, value: `${TF.formatKg(weight)} kg`, go: () => edit('weight') },
+      ...(serious ? [] : [
+        { topic: S.rows.days, value: `${a.workoutDays ?? 3} dias`, go: () => edit('days') },
+        { topic: S.rows.duration, value: `${a.workoutDuration ?? 45} min`, go: () => edit('duration') },
+        { topic: S.rows.focus, value: focusLabel, go: () => edit('focus') },
+      ]),
+      { topic: S.rows.meals, value: `${a.mealCount ?? 3} ${T.meals.unit}`, go: () => edit('meals') },
+      ...(a.supplementsUsage ? [{ topic: S.rows.supplements, value: T.supplements.short[a.supplementsUsage], go: () => edit('supplements') }] : []),
+      { topic: S.rows.sleep, value: `${sleepGoal} h, ${S.sleepLabel[0].replace('de sono, ', '')} ${bedtimeOf()}`, go: () => edit('sleep') },
+    ]);
+    ajustar.className = 'fx-link';
+    ajustar.replaceChildren(F.adjust);
+
     paint({
       body: [
-        header(noAiPlan ? (name ? `${name}, ${S.noPlan}` : S.noPlanNoName) : (name ? `${name}, ${S.ready}` : S.readyNoName)),
-        up(0, 'card chart-card', projectionChart()),
-        up(150, 'card gap8 sheet-card', noAiPlan
-          ? [bubble('barbell-outline', 52), h('div', { class: 'sheet-card-body' }, h('p', { class: 'sc-title' }, S.yourTraining), h('p', { class: 'sc-sub' }, !serious && a.planSetupChoice === 'manual' ? S.manual : S.other))]
-          : [bubble('barbell-outline', 52), h('div', { class: 'sheet-card-body' }, h('p', { class: 'sc-title' }, sessionTitle), h('p', { class: 'sc-sub' }, `${a.workoutDays ?? 3}${S.perWeek} · ${sessionMinutes} min`))]),
-        up(300, 'card gap8 food-card', [
-          h('div', null, h('p', { class: 'card-label' }, S.food), h('p', { class: 'big-value' }, h('span', { class: 'emo-i', 'aria-hidden': 'true' }, '🔥'), `${TF.formatKcal(e.kcal)} `, h('span', null, S.kcalDay))),
-          macros(e, 500),
-          todayMenu,
-        ]),
-        up(450, 'pair gap8', [
-          h('div', { class: 'card pair-card' }, emojiBubble('💧', 40), h('p', { class: 'pair-value' }, `${TF.formatLiters(t.waterMl)} L`), h('p', { class: 'pair-label' }, S.waterLabel)),
-          h('div', { class: 'card pair-card' }, bubble('moon-outline', 40), h('p', { class: 'pair-value' }, `${sleepGoal} h`), h('p', { class: 'pair-label' }, `${S.sleepLabel[0]} ${bedtimeOf()}`)),
-        ]),
-        h('p', { class: 'section-title' }, S.benefits),
-        motivation && h('p', { class: 'motivation' }, motivation),
-        h('div', { class: 'grid' }, benefits.map((b) => h('div', { class: 'card cell' }, bubble(b.icon, 48), h('b', null, b.title), h('span', null, b.desc)))),
-        caption(S.basis, 'gap8'),
-        adjustAnswers([
-          { topic: S.goalRow, value: goalValue, go: () => edit('goal', ['target_weight', 'pace']) },
-          { topic: S.rows.weight, value: `${TF.formatKg(weight)} kg`, go: () => edit('weight') },
-          ...(serious ? [] : [
-            { topic: S.rows.days, value: `${a.workoutDays ?? 3} dias`, go: () => edit('days') },
-            { topic: S.rows.duration, value: `${a.workoutDuration ?? 45} min`, go: () => edit('duration') },
-            { topic: S.rows.focus, value: focusLabel, go: () => edit('focus') },
-          ]),
-          { topic: S.rows.meals, value: `${a.mealCount ?? 3} ${T.meals.unit}`, go: () => edit('meals') },
-          ...(a.supplementsUsage ? [{ topic: S.rows.supplements, value: T.supplements.short[a.supplementsUsage], go: () => edit('supplements') }] : []),
-          { topic: S.rows.sleep, value: `${sleepGoal} h, ${S.sleepLabel[0].replace('de sono, ', '')} ${bedtimeOf()}`, go: () => edit('sleep') },
-        ]),
+        h('div', { class: 'fx-topo' },
+          h('span', { class: 'fx-selo' }, F.badge),
+          h('h1', { class: 'fx-h1', tabindex: '-1' }, comNome(tituloMeta(m, F.title), m.nome)),
+          desire && h('p', { class: 'fx-sub' }, desire)),
+        previsao,
+        alimentacao,
+        treino,
+        ajustar,
       ],
-      footer: [primary(S.button, () => next())],
+      footer: [primary(F.button, () => next())],
     });
   }
 
@@ -1993,6 +2187,7 @@
   // 3 apps separados entram um por um, o total sobe, e depois o palpite na regua (comeca vazia).
   function Value() {
     const V = T.value;
+    medir('web_quiz_price_game_viewed');
     const monthlyOf = (y) => Math.round(y / 12); // monthlyOfYearly (src/onboarding/planValue.ts)
     const total = V.apps.reduce((s, x) => s + monthlyOf(x.yearly), 0);
     let guess = a.priceGuess ?? V.ruler.initial;
@@ -2044,59 +2239,145 @@
     const quando = dif === 0 ? 'hoje' : dif === 1 ? 'amanhã' : dif > 1 && dif < 7 ? p.weekday.split('-')[0] : `${p.day}/${p.month}`;
     return `${quando}, ${hora}`;
   }
-  // "1º mês por R$ 14,99, depois R$ 29,90/mês. Vale até sexta, 23h59" (sem prazo: so a primeira frase).
-  function linhaCupom(c, mensal) {
-    const prazo = prazoCupom(c.ate);
-    return `${T.priceReveal.couponA} ${c.preco}, ${T.priceReveal.couponB} ${mensal}${T.priceReveal.perMonth}.${prazo ? ` ${T.priceReveal.couponUntil} ${prazo}` : ''}`;
+
+
+  // Celular com o video do topo do site (/plano/): mudo, em loop, sem controles. A capa fica por baixo
+  // (sem video, com "reduzir movimento" ou enquanto carrega). O video para ao sair da tela.
+  function celularApp() {
+    const base = '/plano/assets/midia/topo';
+    const tela = h('div', { class: 'cel-tela' }, h('img', { src: `${base}-capa.webp`, alt: '', width: 540, height: 1170, fetchpriority: 'high' }));
+    if (!REDUCED) {
+      const v = document.createElement('video');
+      v.muted = true; v.defaultMuted = true; v.loop = true; v.playsInline = true; v.autoplay = true; v.preload = 'auto';
+      for (const at of ['muted', 'playsinline', 'autoplay', 'loop']) v.setAttribute(at, '');
+      v.setAttribute('aria-hidden', 'true');
+      for (const [ext, type] of [['webm', 'video/webm'], ['mp4', 'video/mp4']]) { const s = document.createElement('source'); s.src = `${base}.${ext}`; s.type = type; v.append(s); }
+      v.addEventListener('playing', () => v.classList.add('on'));
+      tela.append(v);
+      const p = v.play(); if (p && p.catch) p.catch(() => {});
+      cleanups.push(() => { try { v.pause(); v.removeAttribute('src'); } catch (e) { /* nada */ } });
+    }
+    return h('div', { class: 'fx-cel', role: 'img', 'aria-label': T.fim.price.phoneAlt }, tela);
+  }
+  // Valor em reais de um texto como "R$ 14,99" (preco do cupom vindo do servidor), ou null.
+  const reaisDe = (s) => { const x = /(\d+)[,.](\d{2})/.exec(String(s || '')); return x ? Number(`${x[1]}.${x[2]}`) : null; };
+  // "Feito pro que voce contou": ate 3 linhas com as respostas da pessoa (ja tentou, maior dificuldade, motivo + meta).
+  function feitoPraVoce(m, oferta, porDia, min) {
+    const X = T.fim.price.told;
+    const linhas = [];
+    if (a.triedBefore === 'many' || a.triedBefore === 'once_twice') linhas.push(X.tried.again);
+    else if (a.triedBefore === 'first') linhas.push(X.tried.first);
+    const ob = a.mainObstacle === 'quit_before' ? 'motivation' : a.mainObstacle === 'money' && oferta ? 'moneyOffer' : a.mainObstacle;
+    if (X.obstacle[ob]) linhas.push(X.obstacle[ob].map((s) => s.replace('{dia}', porDia).replace('{oferta}', oferta || '').replace('{min}', String(min))));
+    const mot = X.motivation[a.mainMotivation];
+    if (mot) linhas.push([mot, m.mes && m.alvo && (m.kind === 'lose' || m.kind === 'gain') ? X.goal.replace('{kg}', m.alvo).replace('{mes}', m.mes) : X.noGoal]);
+    return linhas;
   }
 
-  // ─── Tela 49B, so na web: o preco revelado (no app ele aparece na paywall) ──
-  // Os valores vem de preco.js (TF.PRECO); os cards seguem src/utils/planDisplay.ts (planCardLines).
+  // ─── Tela 49B, so na web: o preco (prototipos Preco e PrecoOferta). Um destaque por tela, Anual sempre em cima.
+  // Sem oferta: Anual pre-selecionado com "Economize". Com oferta (so a confirmada pelo servidor no link curto,
+  // lead.cupom): faixa com o prazo e o Mensal pre-selecionado com o 1o mes em destaque. Valores de preco.js (TF.PRECO).
   function PriceReveal() {
-    const R = T.priceReveal, P = TF.PRECO;
-    medir('web_quiz_price_revealed');
+    const F = T.fim, X = F.price, R = T.priceReveal, P = TF.PRECO;
+    const oferta = !!(TF.PAGAMENTO_ATIVO && lead && lead.cupom && lead.cupom.preco);
+    medir('web_quiz_price_revealed', { offer: oferta });
+    modoFim(2);
     const brl = (n) => `R$ ${n.toFixed(2).replace('.', ',')}`;
-    const guess = a.priceGuess;
-    // Com o pagamento ligado, os cards viram a escolha do plano (anual marcado de inicio).
+    const m = metaFim();
     const escolhe = !!TF.PAGAMENTO_ATIVO;
-    const plan = (key, title, sub, price, best, delay) => {
-      const sel = escolhe && planoWeb === key;
-      return h(escolhe ? 'button' : 'div', {
-        type: escolhe ? 'button' : null, role: escolhe ? 'radio' : null, 'aria-checked': escolhe ? (sel ? 'true' : 'false') : null,
-        class: `card plan-card fade-up${best ? ' best' : ''}${escolhe ? ' escolha' : ''}${sel ? ' sel' : ''}`, style: { animationDelay: `${delay}ms` },
-        onclick: escolhe ? () => { planoWeb = key; draw(); } : null,
-      },
-        best && h('span', { class: 'tag' }, escolhe ? R.mostChosen : R.best),
-        escolhe && h('span', { class: `radio${sel ? ' on' : ''}` }),
-        h('div', { class: 'plan-left' }, h('p', { class: 'plan-title' }, title), h('p', { class: 'plan-sub' }, sub)),
-        h('p', { class: 'plan-price' }, price));
-    };
-    function draw() {
-      paint({
-        body: [
-          guess != null && h('p', { class: 'guess-line' }, `${R.guess} R$ ${guess}${guess >= T.value.ruler.max ? ` ${T.value.maxSuffix}` : ''} ${T.value.unit}`),
-          header(`${R.titleA} ${brl(P.anualPorMes)} ${R.titleB}`, R.vsApps),
-          h('div', { class: 'plans', role: escolhe ? 'radiogroup' : null },
-            plan('anual', R.annual, `${brl(P.anual)}${R.perYear}`, `${brl(P.anualPorMes)}${R.perMonth}`, true, 150),
-            plan('mensal', R.monthly, R.noCommitment, `${brl(P.mensal)}${R.perMonth}`, false, 300)),
-          escolhe && lead && lead.cupom && lead.cupom.preco && caption(linhaCupom(lead.cupom, brl(P.mensal)), 'gap12 center-txt'),
-          caption(escolhe ? R.renewalPay : R.renewal, 'gap12 center-txt'),
-        ],
-        // Com pagamento: garantia e cancelamento acima do botao; nota e numero de pessoas junto dele; Pix e cartao embaixo.
-        footer: escolhe
-          ? [
-            h('ul', { class: 'pr-garantias' },
-              h('li', null, icon('shield-checkmark-outline', 18, C.teal), h('span', null, h('b', null, R.guaranteeA), ` ${R.guaranteeB}`)),
-              h('li', null, icon('checkmark-circle', 18, C.teal), h('span', null, R.cancelAnytime))),
-            primary(R.buttonPay, irParaCakto),
-            h('p', { class: 'pr-prova' }, h('span', { class: 'pr-estrelas', 'aria-hidden': 'true' }, [0, 1, 2, 3, 4].map(() => icon('star', 13, C.gold))),
-              h('span', null, h('b', null, R.rating), ` ${R.ratingTail}`)),
-            h('p', { class: 'pr-pag' }, h('span', null, icon('diamond-outline', 15, C.t2), 'Pix'), h('span', null, icon('card-outline', 15, C.t2), R.card), h('span', null, R.secure)),
-          ]
-          : [primary(R.button, () => next())],
-      });
+    const min = a.workoutDuration ?? 45;
+    const precoOferta = oferta ? lead.cupom.preco : null;
+    const valorOferta = oferta ? reaisDe(precoOferta) : null;
+    const pctOferta = valorOferta ? Math.floor((1 - valorOferta / P.mensal) * 100) : null;
+    const pctAnual = Math.floor((1 - P.anualPorMes / P.mensal) * 100);
+    // Menos de R$ 0,70 por dia: o anual dividido por 365, arredondado para cima nos 10 centavos.
+    const porDia = brl(Math.ceil((P.anual / 365) * 10) / 10);
+    planoWeb = oferta ? 'mensal' : 'anual';
+
+    // Faixa do prazo do desconto, acima do topo.
+    if (oferta) {
+      const prazo = prazoCupom(lead.cupom.ate);
+      if (prazo) {
+        const faixa = h('div', { class: 'fx-faixa', role: 'note' }, X.offerUntil.replace('{prazo}', prazo));
+        topEl.before(faixa);
+        cleanups.push(() => faixa.remove());
+      }
     }
-    draw();
+
+    // Escolha de plano (Anual em cima): aparece logo depois do titulo e de novo no fim, completa e com o botao.
+    // As duas ficam sincronizadas: marcar em uma marca na outra (planoWeb e um so).
+    const comprar = () => (escolhe ? irParaCakto() : next());
+    const escolhas = [];
+    function escolha() {
+      const plano = (key, badge, titulo, sub, preco) => h(escolhe ? 'button' : 'div', {
+        type: escolhe ? 'button' : null, role: escolhe ? 'radio' : null, class: 'fx-plano', 'data-plano': key,
+        onclick: escolhe ? () => { if (planoWeb !== key) { planoWeb = key; medir('web_quiz_plan_selected', { plan: key }); atualiza(); } } : null,
+      }, badge, escolhe && h('span', { class: 'fx-radio' }), h('span', { class: 'fx-plano-txt' }, h('b', null, titulo), h('span', null, sub)), h('span', { class: 'fx-plano-preco' }, preco));
+      const cartoes = [
+        plano('anual', !oferta && h('span', { class: 'fx-selo-eco' }, X.save.replace('{pct}', pctAnual)),
+          X.annual, `${brl(P.anual)} ${X.perYear}`, [h('b', null, brl(P.anualPorMes)), h('span', null, X.perMonth)]),
+        oferta
+          ? plano('mensal', h('span', { class: 'fx-selo-off' }, pctOferta ? X.offerTag.replace('{pct}', pctOferta) : X.firstMonth),
+            X.monthly, `${X.then} ${brl(P.mensal)}${X.perMonthShort}`,
+            [h('s', null, brl(P.mensal)), h('b', { class: 'fx-grande' }, precoOferta), h('span', { class: 'fx-roxo-forte' }, X.firstMonth)])
+          : plano('mensal', null, X.monthly, X.noCommitment, [h('b', null, brl(P.mensal)), h('span', null, X.perMonth)]),
+      ];
+      const btn = primary(F.buttonPay, comprar);
+      const hoje = h('p', { class: 'fx-hoje' });
+      const e = { cartoes, btn, hoje, el: [h('div', { class: 'fx-planos', role: escolhe ? 'radiogroup' : null, 'aria-label': X.choose }, cartoes), h('div', { class: 'fx-cta' }, btn, hoje)] };
+      escolhas.push(e);
+      return e.el;
+    }
+    function atualiza() {
+      const ofertaNoMensal = oferta && planoWeb === 'mensal';
+      const rotulo = !escolhe ? R.button : ofertaNoMensal ? X.buttonOffer.replace('{preco}', precoOferta) : F.buttonPay;
+      const linha = !escolhe ? '' : planoWeb === 'anual' ? X.todayAnnual.replace('{anual}', brl(P.anual))
+        : ofertaNoMensal ? X.todayOffer.replace('{oferta}', precoOferta).replace('{mensal}', brl(P.mensal))
+          : X.todayMonthly.replace('{mensal}', brl(P.mensal));
+      for (const e of escolhas) {
+        for (const c of e.cartoes) {
+          const sel = escolhe && c.dataset.plano === planoWeb;
+          c.classList.toggle('sel', sel);
+          if (escolhe) c.setAttribute('aria-checked', sel ? 'true' : 'false');
+        }
+        e.btn.textContent = rotulo;
+        e.hoje.textContent = linha;
+      }
+    }
+    const escolhaTopo = escolha();
+    const escolhaFim = escolha();
+    atualiza();
+
+    const linhas = feitoPraVoce(m, precoOferta, porDia, min);
+    const faq = h('div', { class: 'fx-card fx-faq' }, X.faq.map(([q, r], i) => {
+      const resp = h('p', { class: 'fx-faq-r', id: `faq-${i}` }, r);
+      const sinal = h('span', { 'aria-hidden': 'true' }, i === 0 ? '−' : '+');
+      resp.hidden = i !== 0;
+      const btn = h('button', { type: 'button', class: 'fx-faq-q', 'aria-expanded': i === 0 ? 'true' : 'false', 'aria-controls': `faq-${i}`,
+        onclick: () => { const abre = resp.hidden; resp.hidden = !abre; sinal.textContent = abre ? '−' : '+'; btn.setAttribute('aria-expanded', abre ? 'true' : 'false'); } }, h('span', null, q), sinal);
+      return h('div', { class: 'fx-faq-item' }, btn, resp);
+    }));
+
+    paint({
+      body: [
+        h('div', { class: 'fx-hero' }, celularApp(),
+          h('div', { class: 'fx-hero-txt' }, h('h1', { class: 'fx-h1 fx-h1-preco', tabindex: '-1' }, tituloMeta(m, X.title)), h('p', null, X.subtitle))),
+        escolhaTopo,
+        h('div', { class: 'fx-card fx-gap14 fx-mt24' }, h('h2', { class: 'fx-h2b' }, X.get.title),
+          X.get.items.map(([emo, t1, t2]) => h('div', { class: 'fx-item' }, h('span', { class: 'fx-item-emo', 'aria-hidden': 'true' }, emo), h('div', null, h('b', null, t1), h('span', null, t2))))),
+        h('div', { class: 'fx-card fx-gap12' }, h('h2', { class: 'fx-h2b' }, X.never.title),
+          X.never.items.map((t1) => h('div', { class: 'fx-nunca' }, h('span', { 'aria-hidden': 'true' }, '✕'), t1))),
+        linhas.length > 0 && h('div', { class: 'fx-card fx-escuro fx-feito fx-gap14' }, h('h2', { class: 'fx-h2b' }, X.told.title),
+          linhas.map(([t1, t2]) => h('div', null, h('b', null, t1), h('span', null, t2)))),
+        h('div', { class: 'fx-card fx-garantia' }, h('span', { class: 'fx-garantia-emo', 'aria-hidden': 'true' }, X.guarantee.emoji),
+          h('div', null, h('b', null, X.guarantee.title), h('span', null, X.guarantee.txt))),
+        faq,
+        h('div', { class: 'fx-fim' }, escolhaFim, h('p', { class: 'fx-prova' }, X.proof)),
+      ],
+      footer: [],
+    });
+    const v = scrollEl.querySelector('.fx-cel video');
+    if (v && v.paused) { const p = v.play(); if (p && p.catch) p.catch(() => {}); }
   }
 
   // ─── So na web: cadastro (tela 48L) e ida para a Cakto ─────────────────────
@@ -2178,9 +2459,9 @@
   function irParaCakto() {
     const F = window.TF_FUNIL;
     if (!lead) { goTo('lead_form'); return; }
-    medir('web_quiz_checkout_started');
     const plano = F.cakto[planoWeb] ? planoWeb : 'anual';
     const cupom = plano === 'mensal' && lead.cupom ? lead.cupom.codigo : null;
+    medir('web_quiz_checkout_started', { plan: plano, offer: !!cupom });
     const callback = lead.id ? (lead.token ? `${lead.id}.${lead.token}` : lead.id) : null;
     // Registra a ida a Cakto no lead (web-lead-checkout), sem esperar a resposta. sendBeacon primeiro: o navegador
     // entrega o pedido mesmo depois de trocar de pagina (no Safari do iPhone, o fetch logo antes de sair pode se perder).
@@ -2223,6 +2504,7 @@
   // escondido fora da tela. Se a pessoa voltar e nao mudar nada, segue sem mandar de novo.
   function LeadForm() {
     const L = T.leadForm, F = window.TF_FUNIL;
+    modoFim(0);
     const st = { terms: !!a.termsAcceptedAt, health: !!a.healthDataConsentAt, ofertas: !!a.ofertasAceitasEm, enviando: false };
     const erroDe = {};
     const field = (id, label, attrs) => {
@@ -2380,8 +2662,8 @@
     paint({
       body: [
         header(L.title, L.subtitle),
-        h('div', { class: 'form-fields' }, nome.el, email.el, whats.el, isca),
-        h('div', { class: 'lead-checks gap16' },
+        h('div', { class: 'card lead-card form-fields' }, nome.el, email.el, whats.el, isca),
+        h('div', { class: 'card lead-checks' },
           check('terms', [`${t1} `, h('a', { href: T.links.terms, target: '_blank', rel: 'noopener noreferrer', onclick: stop }, t2), ` ${t3} `, h('a', { href: T.links.privacy, target: '_blank', rel: 'noopener noreferrer', onclick: stop }, t4), '.']),
           check('health', L.health),
           check('ofertas', L.marketing)),
