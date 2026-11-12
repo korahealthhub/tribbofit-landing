@@ -593,7 +593,7 @@ window.TF = window.TF || {};
           keep: 'Seu plano para manter seu peso está pronto',
           health: 'Seu plano para ter mais saúde está pronto',
         },
-        subtitle: 'Tudo no app Tribbo Fit, pra você seguir dia a dia.',
+        subtitle: 'Tudo no app Tribbo Fit, pra você seguir dia\u00a0a\u00a0dia.', // \u00a0: "dia a dia" nunca quebra
         phoneAlt: 'O app Tribbo Fit no celular: refeição registrada, treino montado e treino guiado',
         offerTitle: 'Oferta especial pra você', offerUntil: 'Vale até {prazo}',
         choose: 'Escolha seu plano', annual: 'Anual', monthly: 'Mensal', perYear: 'por ano', perMonth: 'por mês', perMonthShort: '/mês',
@@ -611,6 +611,7 @@ window.TF = window.TF || {};
             ['📸', 'Registre suas refeições em segundos', 'Por foto, voz, texto ou código de barras, e veja as calorias na hora.'],
             ['🔄', 'Troca de alimentos', 'Não gostou? Troca mantendo as calorias.'],
             ['💧', 'Água, sono e metas do dia', 'Com lembretes no celular.'],
+            ['💊', 'Lembrete dos seus suplementos', 'Avisa a hora de tomar e você marca que tomou.'],
             ['🎯', 'Gere novos planos quando quiser', 'Mudou o objetivo? Crie uma nova ficha de treino e um novo plano alimentar no app.'],
             ['📈', 'Sua evolução e conquistas', 'Gráficos da sua evolução por semana e por mês, histórico dos últimos 3 meses e conquistas a cada meta batida.'],
             ['👥', 'Comunidade com o fundador', 'Contato direto com quem faz o app.'],

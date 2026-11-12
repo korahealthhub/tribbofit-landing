@@ -2694,11 +2694,17 @@
     const cupomUrl = curto ? (URL_PARAMS.get('cupom') || '').trim().slice(0, 40) || null : null;
     const pedido = curto ? { token: curto, ...(cupomUrl ? { cupom: cupomUrl } : {}) } : { lead_id: m[1].toLowerCase(), token: m[2].toLowerCase() };
     try {
-      const ctl = new AbortController();
-      const limite = setTimeout(() => ctl.abort(), 8000);
-      const res = await fetch(F.leadResume, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pedido), credentials: 'omit', signal: ctl.signal });
-      clearTimeout(limite);
-      if (!res.ok) return false;
+      // O retomar.js (no topo da pagina) ja fez este mesmo pedido enquanto o quiz baixava: usa a resposta dele.
+      const cedo = window.TF_RETOMADA && window.TF_RETOMADA.bruto === bruto ? window.TF_RETOMADA.resposta : null;
+      let res;
+      if (cedo) res = await cedo;
+      else {
+        const ctl = new AbortController();
+        const limite = setTimeout(() => ctl.abort(), 8000);
+        res = await fetch(F.leadResume, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pedido), credentials: 'omit', signal: ctl.signal });
+        clearTimeout(limite);
+      }
+      if (!res || !res.ok) return false;
       const d = await res.json();
       if (!d || !d.answers || typeof d.answers !== 'object' || !d.email) return false;
       const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -2761,8 +2767,10 @@
   };
 
   // Com ?retomar= valido, abre direto na revelacao do preco; senao, o quiz do comeco.
+  // A tela de carregamento (retomar.js) sai no mesmo quadro em que o preco ou a tela inicial aparece.
+  const fimCarregando = () => { document.documentElement.classList.remove('retomando'); const c = document.getElementById('carregando'); if (c) c.remove(); };
   if (URL_PARAMS.has('retomar') && TF.PAGAMENTO_ATIVO) {
     const pre = document.getElementById('pre-btn'); if (pre) pre.disabled = true;
-    retomar().then((ok) => show(ok ? 'price_reveal' : 'welcome', false));
-  } else show('welcome', false);
+    retomar().then((ok) => { fimCarregando(); show(ok ? 'price_reveal' : 'welcome', false); });
+  } else { fimCarregando(); show('welcome', false); }
 })();

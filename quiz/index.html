@@ -14,6 +14,11 @@
 <link rel="icon" href="/plano/assets/icones/favicon-48.png" sizes="48x48" type="image/png">
 <link rel="apple-touch-icon" href="/plano/assets/icones/apple-touch-icon.png">
 <link rel="manifest" href="/plano/assets/icones/site.webmanifest">
+<!-- Link de volta (?retomar=): conexao com o Supabase aberta cedo; funil.js (enderecos) e retomar.js rodam antes das fontes e do CSS
+     (script depois de CSS espera o CSS baixar): trocam a tela inicial pela de carregamento e ja fazem o pedido do plano (quiz/retomar.js). -->
+<link rel="preconnect" href="https://jllkcglzajmzqywyuswq.supabase.co" crossorigin>
+<script src="/js/funil.js"></script>
+<script src="retomar.js"></script>
 <link rel="preload" href="assets/fontes/inter-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fontes/inter-700.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="style.css">
@@ -28,6 +33,7 @@
   </header>
   <!-- Primeira tela ja pronta no HTML para aparecer antes do JavaScript. Os textos repetem T.welcome (perguntas.js): mudou la, muda aqui. -->
   <main id="scroll"><div class="content fill" id="pre"><div class="q-head"><h1 class="q-title fixed" tabindex="-1">Queremos criar uma experiência personalizada para você!</h1><p class="q-sub">Responda as próximas perguntas para nos ajudar a criar seu plano.</p></div><div class="cover"><img src="assets/foto_capa.webp" alt="" width="700" height="589" fetchpriority="high" decoding="async"></div></div></main>
+  <div id="carregando" role="status" aria-live="polite"><span class="carregando-giro" aria-hidden="true"></span><p>Carregando o seu plano…</p></div>
   <footer id="foot"><button type="button" class="btn" id="pre-btn">Criar meu plano</button></footer>
 </div>
 <noscript><p style="color:#0E1A1D;padding:24px;font-family:sans-serif">Ative o JavaScript para responder ao quiz.</p></noscript>
@@ -37,7 +43,6 @@
 <script src="preco.js" defer></script>
 <script src="calculos.js" defer></script>
 <script src="/js/medida.js" defer></script>
-<script src="/js/funil.js" defer></script>
 <script src="app.js" defer></script>
 </body>
 </html>
