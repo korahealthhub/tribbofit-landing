@@ -595,7 +595,8 @@ window.TF = window.TF || {};
         },
         subtitle: 'Tudo no app Tribbo Fit, pra você seguir dia\u00a0a\u00a0dia.', // \u00a0: "dia a dia" nunca quebra
         phoneAlt: 'O app Tribbo Fit no celular: refeição registrada, treino montado e treino guiado',
-        offerTitle: 'Oferta especial pra você', offerUntil: 'Vale até {prazo}',
+        // Faixa preta da oferta: o titulo aparece em maiusculas pelo CSS. day/days: "Termina em 1 dia", "Termina em 2 dias".
+        band: { title: 'Oferta especial', off: '{pct}% OFF', line: '1º mês por {preco}', ends: 'Termina em', day: 'dia', days: 'dias', hours: 'horas', min: 'min', sec: 'seg' },
         choose: 'Escolha seu plano', annual: 'Anual', monthly: 'Mensal', perYear: 'por ano', perMonth: 'por mês', perMonthShort: '/mês',
         save: 'Economize {pct}%', noCommitment: 'Sem fidelidade', offerTag: '{pct}% OFF no 1º mês', firstMonth: 'no 1º mês', then: 'depois',
         buttonOffer: 'Começar por {preco}',

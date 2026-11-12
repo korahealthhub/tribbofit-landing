@@ -2231,20 +2231,9 @@
     }, REDUCED ? 0 : V.stepMs);
   }
 
-  // Prazo do cupom em pt-BR, no horario de Brasilia: "hoje, 23h59", "amanha, 23h59", "sexta, 23h59" ou "23/11, 23h59".
-  function prazoCupom(iso) {
-    const d = new Date(iso);
-    if (!iso || isNaN(d)) return null;
-    const tz = { timeZone: 'America/Sao_Paulo' };
-    const dia = (x) => new Intl.DateTimeFormat('en-CA', { ...tz, year: 'numeric', month: '2-digit', day: '2-digit' }).format(x);
-    const dif = Math.round((Date.parse(dia(d)) - Date.parse(dia(new Date()))) / 86400000);
-    const p = Object.fromEntries(new Intl.DateTimeFormat('pt-BR', { ...tz, weekday: 'long', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
-      .formatToParts(d).map((x) => [x.type, x.value]));
-    const hora = `${p.hour}h${p.minute === '00' ? '' : p.minute}`;
-    const quando = dif === 0 ? 'hoje' : dif === 1 ? 'amanhã' : dif > 1 && dif < 7 ? p.weekday.split('-')[0] : `${p.day}/${p.month}`;
-    return `${quando}, ${hora}`;
-  }
-
+  // Cupom vencido: a tela volta ao preco normal, sem cupom (como o link vencido, em que o servidor nao manda cupom).
+  function venceCupom() { if (lead) { lead.cupom = null; lead.cupomUrl = null; } }
+  let repintaPreco = false; // redesenho do preco quando o contador chega a zero: sem medir de novo a revelacao
 
   // Celular com o video do topo do site (/plano/): mudo, em loop, sem controles. A capa fica por baixo
   // (sem video, com "reduzir movimento" ou enquanto carrega). O video para ao sair da tela.
@@ -2284,8 +2273,10 @@
   // lead.cupom): faixa com o prazo e o Mensal pre-selecionado com o 1o mes em destaque. Valores de preco.js (TF.PRECO).
   function PriceReveal() {
     const F = T.fim, X = F.price, R = T.priceReveal, P = TF.PRECO;
+    if (lead && lead.cupom && lead.cupom.ate && Date.parse(lead.cupom.ate) <= Date.now()) venceCupom();
     const oferta = !!(TF.PAGAMENTO_ATIVO && lead && lead.cupom && lead.cupom.preco);
-    medir('web_quiz_price_revealed', { offer: oferta });
+    if (!repintaPreco) medir('web_quiz_price_revealed', { offer: oferta });
+    repintaPreco = false;
     modoFim(2);
     const brl = (n) => `R$ ${n.toFixed(2).replace('.', ',')}`;
     const m = metaFim();
@@ -2299,14 +2290,44 @@
     const porDia = brl(Math.ceil((P.anual / 365) * 10) / 10);
     planoWeb = oferta ? 'mensal' : 'anual';
 
-    // Faixa do topo, so com a oferta confirmada pelo servidor: "Oferta especial pra voce" em destaque e o prazo embaixo.
+    // Faixa preta do topo (prototipo "Oferta A"), so com a oferta confirmada pelo servidor: "OFERTA ESPECIAL", o selo
+    // "49% OFF" com o preco do 1o mes e o contador ate o coupon_until real do lead (vem do servidor, entao recarregar
+    // nao reinicia). Mais de 24 h: os dias vao junto do "Termina em" ("Termina em 1 dia" + 08:34:12). Ao chegar a zero,
+    // a tela se redesenha no preco normal, sem cupom. Sem prazo valido na resposta: faixa sem contador.
     if (oferta) {
-      const prazo = prazoCupom(lead.cupom.ate);
+      const B = X.band;
+      const fim = Date.parse(lead.cupom.ate || '');
+      let relogio = null;
+      if (fim > Date.now()) {
+        const caixa = (rot) => { const n = h('span', { class: 'fx-cd-n' }, '00'); return [n, h('span', { class: 'fx-cd-cx' }, n, h('span', null, rot))]; };
+        const [nh, ch] = caixa(B.hours), [nm, cm] = caixa(B.min), [ns, cs] = caixa(B.sec);
+        const sep = () => h('span', { class: 'fx-cd-sep', 'aria-hidden': 'true' }, ':');
+        const dias = h('span', null);
+        const rotulo = h('span', { class: 'fx-cd-rot' }, B.ends, dias);
+        const dois = (x) => String(x).padStart(2, '0');
+        const tique = () => {
+          const resta = fim - Date.now();
+          if (resta <= 0) {
+            venceCupom();
+            if (current === 'price_reveal') { resetScreen(); repintaPreco = true; render('price_reveal'); }
+            return;
+          }
+          const t = Math.floor(resta / 1000), d = Math.floor(t / 86400);
+          dias.textContent = d > 0 ? ` ${d} ${d === 1 ? B.day : B.days}` : '';
+          nh.textContent = dois(Math.floor((t % 86400) / 3600)); nm.textContent = dois(Math.floor((t % 3600) / 60)); ns.textContent = dois(t % 60);
+        };
+        relogio = h('div', { class: 'fx-cd', role: 'timer' }, rotulo, h('div', { class: 'fx-cd-caixas' }, ch, sep(), cm, sep(), cs));
+        tique();
+        const id = setInterval(tique, 1000);
+        cleanups.push(() => clearInterval(id));
+      }
       const faixa = h('div', { class: 'fx-faixa', role: 'note' },
-        h('b', null, X.offerTitle),
-        prazo && h('span', null, X.offerUntil.replace('{prazo}', prazo)));
+        h('div', { class: 'fx-faixa-esq' }, h('b', null, B.title),
+          h('span', null, pctOferta && h('i', null, B.off.replace('{pct}', pctOferta)), B.line.replace('{preco}', precoOferta))),
+        relogio);
       topEl.before(faixa);
-      cleanups.push(() => faixa.remove());
+      document.body.classList.add('fim-oferta');
+      cleanups.push(() => { faixa.remove(); document.body.classList.remove('fim-oferta'); });
     }
 
     // Escolha de plano (Anual em cima): aparece logo depois do titulo e de novo no fim, completa e com o botao.
@@ -2365,7 +2386,7 @@
 
     paint({
       body: [
-        h('div', { class: 'fx-hero' }, celularApp(),
+        h('div', { class: oferta ? 'fx-hero fx-hero-oferta' : 'fx-hero' }, celularApp(),
           h('div', { class: 'fx-hero-txt' }, h('h1', { class: 'fx-h1 fx-h1-preco', tabindex: '-1' }, tituloMeta(m, X.title)), h('p', null, X.subtitle))),
         escolhaTopo,
         h('div', { class: 'fx-card fx-gap14 fx-mt24' }, h('h2', { class: 'fx-h2b' }, X.get.title),
