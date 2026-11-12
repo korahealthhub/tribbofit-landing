@@ -2110,9 +2110,14 @@
     const stat = (emo, valor, sub) => h('div', { class: 'fx-stat' }, h('div', { class: 'fx-emo' }, emo), h('b', null, valor), h('span', null, sub));
     const alimentacao = up(140, fxCard('fx-gap16', [
       h('h2', { class: 'fx-h2' }, `${FD.emoji} ${FD.title}`),
+      // Metas do dia (TF.targetsOf, o mesmo calculo do app em nutritionCalc.ts): calorias em cima; proteina, carboidrato
+      // e gordura numa linha; agua e refeicoes embaixo.
       h('div', { class: 'fx-stats' },
-        stat('🔥', `${TF.formatKcal(e.kcal)} kcal`, FD.stats.kcal),
-        stat('🥩', `${Math.round(e.proteinG)} g`, FD.stats.protein),
+        h('div', { class: 'fx-stat fx-stat-largo' }, h('div', { class: 'fx-emo' }, '🔥'), h('b', null, `${TF.formatKcal(e.kcal)} kcal`), h('span', null, FD.stats.kcal)),
+        h('div', { class: 'fx-stats3' },
+          stat('🥩', `${Math.round(e.proteinG)} g`, FD.stats.protein),
+          stat('🍚', `${Math.round(e.carbsG)} g`, FD.stats.carbs),
+          stat('🥑', `${Math.round(e.fatG)} g`, FD.stats.fat)),
         stat('💧', `${TF.formatLiters(t.waterMl)} L`, FD.stats.water),
         stat('🍽️', `${a.mealCount ?? 3} ${FD.stats.meals}`, FD.stats.mealsSub)),
       menu && h('div', { class: 'fx-secao' }, pratoDoPlano(menu.lunch)),

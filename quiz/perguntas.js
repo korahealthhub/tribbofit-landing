@@ -573,7 +573,7 @@ window.TF = window.TF || {};
       forecast: { title: 'Sua previsão', now: 'Hoje', reachA: 'Seguindo o plano, você pode chegar aos', reachB: 'por volta de', estimate: 'Estimativa. O resultado depende da sua rotina.' },
       food: {
         title: 'Sua alimentação', emoji: '🍽️',
-        stats: { kcal: 'por dia', protein: 'de proteína', water: 'de água', meals: 'refeições', mealsSub: 'por dia' },
+        stats: { kcal: 'por dia', protein: 'de proteína', carbs: 'de carboidrato', fat: 'de gordura', water: 'de água', meals: 'refeições', mealsSub: 'por dia' },
         parts: { veg: 'Legumes', carb: 'Carboidratos', protein: 'Proteína' },
         plateTitle: 'Um prato do seu plano', photoNote: 'Foto ilustrativa',
         macros: { kcal: 'kcal', protein: 'proteína', carbs: 'carboidrato', fat: 'gordura' },
