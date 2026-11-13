@@ -2272,6 +2272,9 @@
     }
     return h('div', { class: 'fx-cel', role: 'img', 'aria-label': T.fim.price.phoneAlt }, tela);
   }
+  // Cadeado da linha "Pagamento seguro" (desenho do prototipo 5).
+  const cadeadoSeguro = () => svg('svg', { width: 14, height: 14, viewBox: '0 0 24 24', fill: 'none', stroke: '#121417', 'stroke-width': 2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true' },
+    svg('rect', { x: 5, y: 11, width: 14, height: 10, rx: 2 }), svg('path', { d: 'M8 11V8a4 4 0 0 1 8 0v3' }));
   // Valor em reais de um texto como "R$ 14,99" (preco do cupom vindo do servidor), ou null.
   const reaisDe = (s) => { const x = /(\d+)[,.](\d{2})/.exec(String(s || '')); return x ? Number(`${x[1]}.${x[2]}`) : null; };
   // "Feito pro que voce contou": ate 3 linhas com as respostas da pessoa (ja tentou, maior dificuldade, motivo + meta).
@@ -2304,9 +2307,15 @@
     const precoOferta = oferta ? lead.cupom.preco : null;
     const valorOferta = oferta ? reaisDe(precoOferta) : null;
     const pctOferta = valorOferta ? Math.floor((1 - valorOferta / P.mensal) * 100) : null;
-    const pctAnual = Math.floor((1 - P.anualPorMes / P.mensal) * 100);
-    // Menos de R$ 0,70 por dia: o anual dividido por 365, arredondado para cima nos 10 centavos.
-    const porDia = brl(Math.ceil((P.anual / 365) * 10) / 10);
+    // Quanto o anual sai mais barato que 12 meses do mensal (229,90 contra 358,80: 35%).
+    const doze = P.mensal * 12;
+    const pctAnual = Math.floor((1 - P.anual / doze) * 100);
+    // Preco por dia nos cartoes: anual / 365 e mensal / 30, nos centavos (R$ 0,63 e R$ 1,00).
+    const diaAnual = brl(Math.round((P.anual / 365) * 100) / 100);
+    const diaMensal = brl(Math.round((P.mensal / 30) * 100) / 100);
+    // "Menos de R$ 0,65 por dia" (Feito pro que voce contou): o anual / 365, arredondado para cima nos 5 centavos.
+    const porDia = brl(Math.ceil((P.anual / 365) * 20) / 20);
+    const parcela = brl(P.parcelaAnual);
     planoWeb = oferta ? 'mensal' : 'anual';
 
     // Faixa preta do topo (prototipo "Oferta A"), so com a oferta confirmada pelo servidor: "OFERTA ESPECIAL", o selo
@@ -2356,26 +2365,31 @@
       const plano = (key, badge, titulo, sub, preco) => h(escolhe ? 'button' : 'div', {
         type: escolhe ? 'button' : null, role: escolhe ? 'radio' : null, class: 'fx-plano', 'data-plano': key,
         onclick: escolhe ? () => { if (planoWeb !== key) { planoWeb = key; medir('web_quiz_plan_selected', { plan: key }); atualiza(); } } : null,
-      }, badge, escolhe && h('span', { class: 'fx-radio' }), h('span', { class: 'fx-plano-txt' }, h('b', null, titulo), h('span', null, sub)), h('span', { class: 'fx-plano-preco' }, preco));
+      }, badge, escolhe && h('span', { class: 'fx-radio' }), h('span', { class: 'fx-plano-txt' }, h('b', null, titulo), [].concat(sub).map((s) => h('span', null, s))), h('span', { class: 'fx-plano-preco' }, preco));
       const cartoes = [
-        plano('anual', !oferta && h('span', { class: 'fx-selo-eco' }, X.save.replace('{pct}', pctAnual)),
-          X.annual, `${brl(P.anual)} ${X.perYear}`, [h('b', null, brl(P.anualPorMes)), h('span', null, X.perMonth)]),
+        // Anual: preco por dia em destaque; o valor a vista (Pix ou cartao em 1x) e a parcela da Cakto (a mesma conta que a pessoa ve la).
+        plano('anual', h('span', { class: 'fx-selo-eco' }, X.cheaperCash.replace('{pct}', pctAnual)),
+          X.annual, [X.annualCash.replace('{anual}', brl(P.anual)), X.annualCard.replace('{n}', P.parcelas).replace('{parcela}', parcela)],
+          [h('b', null, diaAnual), h('span', null, X.perDay)]),
         oferta
           ? plano('mensal', h('span', { class: 'fx-selo-off' }, pctOferta ? X.offerTag.replace('{pct}', pctOferta) : X.firstMonth),
             X.monthly, `${X.then} ${brl(P.mensal)}${X.perMonthShort}`,
             [h('s', null, brl(P.mensal)), h('b', { class: 'fx-grande' }, precoOferta), h('span', { class: 'fx-roxo-forte' }, X.firstMonth)])
-          : plano('mensal', null, X.monthly, X.noCommitment, [h('b', null, brl(P.mensal)), h('span', null, X.perMonth)]),
+          : plano('mensal', null, X.monthly, [X.monthlyPrice.replace('{mensal}', brl(P.mensal)), X.monthlyHow], [h('b', null, diaMensal), h('span', null, X.perDay)]),
       ];
       const btn = primary(F.buttonPay, comprar);
       const hoje = h('p', { class: 'fx-hoje' });
-      const e = { cartoes, btn, hoje, el: [h('div', { class: 'fx-planos', role: escolhe ? 'radiogroup' : null, 'aria-label': X.choose }, cartoes), h('div', { class: 'fx-cta' }, btn, hoje)] };
+      // Embaixo dos cartoes, a conta do "35%"; embaixo do botao, o que se paga hoje, a linha de seguranca e o aviso do CPF.
+      const compara = h('p', { class: 'fx-compara' }, X.compare.replace('{pct}', pctAnual).replace('{total}', brl(doze)));
+      const seguro = escolhe && [h('p', { class: 'fx-seguro' }, cadeadoSeguro(), X.secure), h('p', { class: 'fx-cpf' }, X.cpf)];
+      const e = { cartoes, btn, hoje, el: [h('div', { class: 'fx-planos', role: escolhe ? 'radiogroup' : null, 'aria-label': X.choose }, cartoes, compara), h('div', { class: 'fx-cta' }, btn, hoje, seguro)] };
       escolhas.push(e);
       return e.el;
     }
     function atualiza() {
       const ofertaNoMensal = oferta && planoWeb === 'mensal';
       const rotulo = !escolhe ? R.button : ofertaNoMensal ? X.buttonOffer.replace('{preco}', precoOferta) : F.buttonPay;
-      const linha = !escolhe ? '' : planoWeb === 'anual' ? X.todayAnnual.replace('{anual}', brl(P.anual))
+      const linha = !escolhe ? '' : planoWeb === 'anual' ? X.todayAnnual.replace('{anual}', brl(P.anual)).replace('{n}', P.parcelas).replace('{parcela}', parcela)
         : ofertaNoMensal ? X.todayOffer.replace('{oferta}', precoOferta).replace('{mensal}', brl(P.mensal))
           : X.todayMonthly.replace('{mensal}', brl(P.mensal));
       for (const e of escolhas) {

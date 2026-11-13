@@ -609,10 +609,15 @@ window.TF = window.TF || {};
         // Faixa preta da oferta: o titulo aparece em maiusculas pelo CSS. day/days: "Termina em 1 dia", "Termina em 2 dias".
         band: { title: 'Oferta especial', off: '{pct}% OFF', line: '1º mês por {preco}', ends: 'Termina em', day: 'dia', days: 'dias', hours: 'horas', min: 'min', sec: 'seg' },
         choose: 'Escolha seu plano', annual: 'Anual', monthly: 'Mensal', perYear: 'por ano', perMonth: 'por mês', perMonthShort: '/mês',
-        save: 'Economize {pct}%', noCommitment: 'Sem fidelidade', offerTag: '{pct}% OFF no 1º mês', firstMonth: 'no 1º mês', then: 'depois',
+        noCommitment: 'Sem fidelidade', offerTag: '{pct}% OFF no 1º mês', firstMonth: 'no 1º mês', then: 'depois',
+        // Cartoes com o preco por dia em destaque (prototipo 5, PrecoRevisado, 13/11/2026). Valores de quiz/preco.js.
+        cheaperCash: '{pct}% mais barato à vista', perDay: 'por dia', annualCash: '{anual} à vista', annualCard: 'ou {n}x de {parcela} no cartão',
+        monthlyPrice: '{mensal} por mês', monthlyHow: 'Sem fidelidade · Pix Automático ou cartão',
+        compare: '{pct}% comparado a 12 meses do mensal ({total})',
+        secure: 'Pagamento seguro · Pix ou cartão · 7 dias de garantia', cpf: 'Na próxima tela, a Cakto pede seu CPF. Seus outros dados já vão preenchidos.',
         buttonOffer: 'Começar por {preco}',
-        todayAnnual: 'Hoje: {anual} · renova em 1 ano · cancele quando quiser',
-        todayMonthly: 'Hoje: {mensal} · renova todo mês · cancele quando quiser',
+        todayAnnual: 'Hoje: {anual} à vista ou {n}x de {parcela} no cartão · renova em 1 ano',
+        todayMonthly: 'Hoje: {mensal} · renova todo mês, cancele quando quiser',
         todayOffer: 'Hoje: {oferta} · depois {mensal}/mês · cancele quando quiser',
         get: {
           title: 'O que você recebe no app',
@@ -641,7 +646,7 @@ window.TF = window.TF || {};
             first: ['Você está começando agora', 'O app te diz o que fazer em cada treino e refeição.'],
           },
           obstacle: {
-            money: ['Você se preocupa com o preço', 'No anual, menos de {dia} por dia.'],
+            money: ['Você se preocupa com o preço', 'No anual, sai por menos de {dia} por dia.'],
             moneyOffer: ['Você se preocupa com o preço', 'Seu 1º mês sai por {oferta}.'],
             time: ['Você tem pouco tempo', 'Treinos de {min} minutos nos seus dias.'],
             motivation: ['Sua motivação some', 'Lembretes e acompanhamento pra você não parar.'],
