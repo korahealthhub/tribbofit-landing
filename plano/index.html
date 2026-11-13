@@ -3,6 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Anuncio do Meta (utm_source=FB): vai direto para a primeira pergunta do quiz (/plano/entrada.js; chave em /js/funil.js). Antes de tudo, para nao piscar a pagina. -->
+<script src="/js/funil.js"></script>
+<script src="/js/medida.js"></script>
+<script src="/plano/entrada.js"></script>
 <title>Tribbo Fit: seu plano de treino e alimentação</title>
 <meta name="description" content="Responda o quiz e receba seu plano de treino e seu plano alimentar, com acompanhamento no app Tribbo Fit.">
 <!-- Pagina de anuncios. Fora do Google ate liberar: noindex, sem link no site e fora do sitemap. So o pixel da Meta, via /consent.js e depois do aceite de cookies. Sem GA4 e sem TikTok. Medicao de uso no PostHog sem cookie (/js/medida.js). -->
@@ -18,7 +22,6 @@
 <link rel="preload" href="/quiz/assets/fontes/inter-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/plano/plano.css">
 <script src="/quiz/exercicios.js" defer></script>
-<script src="/js/medida.js" defer></script>
 <script src="plano.js" defer></script>
 <script src="/consent.js" data-trackers="meta" data-estilo="plano" defer></script>
 </head>

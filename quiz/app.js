@@ -28,11 +28,20 @@
   const URL_PARAMS = new URLSearchParams(location.search);
   TF.utm = Object.fromEntries(URL_PARAMS);
   delete TF.utm.retomar; delete TF.utm.cupom; // link de volta (?retomar=, &cupom= do link curto): nao e UTM
-  const PARAMS_SITE = new URLSearchParams(URL_PARAMS); PARAMS_SITE.delete('retomar'); PARAMS_SITE.delete('cupom');
+  // Entrada pelo anuncio (?entrada=objetivo, vindo da /plano/, ver /plano/entrada.js): o quiz abre direto na pergunta do
+  // objetivo (igual a qualquer pergunta do quiz), sem a tela de boas-vindas, e o nome vem depois da "projection".
+  // Com ?retomar=, vale o link de volta (preco), como sempre. Chave em /js/funil.js (entradaObjetivo).
+  const ENTRADA = URL_PARAMS.get('entrada') === 'objetivo' && !URL_PARAMS.has('retomar') && !!(window.TF_FUNIL && window.TF_FUNIL.entradaObjetivo);
+  delete TF.utm.entrada;
+  if (ENTRADA) TF.STEPS = TF.ordemEntradaObjetivo(TF.STEPS);
+  const PRIMEIRA = ENTRADA ? 'goal' : 'welcome';
+  // Logo e "Voltar ao site" levam a /plano/ com site=1, que desliga o redirecionamento do anuncio (sem volta infinita).
+  const PARAMS_SITE = new URLSearchParams(URL_PARAMS); PARAMS_SITE.delete('retomar'); PARAMS_SITE.delete('cupom'); PARAMS_SITE.delete('entrada');
+  if (ENTRADA) PARAMS_SITE.set('site', '1');
   const SITE = T.exit.home + (PARAMS_SITE.toString() ? `?${PARAMS_SITE}` : '');
 
   let a = TF.emptyAnswers();
-  let current = 'welcome';
+  let current = PRIMEIRA;
   let nav = { returnTo: null, chain: [] };
   let timers = [];     // temporizadores da tela atual
   let cleanups = [];   // o que parar ao sair da tela
@@ -41,7 +50,8 @@
   let seen = new Set(); // animacoes que ja rodaram nesta visita
 
   // Medicao de uso (PostHog sem cookie). So o numero e o nome tecnico da tela, nunca respostas.
-  const medir = (evento, extra) => { if (window.tribboMedida) window.tribboMedida(evento, extra); };
+  // Na entrada nova, todos os eventos levam entrada=objetivo (/js/medida.js deixa passar so essa propriedade a mais).
+  const medir = (evento, extra) => { if (window.tribboMedida) window.tribboMedida(evento, ENTRADA ? { ...extra, entrada: 'objetivo' } : extra); };
   const telaInfo = (id) => { const s = TF.STEPS.find((x) => x.id === id); return { step_number: s ? s.code : '', step_name: id }; };
   let comecou = false;
   let planoWeb = 'anual'; // plano escolhido na tela 49B (so com TF.PAGAMENTO_ATIVO)
@@ -227,10 +237,12 @@
     nav = { returnTo: opts.returnTo || null, chain };
     show(id, true);
   }
+  // Na entrada nova, o objetivo e a primeira tela: sem seta de voltar.
+  const podeVoltar = (id) => TF.canGoBack(id) && !(ENTRADA && id === PRIMEIRA);
   function goBack() {
     closeSheet();
     if (nav.returnTo) { const r = nav.returnTo; nav = { returnTo: null, chain: [] }; show(r, false); return; }
-    if (!TF.canGoBack(current)) return;
+    if (!podeVoltar(current)) return;
     const p = TF.prevStep(current, a);
     if (p) show(p.id, false);
   }
@@ -243,7 +255,7 @@
     hist = i;
     if (forward) return;
     if (openSheetClose) { closeSheet(); pushHist(); return; }
-    if (!TF.canGoBack(current) && !nav.returnTo) { pushHist(); return; }
+    if (!podeVoltar(current) && !nav.returnTo) { pushHist(); return; }
     goBack();
   });
   function pushHist() { hist += 1; history.pushState({ i: hist }, ''); }
@@ -281,11 +293,12 @@
     resetScreen();
     visit += 1;
     current = id;
-    if (!comecou && id !== 'welcome') { comecou = true; medir('web_quiz_started'); }
+    // web_quiz_started: sair da primeira tela (no quiz de sempre, tocar em "Criar meu plano"; na entrada nova, responder o objetivo).
+    if (!comecou && id !== PRIMEIRA) { comecou = true; medir('web_quiz_started'); }
     medir('web_quiz_step_viewed', telaInfo(id));
     if (forward) pushHist();
     const progress = TF.showsProgress(id);
-    const back = TF.canGoBack(id) || !!nav.returnTo;
+    const back = podeVoltar(id) || !!nav.returnTo;
     topEl.hidden = false;
     barEl.classList.toggle('off', !progress);
     backEl.classList.toggle('off', !back);
@@ -718,7 +731,9 @@
     draw();
   }
 
+  let entradaVista = false;
   function Goal() {
+    if (ENTRADA && !entradaVista) { entradaVista = true; medir('web_quiz_entry_viewed'); }
     const draw = () => paint({
       body: [header(a.displayName ? `${a.displayName}, ${T.goal.title}` : cap(T.goal.title)), opts(TF.GOAL_CHOICES.map((g) => optionCard({
         label: g.label, ic: iconOf('goal', g.value), selected: a.goal === g.value,
@@ -974,13 +989,15 @@
     });
   }
 
+  // "Roberto, você pode chegar a..." ou, sem nome ainda (entrada nova: o nome vem depois), "Você pode chegar a...".
+  const comNomeOuNao = (txt) => (a.displayName ? `${a.displayName}, ${txt}` : cap(txt));
   function Projection() {
     const today = new Date();
     const w = a.weightKg ?? 0;
     const kind = projectionKind();
     const title = kind === 'change'
-      ? [`${a.displayName}, ${T.projection.canReach} `, h('span', { class: 'hl' }, `${TF.formatKg(a.targetWeightKg)} kg`), ` ${T.projection.until} `, h('span', { class: 'hl' }, TF.formatDateLong(TF.fromIsoDate(a.targetDate), today))]
-      : kind === 'health' ? `${a.displayName}, ${T.projection.health}` : `${T.projection.maintain[0]} ${TF.formatKg(w)} ${T.projection.maintain[1]}`;
+      ? [`${comNomeOuNao(T.projection.canReach)} `, h('span', { class: 'hl' }, `${TF.formatKg(a.targetWeightKg)} kg`), ` ${T.projection.until} `, h('span', { class: 'hl' }, TF.formatDateLong(TF.fromIsoDate(a.targetDate), today))]
+      : kind === 'health' ? comNomeOuNao(T.projection.health) : `${T.projection.maintain[0]} ${TF.formatKg(w)} ${T.projection.maintain[1]}`;
     paint({
       body: [
         header(title),
@@ -2794,5 +2811,5 @@
   if (URL_PARAMS.has('retomar') && TF.PAGAMENTO_ATIVO) {
     const pre = document.getElementById('pre-btn'); if (pre) pre.disabled = true;
     retomar().then((ok) => { fimCarregando(); show(ok ? 'price_reveal' : 'welcome', false); });
-  } else { fimCarregando(); show('welcome', false); }
+  } else { fimCarregando(); show(PRIMEIRA, false); }
 })();

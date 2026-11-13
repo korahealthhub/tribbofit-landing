@@ -1,5 +1,5 @@
 /*
- * Link de volta (?retomar=...): roda no <head>, antes do resto do quiz.
+ * Link de volta (?retomar=...) e entrada pelo anuncio (?entrada=objetivo): roda no <head>, antes do resto do quiz.
  * 1. Troca a tela inicial pela de carregamento ("Carregando o seu plano…"): a classe "retomando" no <html>
  *    esconde a tela inicial e mostra #carregando (style.css). O app.js tira a classe ao mostrar o preco,
  *    ou a tela inicial se o link nao valer (comportamento de sempre).
@@ -13,6 +13,9 @@
   var F = window.TF_FUNIL;
   var q;
   try { q = new URLSearchParams(location.search); } catch (e) { return; }
+  // Entrada pelo anuncio (?entrada=objetivo, sem ?retomar=): ja mostra a pergunta do objetivo pronta no HTML (#pre-obj),
+  // no lugar da tela de boas-vindas (style.css, html.entrada-obj). Chave em /js/funil.js (entradaObjetivo).
+  if (!q.has('retomar') && q.get('entrada') === 'objetivo' && F && F.entradaObjetivo) document.documentElement.classList.add('entrada-obj');
   if (!q.has('retomar')) return;
   var raiz = document.documentElement;
   raiz.classList.add('retomando');

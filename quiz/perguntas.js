@@ -80,6 +80,16 @@ window.TF = window.TF || {};
     { id: 'download', code: '50B', section: 'plano', skip: () => !!TF.PAGAMENTO_ATIVO },
   ];
 
+  // Entrada pelo anuncio (?entrada=objetivo, so na web): sem a tela de boas-vindas, o objetivo e a primeira tela e o
+  // nome vem logo depois da "projection", na secao "Corpo" (a barra de progresso nao volta). Cada tela mantem o seu
+  // code (step_number). O resto da ordem nao muda.
+  TF.ordemEntradaObjetivo = (steps) => {
+    const nome = { ...steps.find((s) => s.id === 'name'), section: 'corpo' };
+    const lista = steps.filter((s) => s.id !== 'welcome' && s.id !== 'name');
+    lista.splice(lista.findIndex((s) => s.id === 'projection') + 1, 0, nome);
+    return lista;
+  };
+
   // ==== src/onboarding/answers.ts: emptyAnswers ====
   TF.emptyAnswers = () => ({
     fullName: '', displayName: '', termsAcceptedAt: null, educationalConsentAt: null, healthDataConsentAt: null,

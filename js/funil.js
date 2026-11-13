@@ -28,6 +28,10 @@
       mensal: 'https://pay.cakto.com.br/vck2kfj_1298134',
       anual: 'https://pay.cakto.com.br/cons8xz_1298173'
     },
+    // Anúncio do Meta (utm_source=FB, sem diferenciar maiúscula) cai direto na primeira pergunta do quiz:
+    // a /plano/ redireciona para /quiz/?entrada=objetivo com todos os parâmetros (/plano/entrada.js).
+    // false = todo mundo na /plano/ como antes, e /quiz/?entrada=objetivo vira o quiz de sempre.
+    entradaObjetivo: true,
     // Versão dos Termos publicada em /termos/ (gravada junto do aceite).
     termosVersao: '1.2',
     suporte: 'suporte@tribbofit.com.br',

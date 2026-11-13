@@ -2,6 +2,7 @@
 // Sem cookie e sem armazenamento. Fora daqui: so a medicao de uso (/js/medida.js, PostHog sem cookie).
 (function () {
   'use strict';
+  if (window.TF_REDIRECIONANDO) return; // indo para o quiz (/plano/entrada.js): nada desta pagina roda
 
   // Medicao de uso: pagina vista e qual botao "Criar meu plano gratis" foi tocado.
   var medir = function (ev, extra) { if (window.tribboMedida) window.tribboMedida(ev, extra); };

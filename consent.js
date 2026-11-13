@@ -24,6 +24,7 @@
  * Sem <noscript> com a imagem do pixel: ela dispararia sem aceite.
  */
 (function () {
+  if (window.TF_REDIRECIONANDO) return; // /plano/ indo para o quiz (/plano/entrada.js): sem pixel e sem faixa
   var PIXEL_ID = '1434300995485582';
   var GA_ID = 'G-9YWGCSWEBJ';
   var TIKTOK_ID = 'D8Q75PRC77U8IPSBJ8TG';
