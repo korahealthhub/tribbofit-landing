@@ -2272,9 +2272,10 @@
     }
     return h('div', { class: 'fx-cel', role: 'img', 'aria-label': T.fim.price.phoneAlt }, tela);
   }
-  // Cadeado da linha "Pagamento seguro" (desenho do prototipo 5).
-  const cadeadoSeguro = () => svg('svg', { width: 14, height: 14, viewBox: '0 0 24 24', fill: 'none', stroke: '#121417', 'stroke-width': 2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'aria-hidden': 'true' },
-    svg('rect', { x: 5, y: 11, width: 14, height: 10, rx: 2 }), svg('path', { d: 'M8 11V8a4 4 0 0 1 8 0v3' }));
+  // Escudo com check do selo "Compra segura": desenho nosso, nas cores do site (lima e grafite), sem imagem de fora.
+  const escudoSeguro = () => svg('svg', { width: 22, height: 22, viewBox: '0 0 24 24', 'aria-hidden': 'true' },
+    svg('path', { d: 'M12 2.5l7.5 3v5.6c0 4.6-3.1 8.4-7.5 10.4-4.4-2-7.5-5.8-7.5-10.4V5.5z', fill: '#E2F70F', stroke: '#121417', 'stroke-width': 1.6, 'stroke-linejoin': 'round' }),
+    svg('path', { d: 'M8.3 12.2l2.6 2.6 4.9-5.2', fill: 'none', stroke: '#121417', 'stroke-width': 2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }));
   // Valor em reais de um texto como "R$ 14,99" (preco do cupom vindo do servidor), ou null.
   const reaisDe = (s) => { const x = /(\d+)[,.](\d{2})/.exec(String(s || '')); return x ? Number(`${x[1]}.${x[2]}`) : null; };
   // "Feito pro que voce contou": ate 3 linhas com as respostas da pessoa (ja tentou, maior dificuldade, motivo + meta).
@@ -2300,11 +2301,12 @@
     if (!repintaPreco) medir('web_quiz_price_revealed', { offer: oferta });
     repintaPreco = false;
     modoFim(2);
-    const brl = (n) => `R$ ${n.toFixed(2).replace('.', ',')}`;
+    // \u00a0 (espaco que nao quebra) entre "R$" e o numero: em 360 px um preco nunca fica partido em duas linhas.
+    const brl = (n) => `R$\u00a0${n.toFixed(2).replace('.', ',')}`;
     const m = metaFim();
     const escolhe = !!TF.PAGAMENTO_ATIVO;
     const min = a.workoutDuration ?? 45;
-    const precoOferta = oferta ? lead.cupom.preco : null;
+    const precoOferta = oferta ? lead.cupom.preco.replace(/R\$\s+/, 'R$\u00a0') : null; // texto do servidor ("R$ 14,99"), com o mesmo espaco
     const valorOferta = oferta ? reaisDe(precoOferta) : null;
     const pctOferta = valorOferta ? Math.floor((1 - valorOferta / P.mensal) * 100) : null;
     // Quanto o anual sai mais barato que 12 meses do mensal (229,90 contra 358,80: 35%).
@@ -2379,17 +2381,16 @@
       ];
       const btn = primary(F.buttonPay, comprar);
       const hoje = h('p', { class: 'fx-hoje' });
-      // Embaixo dos cartoes, a conta do "35%"; embaixo do botao, o que se paga hoje, a linha de seguranca e o aviso do CPF.
-      const compara = h('p', { class: 'fx-compara' }, X.compare.replace('{pct}', pctAnual).replace('{total}', brl(doze)));
-      const seguro = escolhe && [h('p', { class: 'fx-seguro' }, cadeadoSeguro(), X.secure), h('p', { class: 'fx-cpf' }, X.cpf)];
-      const e = { cartoes, btn, hoje, el: [h('div', { class: 'fx-planos', role: escolhe ? 'radiogroup' : null, 'aria-label': X.choose }, cartoes, compara), h('div', { class: 'fx-cta' }, btn, hoje, seguro)] };
+      // Embaixo do botao: a renovacao do plano marcado, o selo de compra segura e o aviso do CPF.
+      const seguro = escolhe && [h('div', { class: 'fx-seguro' }, h('p', { class: 'fx-seguro-l' }, escudoSeguro(), h('b', null, X.secure)), h('p', { class: 'fx-seguro-sub' }, X.secureSub)), h('p', { class: 'fx-cpf' }, X.cpf)];
+      const e = { cartoes, btn, hoje, el: [h('div', { class: 'fx-planos', role: escolhe ? 'radiogroup' : null, 'aria-label': X.choose }, cartoes), h('div', { class: 'fx-cta' }, btn, hoje, seguro)] };
       escolhas.push(e);
       return e.el;
     }
     function atualiza() {
       const ofertaNoMensal = oferta && planoWeb === 'mensal';
       const rotulo = !escolhe ? R.button : ofertaNoMensal ? X.buttonOffer.replace('{preco}', precoOferta) : F.buttonPay;
-      const linha = !escolhe ? '' : planoWeb === 'anual' ? X.todayAnnual.replace('{anual}', brl(P.anual)).replace('{n}', P.parcelas).replace('{parcela}', parcela)
+      const linha = !escolhe ? '' : planoWeb === 'anual' ? X.todayAnnual
         : ofertaNoMensal ? X.todayOffer.replace('{oferta}', precoOferta).replace('{mensal}', brl(P.mensal))
           : X.todayMonthly.replace('{mensal}', brl(P.mensal));
       for (const e of escolhas) {

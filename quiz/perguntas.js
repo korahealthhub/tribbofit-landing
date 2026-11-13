@@ -613,12 +613,13 @@ window.TF = window.TF || {};
         // Cartoes com o preco por dia em destaque (prototipo 5, PrecoRevisado, 13/11/2026). Valores de quiz/preco.js.
         cheaperCash: '{pct}% mais barato à vista', perDay: 'por dia', annualCash: '{anual} à vista', annualCard: 'ou {n}x de {parcela} no cartão',
         monthlyPrice: '{mensal} por mês', monthlyHow: 'Sem fidelidade · Pix Automático ou cartão',
-        compare: '{pct}% comparado a 12 meses do mensal ({total})',
-        secure: 'Pagamento seguro · Pix ou cartão · 7 dias de garantia', cpf: 'Na próxima tela, a Cakto pede seu CPF. Seus outros dados já vão preenchidos.',
+        // Selo de compra segura (desenho nosso, sem certificadora) e o aviso do CPF, embaixo do botao.
+        secure: 'Compra segura', secureSub: 'Pix ou cartão pela Cakto · 7 dias de garantia', cpf: 'A Cakto vai pedir seu CPF.',
         buttonOffer: 'Começar por {preco}',
-        todayAnnual: 'Hoje: {anual} à vista ou {n}x de {parcela} no cartão · renova em 1 ano',
-        todayMonthly: 'Hoje: {mensal} · renova todo mês, cancele quando quiser',
-        todayOffer: 'Hoje: {oferta} · depois {mensal}/mês · cancele quando quiser',
+        // Linha embaixo do botao, pelo plano marcado. "Cancele quando quiser" nunca no anual.
+        todayAnnual: 'Renova em 1 ano',
+        todayMonthly: 'Renova todo mês · cancele quando quiser',
+        todayOffer: '{oferta} no 1º mês, depois {mensal} · cancele quando quiser',
         get: {
           title: 'O que você recebe no app',
           items: [

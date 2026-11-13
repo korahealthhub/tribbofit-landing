@@ -755,9 +755,11 @@ body.fim #foot:not(:empty) { background: linear-gradient(180deg, rgba(243,240,23
 /* Preco revisado (prototipo 5): preco por dia sempre numa linha (a coluna cresce; o texto da esquerda e que quebra). */
 .fx-plano-preco { flex: none; }
 .fx-plano-preco span { white-space: nowrap; }
-.fx-compara { text-align: center; font-size: 11px; color: var(--fx-t3); }
-.fx-seguro { display: flex; align-items: center; justify-content: center; gap: 6px; text-align: center; font-size: 12px; font-weight: 600; color: #33373D; }
-.fx-seguro svg { flex: none; }
+.fx-seguro { display: flex; flex-direction: column; align-items: center; gap: 2px; margin-top: 4px; }
+.fx-seguro-l { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--fx-txt); }
+.fx-seguro-l b { font-weight: 800; }
+.fx-seguro-l svg { flex: none; }
+.fx-seguro-sub { text-align: center; font-size: 12px; color: var(--fx-t2); }
 .fx-cpf { text-align: center; font-size: 11px; color: var(--fx-t3); }
 .fx-item { display: flex; gap: 12px; align-items: flex-start; }
 .fx-item-emo { font-size: 18px; line-height: 1.2; width: 22px; text-align: center; flex: none; }
