@@ -770,7 +770,6 @@ body.fim #foot:not(:empty) { background: linear-gradient(180deg, rgba(243,240,23
 .fx-seguro-l { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--fx-txt); }
 .fx-seguro-l b { font-weight: 800; }
 .fx-seguro-l svg { flex: none; }
-.fx-selo-img { flex: none; width: 27px; height: 28px; }
 .fx-acesso-salvar:disabled { opacity: 0.6; }
 .fx-seguro-sub { text-align: center; font-size: 12px; color: var(--fx-t2); }
 .fx-cpf { text-align: center; font-size: 11px; color: var(--fx-t3); }

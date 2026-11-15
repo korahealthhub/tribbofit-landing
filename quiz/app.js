@@ -66,6 +66,7 @@
   // funciona como antes. Reabrir manda web_quiz_restored (e nao repete o web_quiz_started).
   const CHAVE_PROGRESSO = 'tf_quiz_progresso';
   let guardaProgresso = true;
+  let nomeAposRecarregar = false; // so enquanto desenha a tela do nome que aparece depois de recarregar
   const SEM_CONTATO = ['fullName', 'displayName', 'termsAcceptedAt', 'healthDataConsentAt', 'educationalConsentAt', 'ofertasAceitasEm', 'priceGuess'];
   const indice = (id) => TF.STEPS.findIndex((s) => s.id === id);
   function salvaProgresso(id) {
@@ -760,7 +761,8 @@
       },
       onkeydown: (e) => { if (e.key === 'Enter') go(); },
     });
-    paint({ body: [header(T.name.title), h('label', { class: 'field-label', for: 'nome' }, T.name.label), input], footer: [btn] });
+    // Depois de recarregar (progresso da aba), so nesse caso: a linha explica por que o nome aparece de novo.
+    paint({ body: [header(T.name.title, nomeAposRecarregar ? T.name.reloaded : null), h('label', { class: 'field-label', for: 'nome' }, T.name.label), input], footer: [btn] });
   }
 
   function Consents() {
@@ -2326,14 +2328,10 @@
     return h('div', { class: 'fx-cel', role: 'img', 'aria-label': T.fim.price.phoneAlt }, tela);
   }
   // Escudo com check do selo "Compra segura": desenho nosso, nas cores do site (lima e grafite), sem imagem de fora.
-  // Selo de "Compra segura" ao lado do texto. EM ESCOLHA (13/11/2026), uma das duas fica e a outra sai do codigo:
-  // 'imagem': o selo gerado (quiz/assets/selo-compra-segura.png, sem fundo), em 28 px e 56 px (retina), webp leve;
-  // 'phosphor': o icone shield-check (preenchido) da biblioteca Phosphor (MIT), desenhado aqui, no roxo do site.
-  const SELO_SEGURO = 'imagem';
-  const escudoSeguro = () => (SELO_SEGURO === 'imagem'
-    ? h('img', { class: 'fx-selo-img', src: '/quiz/assets/selo-compra-segura-28.webp', srcset: '/quiz/assets/selo-compra-segura-28.webp 1x, /quiz/assets/selo-compra-segura-56.webp 2x', width: 27, height: 28, alt: '', 'aria-hidden': 'true', decoding: 'async' })
-    : svg('svg', { width: 22, height: 22, viewBox: '0 0 256 256', 'aria-hidden': 'true' },
-      svg('path', { fill: '#5B34D6', d: 'M208,40H48A16,16,0,0,0,32,56v56c0,52.72,25.52,84.67,46.93,102.19,23.06,18.86,46,25.26,47,25.53a8,8,0,0,0,4.2,0c1-.27,23.91-6.67,47-25.53C198.48,196.67,224,164.72,224,112V56A16,16,0,0,0,208,40Zm-34.32,69.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z' })));
+  // Selo de "Compra segura" ao lado do texto: icone shield-check (preenchido) da biblioteca Phosphor (MIT), no roxo
+  // do site, com 33 px (escolhido em 15/11/2026).
+  const escudoSeguro = () => svg('svg', { class: 'fx-selo-ico', width: 33, height: 33, viewBox: '0 0 256 256', 'aria-hidden': 'true' },
+    svg('path', { fill: '#5B34D6', d: 'M208,40H48A16,16,0,0,0,32,56v56c0,52.72,25.52,84.67,46.93,102.19,23.06,18.86,46,25.26,47,25.53a8,8,0,0,0,4.2,0c1-.27,23.91-6.67,47-25.53C198.48,196.67,224,164.72,224,112V56A16,16,0,0,0,208,40Zm-34.32,69.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z' }));
   // Valor em reais de um texto como "R$ 14,99" (preco do cupom vindo do servidor), ou null.
   const reaisDe = (s) => { const x = /(\d+)[,.](\d{2})/.exec(String(s || '')); return x ? Number(`${x[1]}.${x[2]}`) : null; };
   // "Feito pro que voce contou": ate 3 linhas com as respostas da pessoa (ja tentou, maior dificuldade, motivo + meta).
@@ -3020,7 +3018,7 @@
       medir('web_quiz_restored', telaInfo(tela));
       // A barra fica na posicao da tela guardada, tambem na tela do nome que aparece antes (nao volta).
       ultimoPct = progressoQuiz(tela, false);
-      if (indice('name') >= 0 && indice(tela) > indice('name')) goTo('name', { returnTo: tela });
+      if (indice('name') >= 0 && indice(tela) > indice('name')) { nomeAposRecarregar = true; goTo('name', { returnTo: tela }); nomeAposRecarregar = false; }
       else show(tela, false);
     }
   }

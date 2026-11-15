@@ -388,7 +388,7 @@ window.TF = window.TF || {};
       ],
     },
     // src/components/profileQuestions/questions.tsx
-    name: { title: 'Qual é o seu nome?', label: 'Nome e sobrenome' },
+    name: { title: 'Qual é o seu nome?', label: 'Nome e sobrenome', reloaded: 'A página recarregou. Confirme seu nome para continuar de onde parou.' },
     goal: { title: 'qual é o seu principal objetivo?' },
     triedTitle: { lose_weight: 'perder peso', gain_muscle: 'ganhar massa', maintain_weight: 'manter o peso', improve_health: 'cuidar da saúde' },
     motivation: { title: 'Qual é o seu principal motivo?' },
