@@ -325,13 +325,19 @@
   // Barra de progresso (15/11/2026): a posicao da tela entre todas as telas com barra que valem para estas respostas
   // (as puladas nao contam), comecando perto de 0% (3%) e terminando em 100% na ultima tela com barra. A curva anda
   // mais devagar no comeco e mais rapido no fim. Antes era por secao (comecava em 18% e pulava 33% > 42% > 50%).
+  // Para frente, a barra nunca volta e nao salta: quando telas sao puladas (ou uma resposta tira telas), cada tela anda
+  // o passo normal da curva mais uma parte igual da diferenca, dividida pelas telas que faltam ate o fim.
   let ultimoPct = 0;
-  function progressoQuiz(id) {
+  const curva = (i, n) => 0.03 + 0.97 * Math.pow(n > 1 ? i / (n - 1) : 1, 1.35);
+  function progressoQuiz(id, forward) {
     const lista = TF.STEPS.filter((s) => TF.showsProgress(s.id) && TF.applies(s, a));
     const i = lista.findIndex((s) => s.id === id);
     if (i < 0) return ultimoPct;
-    const x = lista.length > 1 ? i / (lista.length - 1) : 1;
-    return 0.03 + 0.97 * Math.pow(x, 1.35);
+    const alvo = curva(i, lista.length);
+    if (!forward) return alvo;
+    const passo = i > 0 ? alvo - curva(i - 1, lista.length) : 0;
+    const falta = Math.max(0, alvo - ultimoPct - passo);
+    return Math.max(ultimoPct, Math.min(alvo, ultimoPct + passo + falta / (lista.length - i)));
   }
   function show(id, forward) {
     resetScreen();
@@ -348,8 +354,7 @@
     barEl.classList.toggle('off', !progress);
     backEl.classList.toggle('off', !back);
     // Indo para frente (inclusive ao corrigir uma resposta pelo resumo), a barra nunca volta; voltando, acompanha a tela.
-    let pct = progressoQuiz(id);
-    if (forward) pct = Math.max(pct, ultimoPct);
+    const pct = progressoQuiz(id, forward);
     ultimoPct = pct;
     barFill.style.width = `${Math.round(pct * 1000) / 10}%`;
     barEl.setAttribute('aria-valuenow', Math.round(pct * 100));
@@ -3014,7 +3019,7 @@
       comecou = true;
       medir('web_quiz_restored', telaInfo(tela));
       // A barra fica na posicao da tela guardada, tambem na tela do nome que aparece antes (nao volta).
-      ultimoPct = progressoQuiz(tela);
+      ultimoPct = progressoQuiz(tela, false);
       if (indice('name') >= 0 && indice(tela) > indice('name')) goTo('name', { returnTo: tela });
       else show(tela, false);
     }
