@@ -1,6 +1,6 @@
 // Telas do quiz: desenho e comportamento copiados do onboarding do app, sem servidor.
 // Textos e opcoes: perguntas.js. Calculos: calculos.js. Respostas: so na variavel "a", na memoria da pagina.
-// Nao usa cookie nem localStorage. Rede: a medicao de uso (/js/medida.js, PostHog sem cookie),
+// Nao usa cookie nem localStorage; o progresso fica no sessionStorage da aba ate o cadastro (ver CHAVE_PROGRESSO). Rede: a medicao de uso (/js/medida.js, PostHog sem cookie),
 // que recebe apenas o numero e o nome da tela, o palpite de preco e a loja; nunca as respostas.
 // Com TF.PAGAMENTO_ATIVO, o cadastro (tela 48L) manda as respostas, o contato e os aceites para o
 // Supabase (web-lead, js/funil.js), so quando a pessoa toca em "Continuar" (tela 48L); a revelacao do
@@ -56,6 +56,37 @@
   const medir = (evento, extra) => { if (window.tribboMedida) window.tribboMedida(evento, { ...extra, quiz_version: QUIZ_VERSION, ...(ENTRADA ? { entrada: 'objetivo' } : {}) }); };
   const telaInfo = (id) => { const s = TF.STEPS.find((x) => x.id === id); return { step_number: s ? s.code : '', step_name: id }; };
   let comecou = false;
+
+  // Progresso na aba (15/11/2026): se a pagina recarregar (o navegador do Instagram faz isso), o quiz reabre na mesma
+  // tela com as respostas. sessionStorage: vale so enquanto a aba estiver aberta; nada de localStorage nem cookie.
+  // Guarda so as respostas ate antes do cadastro (tela 48L), sem nome nem nada do contato (fullName e displayName ficam
+  // fora; na volta, a tela do nome aparece antes e devolve a pessoa para onde estava). Depois do cadastro enviado, apaga
+  // e para de guardar: recarregar dali em diante segue como sempre (sem lead nem Lead na Meta duplicados).
+  // Com ?retomar= na URL, vale o link de volta e nada daqui e lido. Tudo com try/catch: sem sessionStorage, o quiz
+  // funciona como antes. Reabrir manda web_quiz_restored (e nao repete o web_quiz_started).
+  const CHAVE_PROGRESSO = 'tf_quiz_progresso';
+  let guardaProgresso = true;
+  const SEM_CONTATO = ['fullName', 'displayName', 'termsAcceptedAt', 'healthDataConsentAt', 'educationalConsentAt', 'ofertasAceitasEm', 'priceGuess'];
+  const indice = (id) => TF.STEPS.findIndex((s) => s.id === id);
+  function salvaProgresso(id) {
+    if (!guardaProgresso || id === PRIMEIRA || indice(id) < 0 || indice(id) >= indice('lead_form')) return;
+    try {
+      const r = {};
+      for (const k of Object.keys(TF.emptyAnswers())) if (!SEM_CONTATO.includes(k)) r[k] = a[k];
+      // Corrigindo uma resposta pelo resumo (ou o nome na volta), guarda a tela para onde ela volta.
+      sessionStorage.setItem(CHAVE_PROGRESSO, JSON.stringify({ v: 1, tela: nav.returnTo || id, a: r }));
+    } catch (e) { /* sem sessionStorage: segue sem guardar */ }
+  }
+  function apagaProgresso() { guardaProgresso = false; try { sessionStorage.removeItem(CHAVE_PROGRESSO); } catch (e) { /* nada */ } }
+  // Progresso guardado valido nesta aba, ou null.
+  function progressoGuardado() {
+    try {
+      const d = JSON.parse(sessionStorage.getItem(CHAVE_PROGRESSO) || 'null');
+      if (!d || d.v !== 1 || typeof d.tela !== 'string' || !d.a || typeof d.a !== 'object') return null;
+      if (d.tela === PRIMEIRA || indice(d.tela) < 0 || indice(d.tela) >= indice('lead_form')) return null;
+      return d;
+    } catch (e) { return null; }
+  }
   let planoWeb = 'anual'; // plano escolhido na tela 49B (so com TF.PAGAMENTO_ATIVO)
 
   // ─── Ajudantes ──────────────────────────────────────────────────────────────
@@ -268,7 +299,7 @@
   function leaveQuiz(e) {
     if (e) e.preventDefault();
     medir('web_quiz_exit_clicked', telaInfo(current));
-    const go = () => { location.href = SITE; };
+    const go = () => { apagaProgresso(); location.href = SITE; };
     const answered = JSON.stringify(a) !== JSON.stringify(TF.emptyAnswers());
     if (!answered) { go(); return; }
     openSheet((close) => [
@@ -306,6 +337,7 @@
     resetScreen();
     visit += 1;
     current = id;
+    salvaProgresso(id);
     // web_quiz_started: sair da primeira tela (no quiz de sempre, tocar em "Criar meu plano"; na entrada nova, responder o objetivo).
     if (!comecou && id !== PRIMEIRA) { comecou = true; medir('web_quiz_started'); }
     medir('web_quiz_step_viewed', telaInfo(id));
@@ -2837,11 +2869,13 @@
         const rt = typeof dados.resume_token === 'string' ? dados.resume_token.split('.').pop() : null;
         lead = { id: dados.lead_id, token: dados.handoff_token || null, resumeSig: rt && /^[0-9a-f]{16,64}$/i.test(rt) ? rt.toLowerCase() : null, name: v.n, email: v.e, whatsapp: v.w };
         medir('web_quiz_lead_sent');
+        apagaProgresso();
       } else {
         // Servidor fora, limite de IP (muita gente divide o mesmo IP na rede da operadora) ou rede: a pessoa nao fica presa.
         // Segue para o preco e para a Cakto sem o lead; a conta e criada pelo e-mail da compra.
         lead = { id: null, token: null, name: v.n, email: v.e, whatsapp: v.w };
         medir('web_quiz_lead_fallback');
+        apagaProgresso();
       }
       st.enviando = false;
       update({ fullName: v.n });
@@ -2965,5 +2999,24 @@
   if (URL_PARAMS.has('retomar') && TF.PAGAMENTO_ATIVO) {
     const pre = document.getElementById('pre-btn'); if (pre) pre.disabled = true;
     retomar().then((ok) => { fimCarregando(); show(ok ? 'price_reveal' : 'welcome', false); });
-  } else { fimCarregando(); show(PRIMEIRA, false); }
+  } else {
+    fimCarregando();
+    const salvo = progressoGuardado();
+    if (!salvo) show(PRIMEIRA, false);
+    else {
+      // Respostas guardadas por cima das vazias (so as chaves conhecidas). O nome nao foi guardado: se a tela ja passou
+      // da do nome, ela aparece antes e devolve a pessoa para a tela guardada.
+      const base = TF.emptyAnswers();
+      for (const k of Object.keys(base)) if (!SEM_CONTATO.includes(k) && salvo.a[k] !== undefined) base[k] = salvo.a[k];
+      a = base;
+      const passo = TF.stepById(salvo.tela);
+      const tela = TF.applies(passo, a) ? salvo.tela : (TF.nextStep(salvo.tela, a) || { id: PRIMEIRA }).id;
+      comecou = true;
+      medir('web_quiz_restored', telaInfo(tela));
+      // A barra fica na posicao da tela guardada, tambem na tela do nome que aparece antes (nao volta).
+      ultimoPct = progressoQuiz(tela);
+      if (indice('name') >= 0 && indice(tela) > indice('name')) goTo('name', { returnTo: tela });
+      else show(tela, false);
+    }
+  }
 })();

@@ -9,13 +9,15 @@
  *   refunded → aviso + suporte
  *   sem ?acesso → "Pagamento aprovado!", o codigo foi para o e-mail, os 3 passos, as lojas e a ajuda no WhatsApp
  *   404      → "o código chega no seu e-mail" + suporte
- * Nada guardado no navegador. Eventos (PostHog sem cookie): web_success_viewed, web_code_copied, web_store_clicked, web_app_open_clicked, web_whatsapp_clicked.
+ * Nada guardado no navegador (e apaga o progresso do quiz da aba, se sobrou). Eventos (PostHog sem cookie): web_success_viewed, web_code_copied, web_store_clicked, web_app_open_clicked, web_whatsapp_clicked.
  */
 (function () {
   'use strict';
   var F = window.TF_FUNIL;
   var raiz = document.getElementById('ob');
   var medir = function (ev, extra) { if (window.tribboMedida) window.tribboMedida(ev, extra); };
+  // Progresso do quiz guardado na aba (quiz/app.js, CHAVE_PROGRESSO): depois do pagamento, nao serve mais.
+  try { sessionStorage.removeItem('tf_quiz_progresso'); } catch (e) { /* sem sessionStorage */ }
   medir('web_success_viewed');
 
   function h(tag, props) {
