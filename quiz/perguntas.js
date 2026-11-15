@@ -614,6 +614,8 @@ window.TF = window.TF || {};
         cheaperCash: '{pct}% mais barato à vista', perDay: 'por dia', annualCash: '{anual} à vista', annualCard: 'ou {n}x de {parcela} no cartão',
         monthlyPrice: '{mensal} por mês', monthlyHow: 'Sem fidelidade · Pix Automático ou cartão',
         // Selo de compra segura (desenho nosso, sem certificadora) e o aviso do CPF, embaixo do botao.
+        // Linha logo acima do botao: o e-mail que vai para a Cakto (o codigo de login chega nele) e o "corrigir".
+        access: 'Seu acesso vai para:', accessWhats: 'WhatsApp:', fix: 'corrigir', save: 'Salvar', saving: 'Salvando...', accessLabel: 'E-mail para receber o seu acesso',
         secure: 'Compra segura', secureSub: 'Pix ou cartão pela Cakto · 7 dias de garantia', cpf: 'A Cakto vai pedir seu CPF.',
         buttonOffer: 'Começar por {preco}',
         // Linha embaixo do botao, pelo plano marcado. "Cancele quando quiser" nunca no anual.

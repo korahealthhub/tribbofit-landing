@@ -752,6 +752,17 @@ body.fim #foot:not(:empty) { background: linear-gradient(180deg, rgba(243,240,23
 .fx-selo-off { left: 14px; background: var(--fx-verm); color: #FFFFFF; }
 .fx-cta { padding: 16px 0 0; display: flex; flex-direction: column; gap: 8px; }
 .fx-hoje { text-align: center; font-size: 12px; color: var(--fx-t2); }
+/* "Seu acesso vai para: {email} · corrigir" logo acima do botao; o e-mail longo quebra em qualquer ponto. */
+.fx-acesso { display: flex; flex-direction: column; margin-bottom: 4px; }
+.fx-acesso-l { text-align: center; font-size: 13px; line-height: 1.45; color: var(--fx-t2); overflow-wrap: anywhere; }
+.fx-acesso-l b { font-weight: 700; color: var(--fx-txt); }
+.fx-acesso-corrigir { display: inline; padding: 4px 2px; font-size: 13px; font-weight: 600; color: var(--fx-roxo); text-decoration: underline; }
+.fx-acesso-rot { font-size: 13px; font-weight: 600; color: var(--fx-t2); margin-bottom: 6px; }
+.fx-acesso-linha { display: flex; gap: 8px; align-items: stretch; }
+.fx-acesso .input.form { flex: 1; min-width: 0; font-size: 16px; padding: 12px 14px; border-radius: 14px; background: #FFFFFF; border: 2px solid var(--fx-borda); }
+.fx-acesso .input.form:focus { border-color: var(--fx-roxo); }
+.fx-acesso .input.form[aria-invalid="true"] { border-color: var(--amber); }
+.fx-acesso-salvar { flex: none; padding: 0 16px; border-radius: 14px; background: var(--fx-txt); color: #FFFFFF; font-size: 15px; font-weight: 700; }
 /* Preco revisado (prototipo 5): preco por dia sempre numa linha (a coluna cresce; o texto da esquerda e que quebra). */
 .fx-plano-preco { flex: none; }
 .fx-plano-preco span { white-space: nowrap; }
@@ -759,6 +770,8 @@ body.fim #foot:not(:empty) { background: linear-gradient(180deg, rgba(243,240,23
 .fx-seguro-l { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--fx-txt); }
 .fx-seguro-l b { font-weight: 800; }
 .fx-seguro-l svg { flex: none; }
+.fx-selo-img { flex: none; width: 27px; height: 28px; }
+.fx-acesso-salvar:disabled { opacity: 0.6; }
 .fx-seguro-sub { text-align: center; font-size: 12px; color: var(--fx-t2); }
 .fx-cpf { text-align: center; font-size: 11px; color: var(--fx-t3); }
 .fx-item { display: flex; gap: 12px; align-items: flex-start; }

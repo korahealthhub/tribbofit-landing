@@ -24,6 +24,8 @@
     leadResume: SUPABASE[AMBIENTE] + '/functions/v1/web-lead-resume',
     // Ida à Cakto (toque no botão de comprar): registra no lead, sem esperar a resposta.
     leadCheckout: SUPABASE[AMBIENTE] + '/functions/v1/web-lead-checkout',
+    // "corrigir" da tela de preço: troca o e-mail do lead ainda não pago (mesmo callback assinado da Cakto).
+    leadEmail: SUPABASE[AMBIENTE] + '/functions/v1/web-lead-email',
     cakto: {
       mensal: 'https://pay.cakto.com.br/vck2kfj_1298134',
       anual: 'https://pay.cakto.com.br/cons8xz_1298173'

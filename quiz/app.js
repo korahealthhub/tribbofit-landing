@@ -2273,9 +2273,14 @@
     return h('div', { class: 'fx-cel', role: 'img', 'aria-label': T.fim.price.phoneAlt }, tela);
   }
   // Escudo com check do selo "Compra segura": desenho nosso, nas cores do site (lima e grafite), sem imagem de fora.
-  const escudoSeguro = () => svg('svg', { width: 22, height: 22, viewBox: '0 0 24 24', 'aria-hidden': 'true' },
-    svg('path', { d: 'M12 2.5l7.5 3v5.6c0 4.6-3.1 8.4-7.5 10.4-4.4-2-7.5-5.8-7.5-10.4V5.5z', fill: '#E2F70F', stroke: '#121417', 'stroke-width': 1.6, 'stroke-linejoin': 'round' }),
-    svg('path', { d: 'M8.3 12.2l2.6 2.6 4.9-5.2', fill: 'none', stroke: '#121417', 'stroke-width': 2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }));
+  // Selo de "Compra segura" ao lado do texto. EM ESCOLHA (13/11/2026), uma das duas fica e a outra sai do codigo:
+  // 'imagem': o selo gerado (quiz/assets/selo-compra-segura.png, sem fundo), em 28 px e 56 px (retina), webp leve;
+  // 'phosphor': o icone shield-check (preenchido) da biblioteca Phosphor (MIT), desenhado aqui, no roxo do site.
+  const SELO_SEGURO = 'imagem';
+  const escudoSeguro = () => (SELO_SEGURO === 'imagem'
+    ? h('img', { class: 'fx-selo-img', src: '/quiz/assets/selo-compra-segura-28.webp', srcset: '/quiz/assets/selo-compra-segura-28.webp 1x, /quiz/assets/selo-compra-segura-56.webp 2x', width: 27, height: 28, alt: '', 'aria-hidden': 'true', decoding: 'async' })
+    : svg('svg', { width: 22, height: 22, viewBox: '0 0 256 256', 'aria-hidden': 'true' },
+      svg('path', { fill: '#5B34D6', d: 'M208,40H48A16,16,0,0,0,32,56v56c0,52.72,25.52,84.67,46.93,102.19,23.06,18.86,46,25.26,47,25.53a8,8,0,0,0,4.2,0c1-.27,23.91-6.67,47-25.53C198.48,196.67,224,164.72,224,112V56A16,16,0,0,0,208,40Zm-34.32,69.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z' })));
   // Valor em reais de um texto como "R$ 14,99" (preco do cupom vindo do servidor), ou null.
   const reaisDe = (s) => { const x = /(\d+)[,.](\d{2})/.exec(String(s || '')); return x ? Number(`${x[1]}.${x[2]}`) : null; };
   // "Feito pro que voce contou": ate 3 linhas com as respostas da pessoa (ja tentou, maior dificuldade, motivo + meta).
@@ -2361,7 +2366,13 @@
 
     // Escolha de plano (Anual em cima): aparece logo depois do titulo e de novo no fim, completa e com o botao.
     // As duas ficam sincronizadas: marcar em uma marca na outra (planoWeb e um so).
-    const comprar = () => (escolhe ? irParaCakto() : next());
+    // Campo do "corrigir" aberto com um e-mail valido e o toque direto no botao: vale o e-mail do campo (sem salvar, a correcao se perderia).
+    const comprar = () => {
+      if (!escolhe) { next(); return; }
+      // So na pagina e na Cakto, sem esperar a funcao (a pessoa ja tocou para pagar).
+      for (const o of acessos) { const e = o.pendente(); if (e && lead) lead.email = e; }
+      irParaCakto();
+    };
     const escolhas = [];
     function escolha() {
       const plano = (key, badge, titulo, sub, preco) => h(escolhe ? 'button' : 'div', {
@@ -2381,9 +2392,10 @@
       ];
       const btn = primary(F.buttonPay, comprar);
       const hoje = h('p', { class: 'fx-hoje' });
+      const acessoEl = escolhe && lead && lead.email ? acesso() : null;
       // Embaixo do botao: a renovacao do plano marcado, o selo de compra segura e o aviso do CPF.
       const seguro = escolhe && [h('div', { class: 'fx-seguro' }, h('p', { class: 'fx-seguro-l' }, escudoSeguro(), h('b', null, X.secure)), h('p', { class: 'fx-seguro-sub' }, X.secureSub)), h('p', { class: 'fx-cpf' }, X.cpf)];
-      const e = { cartoes, btn, hoje, el: [h('div', { class: 'fx-planos', role: escolhe ? 'radiogroup' : null, 'aria-label': X.choose }, cartoes), h('div', { class: 'fx-cta' }, btn, hoje, seguro)] };
+      const e = { cartoes, btn, hoje, el: [h('div', { class: 'fx-planos', role: escolhe ? 'radiogroup' : null, 'aria-label': X.choose }, cartoes), h('div', { class: 'fx-cta' }, acessoEl, btn, hoje, seguro)] };
       escolhas.push(e);
       return e.el;
     }
@@ -2402,6 +2414,68 @@
         e.btn.textContent = rotulo;
         e.hoje.textContent = linha;
       }
+    }
+    // "Seu acesso vai para: {email} · corrigir", logo acima do botao (nas duas escolhas, sempre iguais).
+    // "corrigir" abre o campo ali mesmo, ja preenchido, com a mesma sugestao de dominio do cadastro (gmial.com → gmail.com)
+    // e a mesma regra: a sugestao aparece no 1o "Salvar"; no 2o, salva como esta (nao bloqueia dominio real).
+    // Salvar troca so o e-mail da pagina, que vai para a Cakto (trocaEmailDoLead); nada vai para o web-lead nem para o PostHog.
+    const acessos = [];
+    function acesso() {
+      const L = T.leadForm, idx = acessos.length;
+      const el = h('div', { class: 'fx-acesso' });
+      let sugestaoVista = null, campo = null;
+      const desenha = (aberto) => {
+        campo = null;
+        if (!aberto) {
+          el.replaceChildren(h('p', { class: 'fx-acesso-l' }, `${X.access} `, h('b', null, lead.email), ' · ',
+            h('button', { type: 'button', class: 'fx-acesso-corrigir', onclick: () => { for (const o of acessos) o.desenha(false); desenha(true); } }, X.fix)),
+            // O WhatsApp do cadastro, so para conferir (corrige voltando ao cadastro).
+            lead.whatsapp && h('p', { class: 'fx-acesso-l fx-acesso-w' }, `${X.accessWhats} `, h('b', null, mascaraWhats(lead.whatsapp))));
+          return;
+        }
+        const id = `fx-acesso-${idx}`;
+        const input = h('input', { class: 'input form fx-acesso-input', id, type: 'email', inputmode: 'email', autocomplete: 'email', autocapitalize: 'none',
+          spellcheck: 'false', enterkeyhint: 'done', maxlength: 254, value: lead.email, 'aria-describedby': `${id}-erro` });
+        campo = input;
+        const erro = h('p', { class: 'field-erro', id: `${id}-erro`, 'aria-live': 'polite' });
+        const dica = h('div', { class: 'email-dica', 'aria-live': 'polite' });
+        const mostraErro = (msg) => { erro.textContent = msg || ''; input.setAttribute('aria-invalid', msg ? 'true' : 'false'); };
+        let dicaAtual = null;
+        const atualizaDica = () => {
+          const s = sugestaoEmail(input.value);
+          if (s === dicaAtual) return;
+          dicaAtual = s;
+          dica.replaceChildren(...(s ? [h('button', { type: 'button', class: 'dica-btn', onclick: () => { input.value = s; mostraErro(''); atualizaDica(); } },
+            `${L.suggest} `, h('b', null, s), '?')] : []));
+        };
+        const salvar = () => {
+          const e = input.value.trim().toLowerCase();
+          if (!emailValido(e)) { mostraErro(L.errors.email); atualizaDica(); input.focus(); return; }
+          const sug = sugestaoEmail(e);
+          if (sug && sugestaoVista !== e) { sugestaoVista = e; mostraErro(L.errors.email); atualizaDica(); return; }
+          if (salvando) return;
+          salvando = true; botao.disabled = true; botao.textContent = X.saving;
+          trocaEmailDoLead(e).then((r) => {
+            salvando = false;
+            if (r.erro) { botao.disabled = false; botao.textContent = X.save; mostraErro(r.erro); input.focus(); return; }
+            for (const o of acessos) o.desenha(false);
+          });
+        };
+        let salvando = false;
+        const botao = h('button', { type: 'button', class: 'fx-acesso-salvar', onclick: () => salvar() }, X.save);
+        input.addEventListener('input', () => { mostraErro(''); atualizaDica(); });
+        input.addEventListener('blur', () => { const e = input.value.trim().toLowerCase(); if (e && !emailValido(e)) mostraErro(L.errors.email); atualizaDica(); });
+        input.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); salvar(); } });
+        el.replaceChildren(h('label', { class: 'fx-acesso-rot', for: id }, X.accessLabel),
+          h('div', { class: 'fx-acesso-linha' }, input, botao),
+          erro, dica);
+        atualizaDica();
+        input.focus();
+      };
+      const pendente = () => { const e = campo ? campo.value.trim().toLowerCase() : ''; return e && emailValido(e) ? e : null; };
+      acessos.push({ desenha, pendente });
+      desenha(false);
+      return el;
     }
     const escolhaTopo = escolha();
     const escolhaFim = escolha();
@@ -2513,6 +2587,35 @@
       return m && /^fb\.\d\.\d+\.\d+$/.test(m[1]) ? m[1] : null;
     } catch (e) { return null; }
   };
+  // "corrigir" da tela de preco. O e-mail da pagina (lead.email) e o que vai para a Cakto (email e confirmEmail), e a conta
+  // e o codigo de login saem do e-mail digitado na Cakto (cakto-webhook). Com o callback assinado (o mesmo da Cakto e do
+  // web-lead-checkout), corrige tambem o lead no banco pela web-lead-email (o lembrete passa a ir para o e-mail novo).
+  // Respostas: 200 → troca; 400 invalid_email → mostra a message do servidor no campo e mantem o e-mail antigo;
+  // sem callback, rede fora, 404, 429 ou 5xx → troca so na pagina e na Cakto, sem travar a pessoa.
+  // Na tela fica o que a pessoa digitou (o servidor grava o Gmail sem os pontos, que e o mesmo endereco).
+  // NUNCA chamar o web-lead de novo para corrigir: ele cria outro lead (2o Lead na Meta, lembrete no e-mail errado).
+  // Devolve { erro } (texto para o campo) ou {}.
+  async function trocaEmailDoLead(email) {
+    if (!lead || !email || email === lead.email) return {};
+    const F = window.TF_FUNIL;
+    if (lead.id && lead.token && F.leadEmail) {
+      try {
+        const ctl = new AbortController();
+        const limite = setTimeout(() => ctl.abort(), 8000);
+        // text/plain: pedido simples, sem consulta previa de CORS (a funcao le o corpo como texto).
+        const res = await fetch(F.leadEmail, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, credentials: 'omit', signal: ctl.signal,
+          body: JSON.stringify({ callback: `${lead.id}.${lead.token}`, email }) });
+        clearTimeout(limite);
+        if (res.status === 400) {
+          const d = await res.json().catch(() => ({}));
+          if (d && d.error === 'invalid_email') return { erro: typeof d.message === 'string' && d.message ? d.message.slice(0, 200) : T.leadForm.errors.email };
+        }
+      } catch (e) { /* rede: segue so com a pagina e a Cakto */ }
+    }
+    lead.email = email;
+    return {};
+  }
+
   // Checkout da Cakto ja preenchido. callback = lead_id.assinatura (so letras, numeros, - e .; 69 caracteres).
   // Cupom (so do link curto, validado pelo servidor): vai so no Mensal, em &coupon=.
   function irParaCakto() {
