@@ -692,7 +692,7 @@ window.TF = window.TF || {};
       wellbeing: 'O Tribbo Fit é um app de bem-estar e não substitui orientação médica ou nutricional.',
       errors: {
         consents: 'Marque os dois aceites acima para continuar.',
-        name: 'Digite o seu nome.', email: 'Confira o seu e-mail.', whatsapp: 'Digite o WhatsApp com DDD.',
+        name: 'Digite o seu nome.', email: 'Confira o seu e-mail.', whatsapp: 'Digite o WhatsApp com DDD.', whatsappDdd: 'Esse DDD não existe. Confira o número.', whatsappNove: 'O celular começa com 9 depois do DDD.',
         limit: 'Muitas tentativas seguidas. Espere alguns minutos e tente de novo.',
         network: 'Sem conexão no momento. Confira a internet e tente de novo.',
         generic: 'Não conseguimos continuar agora. Tente de novo em instantes ou escreva para suporte@tribbofit.com.br.',

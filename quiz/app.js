@@ -2562,6 +2562,18 @@
     return melhor ? `${m[1]}@${melhor}` : null;
   }
   const soDigitos = (v) => String(v || '').replace(/\D/g, '');
+  // WhatsApp: celular do Brasil, so 11 digitos (DDD que existe + 9 + 8 digitos). Fixo de 10 digitos nao passa.
+  // DDDs em uso (Anatel). 13/11/2026: um numero com DDD 52 (que nao existe) passou e o lead ficou sem contato.
+  const DDDS = new Set([11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 24, 27, 28, 31, 32, 33, 34, 35, 37, 38, 41, 42, 43, 44, 45, 46,
+    47, 48, 49, 51, 53, 54, 55, 61, 62, 63, 64, 65, 66, 67, 68, 69, 71, 73, 74, 75, 77, 79, 81, 82, 83, 84, 85, 86, 87, 88, 89,
+    91, 92, 93, 94, 95, 96, 97, 98, 99]);
+  // Qual erro mostrar (chave de T.leadForm.errors), ou null se o numero estiver certo. w: so digitos, sem o 55.
+  function erroWhats(w) {
+    if (w.length !== 11) return 'whatsapp';
+    if (!DDDS.has(Number(w.slice(0, 2)))) return 'whatsappDdd';
+    if (w[2] !== '9') return 'whatsappNove';
+    return null;
+  }
   function mascaraWhats(v) {
     const d = soDigitos(v).replace(/^55(?=\d{10,11}$)/, '').slice(0, 11);
     if (d.length <= 2) return d.length ? `(${d}` : '';
@@ -2705,6 +2717,11 @@
       if (fim) whats.input.setSelectionRange(whats.input.value.length, whats.input.value.length);
       mostraErro(whats, '');
     });
+    // Ao sair do campo ja avisa (DDD que nao existe, sem o 9); campo vazio so no envio.
+    whats.input.addEventListener('blur', () => {
+      const w = soDigitos(whats.input.value).replace(/^55(?=\d{10,11}$)/, '');
+      if (w) { const ew = erroWhats(w); if (ew) mostraErro(whats, L.errors[ew]); }
+    });
     // Isca para robos: escondida por CSS fora da tela, fora do Tab e sem autocomplete. Gente nao preenche.
     const isca = h('div', { class: 'isca', 'aria-hidden': 'true' },
       h('label', { for: 'tf_hp_campo' }, 'Deixe em branco'),
@@ -2752,7 +2769,8 @@
       const sug = sugestaoEmail(e);
       if (!emailValido(e)) { mostraErro(email, L.errors.email); atualizaDica(); ok = false; }
       else if (sug && sugestaoVista !== e) { sugestaoVista = e; mostraErro(email, L.errors.email); atualizaDica(); ok = false; }
-      if (w.length < 10 || w.length > 11) { mostraErro(whats, L.errors.whatsapp); ok = false; }
+      const ew = erroWhats(w);
+      if (ew) { mostraErro(whats, L.errors[ew]); ok = false; }
       if (!ok) { const f = scrollEl.querySelector('[aria-invalid="true"]'); if (f) f.focus(); return null; }
       return { n, e, w };
     }
