@@ -51,7 +51,9 @@
 
   // Medicao de uso (PostHog sem cookie). So o numero e o nome tecnico da tela, nunca respostas.
   // Na entrada nova, todos os eventos levam entrada=objetivo (/js/medida.js deixa passar so essa propriedade a mais).
-  const medir = (evento, extra) => { if (window.tribboMedida) window.tribboMedida(evento, ENTRADA ? { ...extra, entrada: 'objetivo' } : extra); };
+  // Versao do quiz (15/11/2026): quiz_version em todos os eventos do quiz e quizVersion junto das respostas no cadastro.
+  const QUIZ_VERSION = 'v1';
+  const medir = (evento, extra) => { if (window.tribboMedida) window.tribboMedida(evento, { ...extra, quiz_version: QUIZ_VERSION, ...(ENTRADA ? { entrada: 'objetivo' } : {}) }); };
   const telaInfo = (id) => { const s = TF.STEPS.find((x) => x.id === id); return { step_number: s ? s.code : '', step_name: id }; };
   let comecou = false;
   let planoWeb = 'anual'; // plano escolhido na tela 49B (so com TF.PAGAMENTO_ATIVO)
@@ -2806,7 +2808,8 @@
 
       // Respostas com as chaves do app; o palpite de preco (se ja houver) vai como priceExpectationValue.
       // Com os padroes das perguntas puladas (TF.comPadroes: cozinhar e quantas pessoas).
-      const respostas = { ...TF.comPadroes(a), fullName: v.n };
+      // quizVersion: o web-lead ainda descarta chaves que nao conhece (_shared/webAnswers.ts); passa a gravar quando o app aceitar.
+      const respostas = { ...TF.comPadroes(a), fullName: v.n, quizVersion: QUIZ_VERSION };
       if (a.priceGuess != null) respostas.priceExpectationValue = a.priceGuess;
       for (const k of ['priceGuess', 'termsAcceptedAt', 'healthDataConsentAt', 'educationalConsentAt', 'ofertasAceitasEm']) delete respostas[k];
       const utm = utmDoQuiz();
