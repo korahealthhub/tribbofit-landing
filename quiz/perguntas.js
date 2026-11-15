@@ -57,10 +57,10 @@ window.TF = window.TF || {};
     { id: 'allergies', code: '32', section: 'alimentacao' },
     { id: 'dislikes', code: '33', section: 'alimentacao' },
     { id: 'meal_places', code: '34', section: 'alimentacao' },
-    { id: 'cooking', code: '35', section: 'alimentacao' },
+    { id: 'cooking', code: '35', section: 'alimentacao', skip: (a) => TF.soComeFora(a) },
     { id: 'did_you_know_food', code: '36', section: 'alimentacao' },
-    { id: 'kitchen', code: '37', section: 'alimentacao', skip: (a) => a.cookingTime === 'none' },
-    { id: 'household', code: '38', section: 'alimentacao' },
+    { id: 'kitchen', code: '37', section: 'alimentacao', skip: (a) => TF.comPadroes(a).cookingTime === 'none' },
+    { id: 'household', code: '38', section: 'alimentacao', skip: (a) => TF.comPadroes(a).cookingTime === 'none' },
     { id: 'budget', code: '39', section: 'alimentacao' },
     { id: 'nutritionist', code: '40', section: 'alimentacao' },
     { id: 'supplements', code: '40A', section: 'alimentacao' },
@@ -79,6 +79,21 @@ window.TF = window.TF || {};
     { id: 'price_reveal', code: '49B', section: 'plano' },
     { id: 'download', code: '50B', section: 'plano', skip: () => !!TF.PAGAMENTO_ATIVO },
   ];
+
+  // Perguntas puladas por nao se aplicarem (so na web, 15/11/2026):
+  // - "Tempo para cozinhar" (35): quem come so em restaurante/por quilo e/ou lanchonete/delivery;
+  // - "Para quantas pessoas voce cozinha?" (38) e a cozinha (37, como no app): quem nao cozinha.
+  // Valor padrao de quem pulou (so se a pessoa nao respondeu antes): cookingTime 'none' ("Nao cozinho") e
+  // householdSize 1 ("So para mim"). Sao valores validos no web-lead e no perfil do app, e assim o app nao pede essas
+  // respostas de novo no "complete seu perfil". Nenhum gerador (cardapio do site, app, e-mail de resumo) usa os dois.
+  // comPadroes devolve uma copia; as respostas na memoria nao mudam.
+  TF.soComeFora = (a) => a.mealLocations.length > 0 && a.mealLocations.every((c) => c === 'restaurant' || c === 'delivery');
+  TF.comPadroes = (a) => {
+    const r = { ...a };
+    if (r.cookingTime == null && TF.soComeFora(r)) r.cookingTime = 'none';
+    if (r.householdSize == null && r.cookingTime === 'none') r.householdSize = 1;
+    return r;
+  };
 
   // Entrada pelo anuncio (?entrada=objetivo, so na web): sem a tela de boas-vindas, o objetivo e a primeira tela e o
   // nome vem logo depois da "projection", na secao "Corpo" (a barra de progresso nao volta). Cada tela mantem o seu

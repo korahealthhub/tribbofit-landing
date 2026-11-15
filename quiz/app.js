@@ -1753,7 +1753,7 @@
       { topic: F.rows.allergies, value: allergies.length ? cap(joinPt(allergies)) : F.none, go: () => edit('allergies') },
       { topic: F.rows.dislikes, value: dislikes.length ? cap(joinPt(dislikes)) : F.noneM, go: () => edit('dislikes') },
       { topic: F.rows.places, value: places.length ? cap(joinPt(places)) : T.trainingSummary.unanswered, go: () => edit('meal_places') },
-      { topic: F.rows.cooking, value: TF.optionLabel(TF.COOKING_TIME_OPTIONS, a.cookingTime) || T.trainingSummary.unanswered, go: () => edit('cooking') },
+      { topic: F.rows.cooking, value: TF.optionLabel(TF.COOKING_TIME_OPTIONS, TF.comPadroes(a).cookingTime) || T.trainingSummary.unanswered, go: () => edit('cooking') },
       { topic: F.rows.budget, value: TF.optionLabel(TF.BUDGET_OPTIONS, a.foodBudget) || T.trainingSummary.unanswered, go: () => edit('budget') },
     ]);
     const draw = () => {
@@ -2791,7 +2791,8 @@
       const falhou = (msg) => { st.enviando = false; btn.textContent = L.button; refresh(); erroGeral.textContent = msg; };
 
       // Respostas com as chaves do app; o palpite de preco (se ja houver) vai como priceExpectationValue.
-      const respostas = { ...a, fullName: v.n };
+      // Com os padroes das perguntas puladas (TF.comPadroes: cozinhar e quantas pessoas).
+      const respostas = { ...TF.comPadroes(a), fullName: v.n };
       if (a.priceGuess != null) respostas.priceExpectationValue = a.priceGuess;
       for (const k of ['priceGuess', 'termsAcceptedAt', 'healthDataConsentAt', 'educationalConsentAt', 'ofertasAceitasEm']) delete respostas[k];
       const utm = utmDoQuiz();
