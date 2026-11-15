@@ -946,7 +946,71 @@ html.entrada-obj #pre-obj { display: block; }
 .fx-passos b { display: block; font-size: 15px; color: var(--fx-txt); }
 .fx-passos div span { display: block; font-size: 13px; color: var(--fx-t2); }
 
+/* Movimento de cada momento (so transform, em loop suave). Pequeno nas perguntas: so a respiracao (acima). */
+.masc-img.anim-fala { transform-origin: 50% 100%; animation: masc-balanca 2.8s ease-in-out infinite; }
+.masc-img.anim-carregando { animation: masc-levanta 1s ease-in-out infinite; }
+.masc-img.anim-comemora-pequena { animation: masc-pulinho 1.4s ease-in-out infinite; }
+.masc-img.anim-comemora-media { animation: masc-pulo-gira 1.6s ease-in-out infinite; }
+.masc-img.anim-comemora-grande { animation: masc-pulo-alto 1.5s ease-in-out infinite; }
+.masc-img.anim-surpresa { animation: masc-pop 600ms cubic-bezier(.3,1.6,.5,1) both, masc-respira 3.4s ease-in-out 600ms infinite; }
+.masc-img.entra.anim-fala { animation: masc-pulo 520ms cubic-bezier(.3,1.5,.5,1) both, masc-balanca 2.8s ease-in-out 520ms infinite; }
+.masc-img.entra.anim-carregando { animation: masc-pulo 520ms cubic-bezier(.3,1.5,.5,1) both, masc-levanta 1s ease-in-out 520ms infinite; }
+.masc-img.entra.anim-comemora-pequena { animation: masc-pulo 520ms cubic-bezier(.3,1.5,.5,1) both, masc-pulinho 1.4s ease-in-out 520ms infinite; }
+.masc-img.entra.anim-comemora-media { animation: masc-pulo 520ms cubic-bezier(.3,1.5,.5,1) both, masc-pulo-gira 1.6s ease-in-out 520ms infinite; }
+.masc-img.entra.anim-comemora-grande { animation: masc-pulo 520ms cubic-bezier(.3,1.5,.5,1) both, masc-pulo-alto 1.5s ease-in-out 520ms infinite; }
+.masc-img.entra.anim-surpresa { animation: masc-pop 600ms cubic-bezier(.3,1.6,.5,1) both, masc-respira 3.4s ease-in-out 600ms infinite; }
+@keyframes masc-balanca { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+@keyframes masc-levanta { 0%, 100% { transform: translateY(0); } 45% { transform: translateY(-9px) scale(1.02, .99); } 60% { transform: translateY(-9px); } }
+@keyframes masc-pulinho { 0%, 55%, 100% { transform: translateY(0); } 20% { transform: translateY(-12px); } 35% { transform: translateY(0) scale(1.04, .96); } }
+@keyframes masc-pulo-gira { 0%, 60%, 100% { transform: translateY(0) rotate(0); } 25% { transform: translateY(-20px) rotate(-8deg); } 45% { transform: translateY(0) rotate(4deg) scale(1.03, .97); } }
+@keyframes masc-pulo-alto { 0%, 100% { transform: translateY(0) scale(1, 1); } 15% { transform: translateY(0) scale(1.06, .92); } 45% { transform: translateY(-34px) scale(.96, 1.05); } 70% { transform: translateY(0) scale(1, 1); } 78% { transform: translateY(0) scale(1.12, .86); } 88% { transform: translateY(0) scale(.97, 1.03); } }
+@keyframes masc-pop { 0% { transform: scale(.4); opacity: 0; } 55% { transform: scale(1.18); opacity: 1; } 80% { transform: scale(.95); } 100% { transform: scale(1); opacity: 1; } }
+
+/* Telas cheias do mascote (pausas): grande no centro, balao logo abaixo, botao embaixo. */
+.cheia { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; min-height: 100%; padding-bottom: 12px; }
+.masc-img.cheia-img { height: 168px; }
+.masc-img.oi-img { height: 168px; }
+.masc-img.construindo { height: 130px; }
+.masc-img.prazer { height: 168px; }
+.masc-img.pronto { height: 132px; }
+
+/* Preco limpo do /quiz2/ */
+.fx-topo-preco { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding-top: 2px; }
+.fx-h1.fx-h1-curto { font-size: 24px; line-height: 1.2; }
+.fx-prev-linha { display: inline-flex; align-items: center; gap: 6px; margin: 0; font-size: 15px; font-weight: 600; color: var(--fx-txt); }
+.fx-topo-preco .fx-palpite { margin: 6px 0 0; padding: 8px 12px; font-size: 14px; }
+.fx-topo-preco + .fx-planos { margin-top: 14px; }
+.fx-plano-preco b.fx-grande small { font-size: 14px; font-weight: 700; margin-left: 1px; }
+.fx-plano-txt span.fx-vista { font-size: 12.5px; color: var(--fx-t2); }
+.fx-plano-txt span.fx-vista s { color: var(--fx-verm); font-weight: 600; }
+p.fx-confia { display: flex; align-items: center; justify-content: center; gap: 5px; margin: 4px 0 0; font-size: 12.5px; color: var(--fx-t2); white-space: nowrap; }
+p.fx-confia svg { flex: none; }
+.fx-prova2 { text-align: center; font-size: 12.5px; font-weight: 600; color: var(--fx-txt); margin: 0; }
+.fx-nunca.fx-nunca-escuro { color: #FFFFFF; }
+.fx-nunca.fx-nunca-escuro > span { color: var(--fx-lima); }
+.fx-mt8 { margin-top: 8px; }
+
 @media (prefers-reduced-motion: reduce) {
-  .masc-img, .masc-img.entra, .opt.pulso, .opt.pulso::after { animation: none; }
+  .masc-img, .masc-img.entra, .masc-img[class*="anim-"], .opt.pulso, .opt.pulso::after { animation: none !important; }
   .opt.pulso::after { display: none; }
+}
+.fx-feito .fx-nunca > span { display: inline; font-size: 15px; }
+/* Preco limpo: compacto, para a primeira tela caber sem rolar tambem em 360 px. */
+p.fx-confia { flex-wrap: nowrap; }
+.fx-topo-preco + .fx-planos { gap: 10px; }
+.fx-topo-preco + .fx-planos .fx-plano { padding: 14px 14px 12px; }
+.fx-topo-preco + .fx-planos .fx-plano-txt span.fx-parcelado { font-size: 11px; line-height: 1.3; }
+.fx-topo-preco + .fx-planos .fx-plano-txt span.fx-vista { line-height: 1.35; }
+@media (max-width: 380px) {
+  .fx-h1.fx-h1-curto { font-size: 22px; }
+  .fx-prev-linha { font-size: 14px; }
+  .fx-topo-preco .fx-palpite { font-size: 13px; padding: 6px 10px; }
+  .fx-plano-preco b.fx-grande { font-size: 24px; }
+  .fx-plano-preco b.fx-grande small { font-size: 12.5px; }
+  .fx-plano-txt b { font-size: 16px; }
+  .fx-plano-txt span { font-size: 12.5px; }
+  .fx-plano-txt span.fx-vista { font-size: 12px; }
+  p.fx-confia { font-size: 11.5px; gap: 4px; }
+  .fx-prova2, .fx-hoje { font-size: 11.5px; }
+  .fx-cta { gap: 6px; }
 }

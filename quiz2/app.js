@@ -183,7 +183,7 @@
       return h('div', { class: `q-head masc-head${grande ? ' grande' : ''}` }, h('div', { class: 'masc-linha' }, img0, h('div', { class: 'balao' }, t0)), subtitle && h('p', { class: 'q-sub' }, subtitle));
     }
     const primeiraVez = once(`masc:${title}`);
-    const img = h('img', { class: `masc-img${grande ? ' grande' : ''}${primeiraVez ? ' entra' : ''}`, src: MASCOTE(p), alt: '', 'aria-hidden': 'true', decoding: 'async' });
+    const img = h('img', { class: `masc-img${grande ? ' grande' : ''}${p !== 'fala' ? ` anim-${p}` : ''}${primeiraVez ? ' entra' : ''}`, src: MASCOTE(p), alt: '', 'aria-hidden': 'true', decoding: 'async' });
     const txt = h('span', { class: 'balao-txt', 'aria-hidden': 'true' }, primeiraVez ? '' : title);
     const t = h('h1', { class: `q-title balao-h1${grande ? ' grande' : ''}`, tabindex: '-1', 'aria-label': title }, h('span', { class: 'balao-fantasma', 'aria-hidden': 'true' }, title), txt);
     let mostraTudo = null;
@@ -192,6 +192,20 @@
     return h('div', { class: `q-head masc-head${grande ? ' grande' : ''}` }, h('div', { class: 'masc-linha' }, img, balao), subtitle && h('p', { class: 'q-sub' }, subtitle));
   }
   const comMascote = () => mascoteLigado && current !== 'welcome';
+  // Imagem do mascote com o movimento do momento (CSS, anim-<pose>): fala balanca, carregando levanta o halter,
+  // comemora-pequena da um pulinho, comemora-media pula girando, comemora-grande pula alto e amassa ao cair, surpresa
+  // aparece com um "pop". Nas perguntas (mascote pequeno no canto) so a respiracao. Com "reduzir movimento", parado.
+  const imgMascote = (pose, cls, animar) => h('img', { class: `masc-img ${cls || ''}${animar ? ` anim-${pose}` : ''}${once(`img:${pose}:${cls}`) ? ' entra' : ''}`,
+    src: MASCOTE(pose), alt: '', 'aria-hidden': 'true', decoding: 'async' });
+  // Tela cheia do mascote (pausas): grande no centro, o balao logo abaixo (letra a letra; tocar mostra tudo), botao embaixo.
+  function telaMascote(texto, pose) {
+    const txt = h('span', { class: 'balao-txt', 'aria-hidden': 'true' });
+    const t = h('h1', { class: 'q-title balao-h1', tabindex: '-1', 'aria-label': texto }, h('span', { class: 'balao-fantasma', 'aria-hidden': 'true' }, texto), txt);
+    let mostra = null;
+    const balao = h('div', { class: 'balao balao-oi', onclick: () => { if (mostra) mostra(); } }, t);
+    paint({ fill: true, body: [h('div', { class: 'cheia' }, imgMascote(pose, 'cheia-img', true), balao)], footer: [primary(TF.V2.continuar, () => next())] });
+    mostra = digita(txt, texto);
+  }
 
   function header(title, subtitle, fixedLines) {
     if (comMascote()) return cabecalhoMascote(title, subtitle);
@@ -2047,7 +2061,7 @@
     let shown = 0;
     let msg2 = msg;
     const start = performance.now();
-    paint({ fill: true, body: [h('div', { class: 'center' }, h('img', { class: 'masc-img construindo', src: MASCOTE('carregando'), alt: '', 'aria-hidden': 'true' }), ring, msg)] });
+    paint({ fill: true, body: [h('div', { class: 'center' }, imgMascote('carregando', 'construindo', true), ring, msg)] });
     let raf = 0;
     const tick = (t) => {
       const e = t - start;
@@ -2323,7 +2337,7 @@
     paint({
       body: [
         h('div', { class: 'fx-topo fx-pronto' },
-          h('img', { class: 'masc-img pronto entra', src: MASCOTE('comemora-grande'), alt: '', 'aria-hidden': 'true' }),
+          imgMascote('comemora-grande', 'pronto', true),
           h('h1', { class: 'fx-h1', tabindex: '-1' }, m.nome ? TF.V2.tudoPronto.replace('{nome}', m.nome) : TF.V2.tudoProntoSemNome),
           h('p', { class: 'fx-sub fx-sub-forte' }, comNome(tituloMeta(m, F.title), '')),
           desire && h('p', { class: 'fx-sub' }, desire)),
@@ -2529,29 +2543,29 @@
         type: escolhe ? 'button' : null, role: escolhe ? 'radio' : null, class: 'fx-plano', 'data-plano': key,
         onclick: escolhe ? () => { if (planoWeb !== key) { planoWeb = key; medir('web_quiz_plan_selected', { plan: key }); atualiza(); } } : null,
       }, badge, escolhe && h('span', { class: 'fx-radio' }), h('span', { class: 'fx-plano-txt' }, h('b', null, titulo), [].concat(sub).filter(Boolean).map((s) => (typeof s === 'string' ? h('span', null, s) : s))), h('span', { class: 'fx-plano-preco' }, preco));
+      // /quiz2/ (preco limpo): Mensal em cima e marcado, "R$ 29,90/mes" grande. Anual com "R$ 19,16/mes" grande (o anual
+      // a vista dividido por 12), e embaixo, pequeno, o R$ 358,80 riscado (12 meses no Mensal) com "R$ 229,90 a vista (Pix
+      // ou cartao em 1x)" e a linha do parcelado (a Cakto cobra juros no parcelado: 12x de R$ 23,65). A economia e sempre
+      // contra o valor riscado: sem oferta, 12 meses no Mensal; com a oferta do anual (desligada), o anual normal.
+      const riscado = fimAnual ? P.anual : dozeMeses;
+      const porMesAnual = Math.round((precoAnual / 12) * 100) / 100;
       const cartoes = [
-        // /quiz2/: Anual com o ano no Mensal riscado (12 x R$ 29,90), a economia, o valor a vista e o equivalente por mes.
-        // O parcelado tem juros da Cakto (12x de R$ 23,65): por isso o "a vista" e a linha do parcelado.
-        // A economia e sempre contra o valor riscado: sem oferta, 12 meses no Mensal; com a oferta do anual, o anual normal.
-        plano('anual', h('span', { class: 'fx-selo-eco' }, X2.economize.replace('{valor}', brl((fimAnual ? P.anual : dozeMeses) - precoAnual))),
-          X.annual, [X2.anualVista.replace('{anual}', brl(precoAnual)), X2.anualEquivale.replace('{mes}', brl(Math.round((precoAnual / 12) * 100) / 100)),
-            h('span', { class: 'fx-parcelado' }, X2.anualParcelado)],
-          [h('s', null, brl(fimAnual ? P.anual : dozeMeses)), h('b', null, brl(precoAnual)), h('span', null, X2.porAno)]),
         oferta
           ? plano('mensal', h('span', { class: 'fx-selo-off' }, pctOferta ? X.offerTag.replace('{pct}', pctOferta) : X.firstMonth),
             X.monthly, `${X.then} ${brl(P.mensal)}${X.perMonthShort}`,
             [h('s', null, brl(P.mensal)), h('b', { class: 'fx-grande' }, precoOferta), h('span', { class: 'fx-roxo-forte' }, X.firstMonth)])
-          : plano('mensal', null, X.monthly, [X2.mensalSub], [h('b', null, brl(P.mensal)), h('span', null, X2.porMes)]),
+          : plano('mensal', null, X.monthly, [X2.mensalSub], [h('b', { class: 'fx-grande' }, brl(P.mensal), h('small', null, X2.barraMes))]),
+        plano('anual', h('span', { class: 'fx-selo-eco' }, X2.economize.replace('{valor}', brl(riscado - precoAnual))),
+          X.annual, [h('span', { class: 'fx-vista' }, h('s', null, brl(riscado)), ' ', X2.anualVistaCurto.replace('{anual}', brl(precoAnual))),
+            h('span', { class: 'fx-parcelado' }, X2.anualParcelado)],
+          [h('b', { class: 'fx-grande' }, brl(porMesAnual), h('small', null, X2.barraMes))]),
       ];
       const btn = primary(F.buttonPay, comprar);
       const hoje = h('p', { class: 'fx-hoje' });
       const acessoEl = escolhe && lead && lead.email ? acesso() : null;
       // Embaixo do botao: a renovacao do plano marcado, o selo de compra segura e o aviso do CPF.
       // /quiz2/: 7 dias de garantia, pagamento seguro pela Cakto e Pix ou cartao, e o aviso do CPF.
-      const seguro = escolhe && [h('div', { class: 'fx-confia' },
-        h('span', null, icon('checkmark-circle', 16, '#5B34D6'), X2.garantia),
-        h('span', null, icon('lock-closed', 15, '#5B34D6'), X2.seguro),
-        h('span', null, icon('card-outline', 16, '#5B34D6'), X2.formas)), h('p', { class: 'fx-cpf' }, X.cpf)];
+      const seguro = escolhe && [h('p', { class: 'fx-confia' }, icon('lock-closed', 13, '#5B34D6'), X2.confia), h('p', { class: 'fx-prova2' }, X2.prova), h('p', { class: 'fx-cpf' }, X.cpf)];
       const e = { cartoes, btn, hoje, el: [h('div', { class: 'fx-planos', role: escolhe ? 'radiogroup' : null, 'aria-label': X.choose }, cartoes), h('div', { class: 'fx-cta' }, acessoEl, btn, hoje, seguro)] };
       escolhas.push(e);
       return e.el;
@@ -2648,27 +2662,31 @@
       return h('div', { class: 'fx-faq-item' }, btn, resp);
     }));
 
+    // /quiz2/ (preco limpo): a primeira tela, sem rolar, tem o titulo curto, a previsao numa linha, o palpite, os planos,
+    // o botao, a confianca e a prova social. Abaixo: como funciona, o que voce recebe (5 itens), nunca mais e personalizado
+    // num bloco so, a garantia, as perguntas e os planos de novo.
+    const previsaoLinha = (m.kind === 'lose' || m.kind === 'gain') && m.alvo && m.mes && m.dif >= 1
+      ? h('p', { class: 'fx-prev-linha' }, icon(m.kind === 'gain' ? 'trending-up-outline' : 'trending-down-outline', 16, '#5B34D6'), X2.previsao.replace('{alvo}', m.alvo).replace('{mes}', m.mes)) : null;
     paint({
       body: [
-        // /quiz2/: no topo, o mascote comemorando e a previsao (quando ha meta de peso).
-        h('div', { class: 'fx-topo fx-pronto' },
-          h('img', { class: 'masc-img pronto entra', src: MASCOTE('comemora-media'), alt: '', 'aria-hidden': 'true' }),
-          h('h1', { class: 'fx-h1 fx-h1-preco', tabindex: '-1' }, tituloMeta(m, X.title)), h('p', { class: 'fx-sub' }, X.subtitle)),
-        cartaoPrevisao(m),
-        a.priceGuess != null && h('p', { class: 'fx-palpite' }, X2.palpite.replace('{chute}', `R$\u00a0${Math.round(a.priceGuess)}`).replace('{mensal}', brl(P.mensal))),
+        h('div', { class: 'fx-topo-preco' },
+          h('h1', { class: 'fx-h1 fx-h1-curto', tabindex: '-1' }, X2.titulo),
+          previsaoLinha,
+          a.priceGuess != null && h('p', { class: 'fx-palpite' }, X2.palpite.replace('{chute}', `R$\u00a0${Math.round(a.priceGuess)}`).replace('{mensal}', brl(P.mensal)))),
         escolhaTopo,
         h('div', { class: 'fx-card fx-gap12 fx-mt24' }, h('h2', { class: 'fx-h2b' }, X2.passosTitulo),
           h('ol', { class: 'fx-passos' }, X2.passos.map(([t1, t2], i) => h('li', null, h('span', { class: 'fx-passo-n' }, String(i + 1)), h('div', null, h('b', null, t1), t2 && h('span', null, t2)))))),
-        h('div', { class: 'fx-card fx-gap14 fx-mt24' }, h('h2', { class: 'fx-h2b' }, X.get.title),
-          X.get.items.map(([emo, t1, t2]) => h('div', { class: 'fx-item' }, h('span', { class: 'fx-item-emo', 'aria-hidden': 'true' }, emo), h('div', null, h('b', null, t1), h('span', null, t2))))),
-        h('div', { class: 'fx-card fx-gap12' }, h('h2', { class: 'fx-h2b' }, X.never.title),
-          X.never.items.map((t1) => h('div', { class: 'fx-nunca' }, h('span', { 'aria-hidden': 'true' }, '✕'), t1))),
-        linhas.length > 0 && h('div', { class: 'fx-card fx-escuro fx-feito fx-gap14' }, h('h2', { class: 'fx-h2b' }, X.told.title),
+        h('div', { class: 'fx-card fx-gap14' }, h('h2', { class: 'fx-h2b' }, X.get.title),
+          X.get.items.slice(0, 5).map(([emo, t1, t2]) => h('div', { class: 'fx-item' }, h('span', { class: 'fx-item-emo', 'aria-hidden': 'true' }, emo), h('div', null, h('b', null, t1), h('span', null, t2))))),
+        h('div', { class: 'fx-card fx-escuro fx-feito fx-gap14' },
+          h('h2', { class: 'fx-h2b' }, X2.nuncaTitulo),
+          X.never.items.map((t1) => h('div', { class: 'fx-nunca fx-nunca-escuro' }, h('span', { 'aria-hidden': 'true' }, '✕'), t1)),
+          linhas.length > 0 && h('h2', { class: 'fx-h2b fx-mt8' }, X2.feitoTitulo),
           linhas.map(([t1, t2]) => h('div', null, h('b', null, t1), h('span', null, t2)))),
         h('div', { class: 'fx-card fx-garantia' }, h('span', { class: 'fx-garantia-emo', 'aria-hidden': 'true' }, X.guarantee.emoji),
           h('div', null, h('b', null, X.guarantee.title), h('span', null, X.guarantee.txt))),
         faq,
-        h('div', { class: 'fx-fim' }, escolhaFim, h('p', { class: 'fx-prova' }, X.proof)),
+        h('div', { class: 'fx-fim' }, escolhaFim),
       ],
       footer: [],
     });
@@ -3016,7 +3034,7 @@
       // /quiz2/: "Prazer, [nome]!" por 2 s com o mascote aplaudindo (com ou sem lead gravado); depois o resumo completo.
       const primeiro = v.n.split(' ')[0];
       paint({ fill: true, body: [h('div', { class: 'center lead-ok' },
-        h('img', { class: 'masc-img prazer entra', src: MASCOTE('comemora-pequena'), alt: '', 'aria-hidden': 'true' }),
+        imgMascote('comemora-pequena', 'prazer', true),
         h('h1', { class: 'ready', tabindex: '-1' }, L.saved.replace('{nome}', primeiro)))], footer: [] });
       const t = scrollEl.querySelector('h1'); if (t) t.focus({ preventScroll: true });
       later(() => next(), 2000);
@@ -3125,7 +3143,7 @@
     paint({
       fill: true,
       body: [h('div', { class: 'oi', onclick: segue },
-        h('img', { class: 'masc-img oi-img entra', src: MASCOTE('fala'), alt: '', 'aria-hidden': 'true' }),
+        imgMascote('fala', 'oi-img', true),
         h('div', { class: 'balao balao-oi' }, h('h1', { class: 'q-title balao-h1', tabindex: '-1', 'aria-label': falas.join(' ') }, box)))],
       footer: [],
     });
@@ -3139,9 +3157,7 @@
     proxima();
   }
   // Pausa curta: o mascote fala uma frase e o botao "Continuar".
-  function pausa(texto, pose) {
-    paint({ body: [cabecalhoMascote(texto, null, pose || 'fala', true)], footer: [primary(TF.V2.continuar, () => next())] });
-  }
+  function pausa(texto, pose) { telaMascote(texto, pose || 'fala'); }
   const PausaMedidas = () => pausa(TF.V2.pausaMedidas);
   const PausaNivel = () => pausa(TF.V2.pausaNivel[a.fitnessLevel] || TF.V2.pausaNivel.beginner, 'carregando');
   const PausaExercicios = () => pausa(TF.V2.pausaExercicios, 'comemora-pequena');

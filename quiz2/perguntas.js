@@ -139,12 +139,18 @@ window.TF = window.TF || {};
     ],
     tudoPronto: 'Tudo pronto, {nome}!', tudoProntoSemNome: 'Tudo pronto!',
     preco: {
-      mensalSub: 'Cancele quando quiser', porMes: 'por mês', porAno: 'por ano',
+      mensalSub: 'Cancele quando quiser', porMes: 'por mês', porAno: 'por ano', barraMes: '/mês',
+      // Primeira tela do preco (sem rolar): titulo curto, previsao numa linha, palpite, planos, botao, confianca e prova.
+      titulo: 'Seu plano está pronto', previsao: '{alvo} kg até {mes}',
+      confia: '7 dias de garantia · Pagamento seguro · Pix ou cartão',
+      prova: '4,8 na App Store · mais de 5 mil pessoas', // App Store 4,86 (store_stats, 15/11/2026) e 5 mil downloads
+      anualVistaCurto: '{anual} à vista (Pix ou cartão em 1x)',
+      nuncaTitulo: 'Nunca mais', feitoTitulo: 'Personalizado pra você',
       economize: 'Economize {valor}',
       anualVista: '{anual} à vista (Pix ou cartão em 1x)', anualEquivale: 'Equivale a {mes} por mês', anualParcelado: 'ou parcelado no cartão, com juros da operadora',
       garantia: '7 dias de garantia', seguro: 'Pagamento seguro pela Cakto', formas: 'Pix ou cartão',
       passosTitulo: 'Como funciona',
-      passos: [['Pague', 'Pix ou cartão'], ['Receba o código', 'E-mail e WhatsApp'], ['Entre no app', null]],
+      passos: [['Pague', 'Pix ou cartão'], ['Receba o código', 'Por e-mail'], ['Entre no app', null]],
       palpite: 'Você chutou {chute}. No Tribbo sai {mensal} por mês.',
       // Oferta de boas-vindas do anual (DESLIGADA em app.js, OFERTA_ANUAL.ativa).
       oferta: { faixa: 'Oferta de boas-vindas', linha: 'Anual por {preco}', termina: 'Termina em' },
@@ -741,7 +747,7 @@ window.TF = window.TF || {};
     },
     // So na web: cadastro (tela 48L, com TF.PAGAMENTO_ATIVO), depois do resultado e antes do preco. Envia para o web-lead.
     leadForm: {
-      title: 'Para onde mandamos o seu acesso ao app?', subtitle: 'Depois do pagamento, o seu código chega por e-mail e WhatsApp.', name: 'Nome', email: 'E-mail', whatsapp: 'WhatsApp',
+      title: 'Para onde mandamos o seu acesso ao app?', subtitle: 'Depois do pagamento, o seu código chega na hora por e-mail.', name: 'Nome', email: 'E-mail', whatsapp: 'WhatsApp',
       whatsappPh: '(11) 99999-9999', suggest: 'Você quis dizer',
       button: 'Continuar', sending: 'Um instante...', saved: 'Prazer, {nome}!',
       privacy: 'Usamos seus dados para criar sua conta e montar o seu plano no app.',
