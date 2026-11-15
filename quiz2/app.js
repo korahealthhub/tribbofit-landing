@@ -3011,7 +3011,8 @@
         apagaProgresso();
       }
       st.enviando = false;
-      update({ fullName: v.n });
+      // /quiz2/: o nome do contato vale dali em diante (o "Tudo pronto, [nome]!" vem depois do contato).
+      update({ fullName: v.n, displayName: firstNameFrom(v.n) });
       // /quiz2/: "Prazer, [nome]!" por 2 s com o mascote aplaudindo (com ou sem lead gravado); depois o resumo completo.
       const primeiro = v.n.split(' ')[0];
       paint({ fill: true, body: [h('div', { class: 'center lead-ok' },
