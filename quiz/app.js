@@ -289,6 +289,17 @@
     const c = document.getElementById('confetti');
     if (c) c.remove();
   }
+  // Barra de progresso (15/11/2026): a posicao da tela entre todas as telas com barra que valem para estas respostas
+  // (as puladas nao contam), comecando perto de 0% (3%) e terminando em 100% na ultima tela com barra. A curva anda
+  // mais devagar no comeco e mais rapido no fim. Antes era por secao (comecava em 18% e pulava 33% > 42% > 50%).
+  let ultimoPct = 0;
+  function progressoQuiz(id) {
+    const lista = TF.STEPS.filter((s) => TF.showsProgress(s.id) && TF.applies(s, a));
+    const i = lista.findIndex((s) => s.id === id);
+    if (i < 0) return ultimoPct;
+    const x = lista.length > 1 ? i / (lista.length - 1) : 1;
+    return 0.03 + 0.97 * Math.pow(x, 1.35);
+  }
   function show(id, forward) {
     resetScreen();
     visit += 1;
@@ -302,7 +313,10 @@
     topEl.hidden = false;
     barEl.classList.toggle('off', !progress);
     backEl.classList.toggle('off', !back);
-    const pct = TF.overallProgress(id, a);
+    // Indo para frente (inclusive ao corrigir uma resposta pelo resumo), a barra nunca volta; voltando, acompanha a tela.
+    let pct = progressoQuiz(id);
+    if (forward) pct = Math.max(pct, ultimoPct);
+    ultimoPct = pct;
     barFill.style.width = `${Math.round(pct * 1000) / 10}%`;
     barEl.setAttribute('aria-valuenow', Math.round(pct * 100));
     scrollEl.scrollTop = 0;
