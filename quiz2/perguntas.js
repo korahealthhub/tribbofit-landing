@@ -22,11 +22,14 @@ window.TF = window.TF || {};
   TF.STEPS = [
     { id: 'welcome', code: '1', section: 'voce' },
     { id: 'name', code: '2', section: 'voce' },
+    // /quiz2/: o mascote se apresenta logo depois da 1a pergunta (aqui, depois do nome; na entrada do anuncio, depois do objetivo).
+    { id: 'tribu_oi', code: '2T', section: 'voce' },
     { id: 'goal', code: '4', section: 'corpo' },
     { id: 'tried_before', code: '5', section: 'corpo' },
     { id: 'motivation', code: '5A', section: 'corpo' },
     { id: 'gender', code: '6', section: 'corpo' },
     { id: 'birth_date', code: '7', section: 'corpo' },
+    { id: 'pausa_medidas', code: '7P', section: 'corpo' },
     { id: 'height', code: '8', section: 'corpo' },
     { id: 'weight', code: '9', section: 'corpo' },
     { id: 'target_weight', code: '10', section: 'corpo', skip: (a) => a.goal === 'maintain_weight' || TF.isNoDeficitPhase(a) },
@@ -40,9 +43,11 @@ window.TF = window.TF || {};
     { id: 'activity', code: '15', section: 'rotina' },
     { id: 'sleep', code: '16', section: 'rotina' },
     { id: 'level', code: '17', section: 'treino' },
+    { id: 'pausa_nivel', code: '17P', section: 'treino' },
     { id: 'experience', code: '18', section: 'treino' },
     { id: 'equipment', code: '19', section: 'treino' },
     { id: 'bodyweight', code: '20', section: 'treino' },
+    { id: 'pausa_exercicios', code: '20P', section: 'treino' },
     { id: 'days', code: '21', section: 'treino' },
     { id: 'duration', code: '22', section: 'treino' },
     { id: 'did_you_know_training', code: '23', section: 'treino' },
@@ -56,6 +61,7 @@ window.TF = window.TF || {};
     { id: 'diet', code: '31', section: 'alimentacao' },
     { id: 'allergies', code: '32', section: 'alimentacao' },
     { id: 'dislikes', code: '33', section: 'alimentacao' },
+    { id: 'pausa_alimentos', code: '33P', section: 'alimentacao' },
     { id: 'meal_places', code: '34', section: 'alimentacao' },
     { id: 'cooking', code: '35', section: 'alimentacao', skip: (a) => TF.soComeFora(a) },
     { id: 'did_you_know_food', code: '36', section: 'alimentacao' },
@@ -71,10 +77,11 @@ window.TF = window.TF || {};
     { id: 'obstacle', code: '44', section: 'plano' },
     { id: 'commitment', code: '46', section: 'plano' },
     { id: 'building', code: '47', section: 'plano' },
+    // /quiz2/: o contato vem antes do resumo final (o resumo completo e a recompensa depois do contato).
+    { id: 'lead_form', code: '48L', section: 'plano', skip: () => !TF.PAGAMENTO_ATIVO },
     { id: 'plan_summary', code: '48', section: 'plano' },
     // Com TF.PAGAMENTO_ATIVO (preco.js): cadastro logo depois do resultado e antes do preco; da revelacao vai direto para a Cakto.
     // Com ele falso: sem cadastro, e depois do preco entra a tela das lojas.
-    { id: 'lead_form', code: '48L', section: 'plano', skip: () => !TF.PAGAMENTO_ATIVO },
     { id: 'value', code: '49', section: 'plano' },
     { id: 'price_reveal', code: '49B', section: 'plano' },
     { id: 'download', code: '50B', section: 'plano', skip: () => !!TF.PAGAMENTO_ATIVO },
@@ -100,9 +107,48 @@ window.TF = window.TF || {};
   // code (step_number). O resto da ordem nao muda.
   TF.ordemEntradaObjetivo = (steps) => {
     const nome = { ...steps.find((s) => s.id === 'name'), section: 'corpo' };
-    const lista = steps.filter((s) => s.id !== 'welcome' && s.id !== 'name');
+    const oi = steps.find((s) => s.id === 'tribu_oi');
+    const lista = steps.filter((s) => s.id !== 'welcome' && s.id !== 'name' && s.id !== 'tribu_oi');
     lista.splice(lista.findIndex((s) => s.id === 'projection') + 1, 0, nome);
+    if (oi) lista.splice(lista.findIndex((s) => s.id === 'goal') + 1, 0, { ...oi, section: 'corpo' });
     return lista;
+  };
+
+  // ==== Só no /quiz2/ (15/11/2026): mascote, pausas, blocos da barra e preço novo ====
+  // Nome provisório do mascote: troque só aqui.
+  TF.MASCOTE_NOME = 'Tribu';
+  TF.V2 = {
+    // Apresentação depois da 1a pergunta: 3 falas e avança sozinha (tocar pula).
+    oi: [`Oi, eu sou o ${TF.MASCOTE_NOME}.`, 'Em poucos minutos eu monto o seu treino e o seu cardápio.', 'Tudo fica no app Tribbo Fit, no seu celular.'],
+    pausaMedidas: 'Anotado. Agora as medidas, sem julgamento.',
+    pausaNivel: {
+      beginner: 'Seu treino começa leve e sobe junto com você.',
+      intermediate: 'Seu treino já começa no seu ritmo e evolui junto com você.',
+      advanced: 'Seu treino já começa puxado, do jeito que você está acostumado.',
+    },
+    pausaExercicios: 'Ótimo, já sei por onde começar.',
+    // {itens}: os alimentos marcados na lista (o "Outro" digitado não entra: o cardápio só tira os da lista).
+    pausaAlimentos: { com: 'Combinado: sem {itens} no seu cardápio.', nenhum: 'Combinado: nada fica de fora.', soOutro: 'Combinado: anotei o que você não come.' },
+    continuar: 'Continuar',
+    // Barra em 4 blocos (as seções do app agrupadas).
+    blocos: [
+      { nome: 'Você', secoes: ['voce', 'corpo', 'rotina'] },
+      { nome: 'Treino', secoes: ['treino'] },
+      { nome: 'Alimentação', secoes: ['alimentacao'] },
+      { nome: 'Seu plano', secoes: ['plano'] },
+    ],
+    tudoPronto: 'Tudo pronto, {nome}!', tudoProntoSemNome: 'Tudo pronto!',
+    preco: {
+      mensalSub: 'Cancele quando quiser', porMes: 'por mês', porAno: 'por ano',
+      economize: 'Economize {valor}',
+      anualVista: '{anual} à vista (Pix ou cartão em 1x)', anualEquivale: 'Equivale a {mes} por mês', anualParcelado: 'ou parcelado no cartão, com juros da operadora',
+      garantia: '7 dias de garantia', seguro: 'Pagamento seguro pela Cakto', formas: 'Pix ou cartão',
+      passosTitulo: 'Como funciona',
+      passos: [['Pague', 'Pix ou cartão'], ['Receba o código', 'E-mail e WhatsApp'], ['Entre no app', null]],
+      palpite: 'Você chutou {chute}. No Tribbo sai {mensal} por mês.',
+      // Oferta de boas-vindas do anual (DESLIGADA em app.js, OFERTA_ANUAL.ativa).
+      oferta: { faixa: 'Oferta de boas-vindas', linha: 'Anual por {preco}', termina: 'Termina em' },
+    },
   };
 
   // ==== src/onboarding/answers.ts: emptyAnswers ====
@@ -695,9 +741,9 @@ window.TF = window.TF || {};
     },
     // So na web: cadastro (tela 48L, com TF.PAGAMENTO_ATIVO), depois do resultado e antes do preco. Envia para o web-lead.
     leadForm: {
-      title: 'Seu plano está pronto. Para quem é?', subtitle: 'Deixe seu contato para criar sua conta e liberar o seu plano.', name: 'Nome', email: 'E-mail', whatsapp: 'WhatsApp',
+      title: 'Para onde mandamos o seu acesso ao app?', subtitle: 'Depois do pagamento, o seu código chega por e-mail e WhatsApp.', name: 'Nome', email: 'E-mail', whatsapp: 'WhatsApp',
       whatsappPh: '(11) 99999-9999', suggest: 'Você quis dizer',
-      button: 'Continuar', sending: 'Um instante...', saved: 'Pronto, {nome}! Seu plano foi salvo.',
+      button: 'Continuar', sending: 'Um instante...', saved: 'Prazer, {nome}!',
       privacy: 'Usamos seus dados para criar sua conta e montar o seu plano no app.',
       // Aceites (no app ficam na tela 3; na web, aqui, obrigatorios para o botao ligar). A de ofertas e opcional.
       terms: ['Li e aceito os', 'Termos de Uso', 'e a', 'Política de Privacidade'],

@@ -9,7 +9,8 @@
 (function () {
   'use strict';
   const { T, C } = TF;
-  const AUTO_ADVANCE_MS = 220; // src/components/profileQuestions/ui.tsx
+  // /quiz2/: 360 ms (no /quiz/, 220) para a pessoa ver o cartao escolhido pulsar com o check antes de avancar.
+  const AUTO_ADVANCE_MS = 360;
   const REDUCED = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const scrollEl = document.getElementById('scroll');
@@ -21,7 +22,6 @@
   { const lg = document.getElementById('logo'); if (lg) lg.after(marcaEl); }
   const backEl = document.getElementById('back');
   const barEl = document.getElementById('bar');
-  const barFill = document.getElementById('bar-fill');
 
   // Parametros da URL vindos da /plano/ (utm_source, utm_medium, utm_campaign, utm_content e parecidos).
   // Ficam so na memoria da pagina (TF.utm) e voltam para a /plano/ se a pessoa sair pelo topo.
@@ -52,7 +52,7 @@
   // Medicao de uso (PostHog sem cookie). So o numero e o nome tecnico da tela, nunca respostas.
   // Na entrada nova, todos os eventos levam entrada=objetivo (/js/medida.js deixa passar so essa propriedade a mais).
   // Versao do quiz (15/11/2026): quiz_version em todos os eventos do quiz e quizVersion junto das respostas no cadastro.
-  const QUIZ_VERSION = 'v1';
+  const QUIZ_VERSION = 'v2';
   const medir = (evento, extra) => { if (window.tribboMedida) window.tribboMedida(evento, { ...extra, quiz_version: QUIZ_VERSION, ...(ENTRADA ? { entrada: 'objetivo' } : {}) }); };
   const telaInfo = (id) => { const s = TF.STEPS.find((x) => x.id === id); return { step_number: s ? s.code : '', step_name: id }; };
   let comecou = false;
@@ -64,7 +64,7 @@
   // e para de guardar: recarregar dali em diante segue como sempre (sem lead nem Lead na Meta duplicados).
   // Com ?retomar= na URL, vale o link de volta e nada daqui e lido. Tudo com try/catch: sem sessionStorage, o quiz
   // funciona como antes. Reabrir manda web_quiz_restored (e nao repete o web_quiz_started).
-  const CHAVE_PROGRESSO = 'tf_quiz_progresso';
+  const CHAVE_PROGRESSO = 'tf_quiz2_progresso'; // propria do /quiz2/: nao mistura com o /quiz/ na mesma aba
   let guardaProgresso = true;
   let nomeAposRecarregar = false; // so enquanto desenha a tela do nome que aparece depois de recarregar
   const SEM_CONTATO = ['fullName', 'displayName', 'termsAcceptedAt', 'healthDataConsentAt', 'educationalConsentAt', 'ofertasAceitasEm', 'priceGuess'];
@@ -88,7 +88,7 @@
       return d;
     } catch (e) { return null; }
   }
-  let planoWeb = 'anual'; // plano escolhido na tela 49B (so com TF.PAGAMENTO_ATIVO)
+  let planoWeb = 'mensal'; // plano escolhido na tela 49B (so com TF.PAGAMENTO_ATIVO); no /quiz2/ o Mensal vem marcado
 
   // ─── Ajudantes ──────────────────────────────────────────────────────────────
 
@@ -148,7 +148,53 @@
 
   // ─── Pecas (src/components/profileQuestions/ui.tsx) ─────────────────────────
 
+  // ─── Mascote (so no /quiz2/) ────────────────────────────────────────────────
+  // Pequeno no topo, a esquerda, com um balao onde ele faz a pergunta da tela. O texto aparece letra a letra (~30 ms
+  // por letra); tocar no balao mostra tudo. As imagens (assets/mascote/<momento>.webp) so baixam depois da 1a pergunta.
+  // Movimento: entra com um pulinho e "respira" devagar (sem nada disso com "reduzir movimento").
+  const MASCOTE = (pose) => `assets/mascote/${pose}.webp`;
+  const POSES = ['fala', 'surpresa', 'carregando', 'comemora-pequena', 'comemora-media', 'comemora-grande'];
+  // Pose de cada tela (o resto usa 'fala').
+  const POSE_TELA = { training_summary: 'comemora-media', energy_reveal: 'comemora-media', food_summary: 'comemora-media', score: 'surpresa', energy: 'carregando' };
+  const PRIMEIRA_PERGUNTA = ENTRADA ? 'goal' : 'name';
+  let mascoteLigado = false;
+  function ligaMascote() {
+    if (mascoteLigado) return;
+    mascoteLigado = true;
+    for (const p of POSES) { const img = new Image(); img.decoding = 'async'; img.src = MASCOTE(p); }
+  }
+  // Escreve o texto letra a letra no elemento; devolve uma funcao que mostra tudo de uma vez. fim: chamado ao terminar.
+  function digita(el, texto, fim) {
+    let i = 0, acabou = false;
+    const termina = () => { if (acabou) return; acabou = true; el.textContent = texto; if (fim) fim(); };
+    if (REDUCED) { termina(); return termina; }
+    const passo = () => { if (acabou) return; i += 1; el.textContent = texto.slice(0, i); if (i >= texto.length) termina(); else later(passo, 30); };
+    later(passo, 30);
+    return termina;
+  }
+  // Cabecalho com o mascote: a imagem, e o titulo dentro do balao. O titulo inteiro fica reservado (invisivel) por baixo,
+  // para a tela nao pular enquanto as letras aparecem; leitores de tela recebem o titulo inteiro (aria-label).
+  function cabecalhoMascote(title, subtitle, pose, grande) {
+    const p = pose || POSE_TELA[current] || 'fala';
+    // Titulo com partes destacadas (ex.: "Voce pode chegar a 80 kg ate..."): sem letra a letra, o titulo aparece inteiro.
+    if (typeof title !== 'string') {
+      const img0 = h('img', { class: `masc-img${grande ? ' grande' : ''}${once('masc:no') ? ' entra' : ''}`, src: MASCOTE(p), alt: '', 'aria-hidden': 'true', decoding: 'async' });
+      const t0 = h('h1', { class: `q-title balao-h1${grande ? ' grande' : ''}`, tabindex: '-1' }, title);
+      return h('div', { class: `q-head masc-head${grande ? ' grande' : ''}` }, h('div', { class: 'masc-linha' }, img0, h('div', { class: 'balao' }, t0)), subtitle && h('p', { class: 'q-sub' }, subtitle));
+    }
+    const primeiraVez = once(`masc:${title}`);
+    const img = h('img', { class: `masc-img${grande ? ' grande' : ''}${primeiraVez ? ' entra' : ''}`, src: MASCOTE(p), alt: '', 'aria-hidden': 'true', decoding: 'async' });
+    const txt = h('span', { class: 'balao-txt', 'aria-hidden': 'true' }, primeiraVez ? '' : title);
+    const t = h('h1', { class: `q-title balao-h1${grande ? ' grande' : ''}`, tabindex: '-1', 'aria-label': title }, h('span', { class: 'balao-fantasma', 'aria-hidden': 'true' }, title), txt);
+    let mostraTudo = null;
+    const balao = h('div', { class: 'balao', onclick: () => { if (mostraTudo) mostraTudo(); } }, t);
+    if (primeiraVez) mostraTudo = digita(txt, title);
+    return h('div', { class: `q-head masc-head${grande ? ' grande' : ''}` }, h('div', { class: 'masc-linha' }, img, balao), subtitle && h('p', { class: 'q-sub' }, subtitle));
+  }
+  const comMascote = () => mascoteLigado && current !== 'welcome';
+
   function header(title, subtitle, fixedLines) {
+    if (comMascote()) return cabecalhoMascote(title, subtitle);
     const t = h('h1', { class: `q-title${fixedLines ? ' fixed' : ''}`, tabindex: '-1' }, title);
     if (fixedLines) fitText(t, fixedLines, 0.85);
     return h('div', { class: 'q-head' }, t, subtitle && h('p', { class: 'q-sub' }, subtitle));
@@ -166,10 +212,15 @@
   function bubble(name, size = 42) {
     return h('span', { class: 'bubble', style: { width: `${size}px`, height: `${size}px` } }, icon(name, Math.round(size * 0.5)));
   }
+  // Comemoracao pequena (so no /quiz2/): o cartao tocado pulsa e mostra um check (~300 ms). A tela se redesenha logo
+  // depois do toque, entao o pulso vai no cartao novo com o mesmo texto, desenhado ate 120 ms depois do toque.
+  let pulso = { label: null, ate: 0 };
   function optionCard({ label, desc, ic, media, badge, highlight, selected, multi, locked, onPress, children }) {
+    const pulsa = selected && pulso.label === label && performance.now() < pulso.ate;
     return h('button', {
-      type: 'button', class: `opt${selected ? ' sel' : ''}${highlight ? ' hi' : ''}${locked ? ' locked' : ''}`,
-      role: multi ? 'checkbox' : 'radio', 'aria-checked': selected ? 'true' : 'false', onclick: onPress,
+      type: 'button', class: `opt${selected ? ' sel' : ''}${highlight ? ' hi' : ''}${locked ? ' locked' : ''}${pulsa && !REDUCED ? ' pulso' : ''}`,
+      role: multi ? 'checkbox' : 'radio', 'aria-checked': selected ? 'true' : 'false',
+      onclick: (e) => { pulso = { label, ate: performance.now() + 120 }; if (onPress) onPress(e); },
     },
       badge && h('span', { class: 'tag' }, badge),
       media || (ic && bubble(ic)),
@@ -277,9 +328,12 @@
     closeSheet();
     if (nav.returnTo) { const r = nav.returnTo; nav = { returnTo: null, chain: [] }; show(r, false); return; }
     if (!podeVoltar(current)) return;
-    const p = TF.prevStep(current, a);
+    // /quiz2/: voltar pula a apresentacao do mascote e as pausas (vai direto para a pergunta de antes).
+    let p = TF.prevStep(current, a);
+    while (p && PULA_NA_VOLTA.has(p.id)) p = TF.prevStep(p.id, a);
     if (p) show(p.id, false);
   }
+  const PULA_NA_VOLTA = new Set(['tribu_oi', 'pausa_medidas', 'pausa_nivel', 'pausa_exercicios', 'pausa_alimentos']);
   // Voltar do navegador ou do celular faz o mesmo que a seta (so memoria da aba).
   let hist = 0;
   history.replaceState({ i: 0 }, '');
@@ -323,22 +377,31 @@
     const c = document.getElementById('confetti');
     if (c) c.remove();
   }
-  // Barra de progresso (15/11/2026): a posicao da tela entre todas as telas com barra que valem para estas respostas
-  // (as puladas nao contam), comecando perto de 0% (3%) e terminando em 100% na ultima tela com barra. A curva anda
-  // mais devagar no comeco e mais rapido no fim. Antes era por secao (comecava em 18% e pulava 33% > 42% > 50%).
-  // Para frente, a barra nunca volta e nao salta: quando telas sao puladas (ou uma resposta tira telas), cada tela anda
-  // o passo normal da curva mais uma parte igual da diferenca, dividida pelas telas que faltam ate o fim.
-  let ultimoPct = 0;
-  const curva = (i, n) => 0.03 + 0.97 * Math.pow(n > 1 ? i / (n - 1) : 1, 1.35);
-  function progressoQuiz(id, forward) {
-    const lista = TF.STEPS.filter((s) => TF.showsProgress(s.id) && TF.applies(s, a));
+  // Barra de progresso do /quiz2/: 4 blocos com nome (Voce, Treino, Alimentacao, Seu plano; TF.V2.blocos). Os blocos
+  // antes do atual ficam cheios; o atual enche pela posicao da tela entre as telas com barra daquele bloco que valem
+  // para estas respostas (as puladas nao contam). Indo para frente, o bloco atual nunca volta.
+  const BLOCOS = TF.V2.blocos;
+  const blocoDe = (secao) => Math.max(0, BLOCOS.findIndex((b) => b.secoes.includes(secao)));
+  const segEls = [...document.querySelectorAll('#bar .bloco')];
+  segEls.forEach((el, k) => { el.querySelector('.bloco-nome').textContent = BLOCOS[k] ? BLOCOS[k].nome : ''; });
+  let ultimoBloco = { b: 0, f: 0 };
+  function pintaBarra(id, forward) {
+    const passo = TF.stepById(id);
+    let b = blocoDe(passo.section);
+    const lista = TF.STEPS.filter((s) => TF.showsProgress(s.id) && TF.applies(s, a) && blocoDe(s.section) === b);
     const i = lista.findIndex((s) => s.id === id);
-    if (i < 0) return ultimoPct;
-    const alvo = curva(i, lista.length);
-    if (!forward) return alvo;
-    const passo = i > 0 ? alvo - curva(i - 1, lista.length) : 0;
-    const falta = Math.max(0, alvo - ultimoPct - passo);
-    return Math.max(ultimoPct, Math.min(alvo, ultimoPct + passo + falta / (lista.length - i)));
+    let f = i < 0 ? 0 : (i + 1) / lista.length;
+    // Para frente (inclusive ao corrigir uma resposta ou ao pedir o nome depois de recarregar), nao volta de bloco.
+    if (forward && b < ultimoBloco.b) { b = ultimoBloco.b; f = ultimoBloco.f; }
+    if (forward && ultimoBloco.b === b) f = Math.max(f, ultimoBloco.f);
+    ultimoBloco = { b, f };
+    segEls.forEach((el, k) => {
+      el.classList.toggle('atual', k === b);
+      el.classList.toggle('feito', k < b);
+      el.querySelector('i').style.width = `${k < b ? 100 : k === b ? Math.round(f * 1000) / 10 : 0}%`;
+    });
+    barEl.setAttribute('aria-valuenow', Math.round(((b + f) / BLOCOS.length) * 100));
+    barEl.setAttribute('aria-valuetext', `${BLOCOS[b].nome}, ${Math.round(f * 100)}%`);
   }
   function show(id, forward) {
     resetScreen();
@@ -354,17 +417,18 @@
     topEl.hidden = false;
     barEl.classList.toggle('off', !progress);
     backEl.classList.toggle('off', !back);
-    // Indo para frente (inclusive ao corrigir uma resposta pelo resumo), a barra nunca volta; voltando, acompanha a tela.
-    const pct = progressoQuiz(id, forward);
-    ultimoPct = pct;
-    barFill.style.width = `${Math.round(pct * 1000) / 10}%`;
-    barEl.setAttribute('aria-valuenow', Math.round(pct * 100));
+    if (progress) pintaBarra(id, forward);
+    // Mascote: liga (e baixa as imagens) depois da 1a pergunta.
+    if (!mascoteLigado && TF.STEPS.findIndex((s) => s.id === id) > TF.STEPS.findIndex((s) => s.id === PRIMEIRA_PERGUNTA)) ligaMascote();
     scrollEl.scrollTop = 0;
     if (!isReady(id)) { waitFor(id); return; }
     render(id);
   }
+  // Comemoracao media (so no /quiz2/): nas revelacoes do treino, das metas e do cardapio, confete leve por 1 s.
+  const CELEBRA_MEDIA = new Set(['training_summary', 'energy_reveal', 'food_summary']);
   function render(id) {
     VIEWS[id]();
+    if (CELEBRA_MEDIA.has(id)) confetti(36, 150, 1000);
     const title = scrollEl.querySelector('h1');
     if (title) title.focus({ preventScroll: true });
     scrollEl.scrollTop = 0;
@@ -622,7 +686,7 @@
   }
 
   // Confete (no app: react-native-confetti-cannon), mesmas cores.
-  function confetti(count, delay) {
+  function confetti(count, delay, dur = 2700) {
     if (REDUCED) return;
     later(() => {
       const cv = h('canvas', { id: 'confetti' });
@@ -638,9 +702,9 @@
       const tick = (t) => {
         const age = t - start;
         ctx.clearRect(0, 0, W, H);
-        ctx.globalAlpha = Math.max(0, 1 - Math.max(0, age - 1800) / 900);
+        ctx.globalAlpha = Math.max(0, 1 - Math.max(0, age - dur * 0.66) / (dur * 0.34));
         parts.forEach((p) => { p.vy += p.g; p.x += p.vx; p.y += p.vy; p.r += p.vr; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r); ctx.fillStyle = p.c; ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); ctx.restore(); });
-        if (age < 2700) raf = requestAnimationFrame(tick); else cv.remove();
+        if (age < dur) raf = requestAnimationFrame(tick); else cv.remove();
       };
       raf = requestAnimationFrame(tick);
       cleanups.push(() => { cancelAnimationFrame(raf); cv.remove(); });
@@ -1353,7 +1417,8 @@
         body: [
           header(T.pain.title),
           opts([
-            optionCard({ label: T.pain.no, selected: a.hasPain === false, onPress: () => { a.hasPain = false; draw(); } }),
+            // /quiz2/: "Nao" avanca sozinho (o "Sim" abre o boneco para marcar onde doi).
+            optionCard({ label: T.pain.no, selected: a.hasPain === false, onPress: () => { a.hasPain = false; a.injuries = []; draw(); autoNext(); } }),
             optionCard({ label: T.pain.yes, selected: a.hasPain === true, onPress: () => { a.hasPain = true; draw(); } }),
           ]),
           a.hasPain === true && h('div', { class: 'sub-q' },
@@ -1982,7 +2047,7 @@
     let shown = 0;
     let msg2 = msg;
     const start = performance.now();
-    paint({ fill: true, body: [h('div', { class: 'center' }, ring, msg)] });
+    paint({ fill: true, body: [h('div', { class: 'center' }, h('img', { class: 'masc-img construindo', src: MASCOTE('carregando'), alt: '', 'aria-hidden': 'true' }), ring, msg)] });
     let raf = 0;
     const tick = (t) => {
       const e = t - start;
@@ -2134,6 +2199,30 @@
   const DIAS_TREINO = { 1: [0], 2: [0, 3], 3: [0, 2, 4], 4: [0, 1, 3, 4], 5: [0, 1, 2, 3, 4], 6: [0, 1, 2, 3, 4, 5], 7: [0, 1, 2, 3, 4, 5, 6] };
 
   // ─── Tela 48: plano pronto (prototipo Main): previsao, alimentacao (metas, um prato do plano, semana) e treino ──
+  // Previsao: o grafico do onboarding do app (linha branca, area amarela, balao da meta), em card escuro.
+  // So com meta de peso e data. Mesmos pontos da tela de previsao do quiz (TF.projectionPoints). No /quiz2/ tambem
+  // no topo do preco.
+  function cartaoPrevisao(m) {
+    const F = T.fim;
+    const weight = a.weightKg ?? 0;
+    if (!((m.kind === 'lose' || m.kind === 'gain') && m.mes && m.alvo)) return null;
+    const P = F.forecast;
+    const target = a.targetWeightKg;
+    const data = TF.fromIsoDate(a.targetDate);
+    const points = TF.projectionPoints(weight, target, 12).map((p) => p.kg);
+    return fxCard('fx-escuro fx-graf fx-gap12', [
+      h('span', { class: 'fx-cap' }, P.title),
+      lineChart({
+        series: [{ values: points, color: '#FFFFFF', fill: true, fillColor: '#E2F408' }], yDomain: weightDomain(weight, target), haloAt: [0, 4, 8, points.length - 1],
+        startLabel: `${TF.formatKg(weight)} kg`, endBalloon: `${TF.formatKg(target)} kg`,
+        label: `${P.now} ${TF.formatKg(weight)} kg, ${m.alvo} kg ${P.reachB} ${m.mes}`,
+      }),
+      chartEnds(P.now, TF.formatDateLong(data, new Date())),
+      h('p', { class: 'fx-txt15' }, `${P.reachA} `, h('b', null, `${m.alvo} kg ${P.reachB} ${m.mes}`), '.'),
+      h('span', { class: 'fx-pequeno' }, P.estimate),
+    ]);
+  }
+
   function PlanSummary() {
     const S = T.summary, F = T.fim;
     medir('web_quiz_plan_ready_viewed');
@@ -2159,26 +2248,7 @@
     const setup = TF.mealSetupOf(a) ?? 'auto';
     const up = (d, el) => { el.classList.add('fade-up'); el.style.animationDelay = `${d}ms`; return el; };
 
-    // Previsao: o grafico do onboarding do app (linha branca, area amarela, balao da meta), em card escuro.
-    // So com meta de peso e data. Mesmos pontos da tela de previsao do quiz (TF.projectionPoints).
-    let previsao = null;
-    if ((m.kind === 'lose' || m.kind === 'gain') && m.mes && m.alvo) {
-      const P = F.forecast;
-      const target = a.targetWeightKg;
-      const data = TF.fromIsoDate(a.targetDate);
-      const points = TF.projectionPoints(weight, target, 12).map((p) => p.kg);
-      previsao = up(60, fxCard('fx-escuro fx-graf fx-gap12', [
-        h('span', { class: 'fx-cap' }, P.title),
-        lineChart({
-          series: [{ values: points, color: '#FFFFFF', fill: true, fillColor: '#E2F408' }], yDomain: weightDomain(weight, target), haloAt: [0, 4, 8, points.length - 1],
-          startLabel: `${TF.formatKg(weight)} kg`, endBalloon: `${TF.formatKg(target)} kg`,
-          label: `${P.now} ${TF.formatKg(weight)} kg, ${m.alvo} kg ${P.reachB} ${m.mes}`,
-        }),
-        chartEnds(P.now, TF.formatDateLong(data, new Date())),
-        h('p', { class: 'fx-txt15' }, `${P.reachA} `, h('b', null, `${m.alvo} kg ${P.reachB} ${m.mes}`), '.'),
-        h('span', { class: 'fx-pequeno' }, P.estimate),
-      ]));
-    }
+    const previsao = cartaoPrevisao(m) && up(60, cartaoPrevisao(m));
 
     const FD = F.food;
     const stat = (emo, valor, sub) => h('div', { class: 'fx-stat' }, h('div', { class: 'fx-emo' }, emo), h('b', null, valor), h('span', null, sub));
@@ -2247,19 +2317,23 @@
     ajustar.className = 'fx-link';
     ajustar.replaceChildren(F.adjust);
 
+    // /quiz2/: o resumo vem depois do contato e e a recompensa: comemoracao grande ("Tudo pronto, [nome]!", mascote
+    // pulando e confete). Sem "Ajustar minhas respostas": as respostas ja foram enviadas no contato.
+    void ajustar;
     paint({
       body: [
-        h('div', { class: 'fx-topo' },
-          h('span', { class: 'fx-selo' }, F.badge),
-          h('h1', { class: 'fx-h1', tabindex: '-1' }, comNome(tituloMeta(m, F.title), m.nome)),
+        h('div', { class: 'fx-topo fx-pronto' },
+          h('img', { class: 'masc-img pronto entra', src: MASCOTE('comemora-grande'), alt: '', 'aria-hidden': 'true' }),
+          h('h1', { class: 'fx-h1', tabindex: '-1' }, m.nome ? TF.V2.tudoPronto.replace('{nome}', m.nome) : TF.V2.tudoProntoSemNome),
+          h('p', { class: 'fx-sub fx-sub-forte' }, comNome(tituloMeta(m, F.title), '')),
           desire && h('p', { class: 'fx-sub' }, desire)),
         previsao,
         alimentacao,
         treino,
-        ajustar,
       ],
       footer: [primary(F.button, () => next())],
     });
+    confetti(70, 250);
   }
 
   // ─── Tela 49: jogo do preco (src/onboarding/stepViewsPlano.tsx, ValueStep) ──
@@ -2303,6 +2377,26 @@
         h('div', { class: 'tribbo-head' }, h('img', { class: 'tribbo-tile', src: '/plano/assets/icones/icone-192.png', alt: '', width: 52, height: 52 }), h('p', { class: 'game-q' }, V.question)),
         rl));
     }, REDUCED ? 0 : V.stepMs);
+  }
+
+  // Oferta de boas-vindas do anual (so no /quiz2/, DESLIGADA): R$ 179,90 com o cupom tribboanual, por 30 minutos a
+  // partir da 1a vez que a pessoa ve o preco. O inicio fica no sessionStorage da aba (voltar da Cakto nao reinicia).
+  // Acabou o prazo: a tela volta ao preco normal e o site para de mandar o cupom. Nao vale junto do cupom do suporte.
+  // Ligar (ativa: true) so depois de confirmar que o cupom do anual funciona na Cakto.
+  const OFERTA_ANUAL = { ativa: false, preco: 179.90, cupom: 'tribboanual', minutos: 30 };
+  const CHAVE_OFERTA = 'tf_quiz2_oferta_inicio';
+  let inicioOfertaMemoria = null;
+  // Fim da oferta em ms, ou 0 se ela nao vale agora. inicia: marca o inicio se ainda nao houver (so ao ver o preco).
+  function fimOfertaAnual(inicia) {
+    if (!OFERTA_ANUAL.ativa || !TF.PAGAMENTO_ATIVO || (lead && lead.cupom)) return 0;
+    let ini = inicioOfertaMemoria;
+    try { ini = Number(sessionStorage.getItem(CHAVE_OFERTA)) || ini; } catch (e) { /* sem sessionStorage: so na memoria */ }
+    if (!ini && inicia) {
+      ini = Date.now(); inicioOfertaMemoria = ini;
+      try { sessionStorage.setItem(CHAVE_OFERTA, String(ini)); } catch (e) { /* nada */ }
+    }
+    const fim = ini ? ini + OFERTA_ANUAL.minutos * 60000 : 0;
+    return fim > Date.now() ? fim : 0;
   }
 
   // Cupom vencido: a tela volta ao preco normal, sem cupom (como o link vencido, em que o servidor nao manda cupom).
@@ -2374,7 +2468,12 @@
     // "Menos de R$ 0,65 por dia" (Feito pro que voce contou): o anual / 365, arredondado para cima nos 5 centavos.
     const porDia = brl(Math.ceil((P.anual / 365) * 20) / 20);
     const parcela = brl(P.parcelaAnual);
-    planoWeb = oferta ? 'mensal' : 'anual';
+    // /quiz2/: o Mensal vem marcado (com ou sem o cupom do suporte).
+    planoWeb = 'mensal';
+    const fimAnual = oferta ? 0 : fimOfertaAnual(true);
+    const precoAnual = fimAnual ? OFERTA_ANUAL.preco : P.anual;
+    const X2 = TF.V2.preco;
+    const dozeMeses = P.mensal * 12; // 12 x R$ 29,90 = R$ 358,80 (o mesmo ano no Mensal)
 
     // Faixa preta do topo (prototipo "Oferta A"), so com a oferta confirmada pelo servidor: "OFERTA ESPECIAL", o selo
     // "49% OFF" com o preco do 1o mes e o contador ate o coupon_until real do lead (vem do servidor, entao recarregar
@@ -2429,23 +2528,29 @@
       const plano = (key, badge, titulo, sub, preco) => h(escolhe ? 'button' : 'div', {
         type: escolhe ? 'button' : null, role: escolhe ? 'radio' : null, class: 'fx-plano', 'data-plano': key,
         onclick: escolhe ? () => { if (planoWeb !== key) { planoWeb = key; medir('web_quiz_plan_selected', { plan: key }); atualiza(); } } : null,
-      }, badge, escolhe && h('span', { class: 'fx-radio' }), h('span', { class: 'fx-plano-txt' }, h('b', null, titulo), [].concat(sub).map((s) => h('span', null, s))), h('span', { class: 'fx-plano-preco' }, preco));
+      }, badge, escolhe && h('span', { class: 'fx-radio' }), h('span', { class: 'fx-plano-txt' }, h('b', null, titulo), [].concat(sub).filter(Boolean).map((s) => (typeof s === 'string' ? h('span', null, s) : s))), h('span', { class: 'fx-plano-preco' }, preco));
       const cartoes = [
-        // Anual: preco por dia em destaque; o valor a vista (Pix ou cartao em 1x) e a parcela da Cakto (a mesma conta que a pessoa ve la).
-        plano('anual', h('span', { class: 'fx-selo-eco' }, X.cheaperCash.replace('{pct}', pctAnual)),
-          X.annual, [X.annualCash.replace('{anual}', brl(P.anual)), X.annualCard.replace('{n}', P.parcelas).replace('{parcela}', parcela)],
-          [h('b', null, diaAnual), h('span', null, X.perDay)]),
+        // /quiz2/: Anual com o ano no Mensal riscado (12 x R$ 29,90), a economia, o valor a vista e o equivalente por mes.
+        // O parcelado tem juros da Cakto (12x de R$ 23,65): por isso o "a vista" e a linha do parcelado.
+        plano('anual', h('span', { class: 'fx-selo-eco' }, X2.economize.replace('{valor}', brl(dozeMeses - precoAnual))),
+          X.annual, [X2.anualVista.replace('{anual}', brl(precoAnual)), X2.anualEquivale.replace('{mes}', brl(Math.round((precoAnual / 12) * 100) / 100)),
+            h('span', { class: 'fx-parcelado' }, X2.anualParcelado)],
+          [h('s', null, brl(fimAnual ? P.anual : dozeMeses)), h('b', null, brl(precoAnual)), h('span', null, X2.porAno)]),
         oferta
           ? plano('mensal', h('span', { class: 'fx-selo-off' }, pctOferta ? X.offerTag.replace('{pct}', pctOferta) : X.firstMonth),
             X.monthly, `${X.then} ${brl(P.mensal)}${X.perMonthShort}`,
             [h('s', null, brl(P.mensal)), h('b', { class: 'fx-grande' }, precoOferta), h('span', { class: 'fx-roxo-forte' }, X.firstMonth)])
-          : plano('mensal', null, X.monthly, [X.monthlyPrice.replace('{mensal}', brl(P.mensal)), X.monthlyHow], [h('b', null, diaMensal), h('span', null, X.perDay)]),
+          : plano('mensal', null, X.monthly, [X2.mensalSub], [h('b', null, brl(P.mensal)), h('span', null, X2.porMes)]),
       ];
       const btn = primary(F.buttonPay, comprar);
       const hoje = h('p', { class: 'fx-hoje' });
       const acessoEl = escolhe && lead && lead.email ? acesso() : null;
       // Embaixo do botao: a renovacao do plano marcado, o selo de compra segura e o aviso do CPF.
-      const seguro = escolhe && [h('div', { class: 'fx-seguro' }, h('p', { class: 'fx-seguro-l' }, escudoSeguro(), h('b', null, X.secure)), h('p', { class: 'fx-seguro-sub' }, X.secureSub)), h('p', { class: 'fx-cpf' }, X.cpf)];
+      // /quiz2/: 7 dias de garantia, pagamento seguro pela Cakto e Pix ou cartao, e o aviso do CPF.
+      const seguro = escolhe && [h('div', { class: 'fx-confia' },
+        h('span', null, icon('checkmark-circle', 16, '#5B34D6'), X2.garantia),
+        h('span', null, icon('lock-closed', 15, '#5B34D6'), X2.seguro),
+        h('span', null, icon('card-outline', 16, '#5B34D6'), X2.formas)), h('p', { class: 'fx-cpf' }, X.cpf)];
       const e = { cartoes, btn, hoje, el: [h('div', { class: 'fx-planos', role: escolhe ? 'radiogroup' : null, 'aria-label': X.choose }, cartoes), h('div', { class: 'fx-cta' }, acessoEl, btn, hoje, seguro)] };
       escolhas.push(e);
       return e.el;
@@ -2544,9 +2649,15 @@
 
     paint({
       body: [
-        h('div', { class: 'fx-hero' }, celularApp(),
-          h('div', { class: 'fx-hero-txt' }, h('h1', { class: 'fx-h1 fx-h1-preco', tabindex: '-1' }, tituloMeta(m, X.title)), h('p', null, X.subtitle))),
+        // /quiz2/: no topo, o mascote comemorando e a previsao (quando ha meta de peso).
+        h('div', { class: 'fx-topo fx-pronto' },
+          h('img', { class: 'masc-img pronto entra', src: MASCOTE('comemora-media'), alt: '', 'aria-hidden': 'true' }),
+          h('h1', { class: 'fx-h1 fx-h1-preco', tabindex: '-1' }, tituloMeta(m, X.title)), h('p', { class: 'fx-sub' }, X.subtitle)),
+        cartaoPrevisao(m),
+        a.priceGuess != null && h('p', { class: 'fx-palpite' }, X2.palpite.replace('{chute}', `R$\u00a0${Math.round(a.priceGuess)}`).replace('{mensal}', brl(P.mensal))),
         escolhaTopo,
+        h('div', { class: 'fx-card fx-gap12 fx-mt24' }, h('h2', { class: 'fx-h2b' }, X2.passosTitulo),
+          h('ol', { class: 'fx-passos' }, X2.passos.map(([t1, t2], i) => h('li', null, h('span', { class: 'fx-passo-n' }, String(i + 1)), h('div', null, h('b', null, t1), t2 && h('span', null, t2)))))),
         h('div', { class: 'fx-card fx-gap14 fx-mt24' }, h('h2', { class: 'fx-h2b' }, X.get.title),
           X.get.items.map(([emo, t1, t2]) => h('div', { class: 'fx-item' }, h('span', { class: 'fx-item-emo', 'aria-hidden': 'true' }, emo), h('div', null, h('b', null, t1), h('span', null, t2))))),
         h('div', { class: 'fx-card fx-gap12' }, h('h2', { class: 'fx-h2b' }, X.never.title),
@@ -2560,8 +2671,25 @@
       ],
       footer: [],
     });
-    const v = scrollEl.querySelector('.fx-cel video');
-    if (v && v.paused) { const p = v.play(); if (p && p.catch) p.catch(() => {}); }
+    // Faixa da oferta do anual (so com OFERTA_ANUAL.ativa): contador ate o fim; a zero, a tela volta ao preco normal.
+    if (fimAnual) {
+      const OF = X2.oferta;
+      const relogio = h('b', { class: 'fx-cd-n' });
+      const tique = () => {
+        const resta = fimAnual - Date.now();
+        if (resta <= 0) { if (current === 'price_reveal') { resetScreen(); repintaPreco = true; render('price_reveal'); } return; }
+        const t = Math.floor(resta / 1000);
+        relogio.textContent = `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`;
+      };
+      const faixa = h('div', { class: 'fx-faixa', role: 'note' },
+        h('div', { class: 'fx-faixa-esq' }, h('b', null, OF.faixa), h('span', null, OF.linha.replace('{preco}', brl(OFERTA_ANUAL.preco)))),
+        h('div', { class: 'fx-cd', role: 'timer' }, h('span', { class: 'fx-cd-rot' }, OF.termina), relogio));
+      tique();
+      const id = setInterval(tique, 1000);
+      cleanups.push(() => clearInterval(id));
+      topEl.before(faixa);
+      cleanups.push(() => faixa.remove());
+    }
   }
 
   // ─── So na web: cadastro (tela 48L) e ida para a Cakto ─────────────────────
@@ -2685,7 +2813,8 @@
     const F = window.TF_FUNIL;
     if (!lead) { goTo('lead_form'); return; }
     const plano = F.cakto[planoWeb] ? planoWeb : 'anual';
-    const cupom = plano === 'mensal' && lead.cupom ? lead.cupom.codigo : null;
+    // /quiz2/: o cupom do anual so vai enquanto a oferta de boas-vindas valer (desligada por OFERTA_ANUAL.ativa).
+    const cupom = plano === 'mensal' && lead.cupom ? lead.cupom.codigo : plano === 'anual' && fimOfertaAnual(false) ? OFERTA_ANUAL.cupom : null;
     medir('web_quiz_checkout_started', { plan: plano, offer: !!cupom });
     const callback = lead.id ? (lead.token ? `${lead.id}.${lead.token}` : lead.id) : null;
     // Registra a ida a Cakto no lead (web-lead-checkout), sem esperar a resposta. sendBeacon primeiro: o navegador
@@ -2882,14 +3011,13 @@
       }
       st.enviando = false;
       update({ fullName: v.n });
-      if (!lead.id) { next(); return; } // sem lead gravado, nada de "Seu plano foi salvo"
-      // Confirmacao rapida (1,5 s), sem botao: check animado e o primeiro nome; depois segue sozinha para o preco.
+      // /quiz2/: "Prazer, [nome]!" por 2 s com o mascote aplaudindo (com ou sem lead gravado); depois o resumo completo.
       const primeiro = v.n.split(' ')[0];
       paint({ fill: true, body: [h('div', { class: 'center lead-ok' },
-        h('div', { class: 'done-badge pop' }, icon('checkmark', 44, C.onAccent)),
+        h('img', { class: 'masc-img prazer entra', src: MASCOTE('comemora-pequena'), alt: '', 'aria-hidden': 'true' }),
         h('h1', { class: 'ready', tabindex: '-1' }, L.saved.replace('{nome}', primeiro)))], footer: [] });
       const t = scrollEl.querySelector('h1'); if (t) t.focus({ preventScroll: true });
-      later(() => next(), 1500);
+      later(() => next(), 2000);
     }
 
     const [t1, t2, t3, t4] = L.terms;
@@ -2985,7 +3113,46 @@
     });
   }
 
+  // ─── Telas novas do /quiz2/: apresentacao do mascote e pausas curtas ───────
+  // Apresentacao (depois da 1a pergunta): 3 falas letra a letra e avanca sozinha (~6 s); tocar pula.
+  function TribuOi() {
+    const falas = TF.V2.oi;
+    const box = h('div', { class: 'oi-falas', 'aria-hidden': 'true' });
+    let foi = false;
+    const segue = () => { if (foi) return; foi = true; next(); };
+    paint({
+      fill: true,
+      body: [h('div', { class: 'oi', onclick: segue },
+        h('img', { class: 'masc-img oi-img entra', src: MASCOTE('fala'), alt: '', 'aria-hidden': 'true' }),
+        h('div', { class: 'balao balao-oi' }, h('h1', { class: 'q-title balao-h1', tabindex: '-1', 'aria-label': falas.join(' ') }, box)))],
+      footer: [],
+    });
+    let i = 0;
+    const proxima = () => {
+      if (i >= falas.length) { later(segue, REDUCED ? 3500 : 900); return; }
+      const linha = h('p', { class: 'oi-linha' });
+      box.append(linha);
+      digita(linha, falas[i++], () => later(proxima, REDUCED ? 0 : 350));
+    };
+    proxima();
+  }
+  // Pausa curta: o mascote fala uma frase e o botao "Continuar".
+  function pausa(texto, pose) {
+    paint({ body: [cabecalhoMascote(texto, null, pose || 'fala', true)], footer: [primary(TF.V2.continuar, () => next())] });
+  }
+  const PausaMedidas = () => pausa(TF.V2.pausaMedidas);
+  const PausaNivel = () => pausa(TF.V2.pausaNivel[a.fitnessLevel] || TF.V2.pausaNivel.beginner, 'carregando');
+  const PausaExercicios = () => pausa(TF.V2.pausaExercicios, 'comemora-pequena');
+  // Alimentos que nao come: so os da lista (o cardapio tira esses; o "Outro" digitado nao entra na frase).
+  function PausaAlimentos() {
+    const P = TF.V2.pausaAlimentos;
+    const itens = a.foodDislikes.filter((c) => c !== 'none' && c !== 'other').map((c) => TF.optionLabel(TF.FOOD_DISLIKE_OPTIONS, c).toLowerCase());
+    const texto = itens.length ? P.com.replace('{itens}', joinPt(itens)) : a.foodDislikes.includes('other') ? P.soOutro : P.nenhum;
+    pausa(texto, 'comemora-pequena');
+  }
+
   const VIEWS = {
+    tribu_oi: TribuOi, pausa_medidas: PausaMedidas, pausa_nivel: PausaNivel, pausa_exercicios: PausaExercicios, pausa_alimentos: PausaAlimentos,
     welcome: Welcome, name: Name, consents: Consents, goal: Goal, tried_before: TriedBefore, motivation: Motivation, gender: Gender, birth_date: BirthDate,
     height: Height, weight: Weight, target_weight: TargetWeight, pace: Pace, yo_yo: YoYo, projection: Projection, score: Score, reviews: Reviews, acquisition: Acquisition,
     before_after: BeforeAfter, activity: Activity, sleep: Sleep, level: Level, experience: Experience, equipment: Equipment, bodyweight: Bodyweight, days: Days, duration: Duration,
@@ -3016,8 +3183,8 @@
       const tela = TF.applies(passo, a) ? salvo.tela : (TF.nextStep(salvo.tela, a) || { id: PRIMEIRA }).id;
       comecou = true;
       medir('web_quiz_restored', telaInfo(tela));
-      // A barra fica na posicao da tela guardada, tambem na tela do nome que aparece antes (nao volta).
-      ultimoPct = progressoQuiz(tela, false);
+      // A barra fica no bloco da tela guardada, tambem na tela do nome que aparece antes.
+      pintaBarra(tela, false);
       if (indice('name') >= 0 && indice(tela) > indice('name')) { nomeAposRecarregar = true; goTo('name', { returnTo: tela }); nomeAposRecarregar = false; }
       else show(tela, false);
     }

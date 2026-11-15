@@ -769,7 +769,8 @@ function overallProgress(id, a) {
 }
 function isAfterSave(id) { return parseInt(stepById(id).code, 10) >= 47; }
 function showsProgress(id) { return id !== 'welcome' && !isAfterSave(id); }
-function canGoBack(id) { return id !== 'welcome' && id !== 'building' && id !== 'plan_summary'; }
+// /quiz2/: o contato vem logo depois do 'building' (que nao volta): sem voltar no contato.
+function canGoBack(id) { return id !== 'welcome' && id !== 'building' && id !== 'plan_summary' && id !== 'lead_form'; }
 Object.assign(TF, { isNoDeficitPhase, hasWeightChange, stepById, applies, nextStep, prevStep, overallProgress, isAfterSave, showsProgress, canGoBack });
 })();
 

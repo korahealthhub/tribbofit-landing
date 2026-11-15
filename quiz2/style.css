@@ -880,3 +880,73 @@ html.retomando #carregando { flex: 1; display: flex; flex-direction: column; ali
 #pre-obj { display: none; }
 html.entrada-obj #pre, html.entrada-obj #pre-btn { display: none; }
 html.entrada-obj #pre-obj { display: block; }
+
+/* ───────────────────────── So no /quiz2/ (15/11/2026) ───────────────────────── */
+/* Barra em 4 blocos com nome (Voce, Treino, Alimentacao, Seu plano), numa linha propria embaixo do topo. */
+#top { flex-wrap: wrap; }
+#exit { margin-left: auto; }
+#bar { order: 10; flex: 0 0 100%; height: auto; background: none; overflow: visible; border-radius: 0;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; padding: 2px 4px 0; }
+.bloco { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.bloco-trilho { display: block; height: 6px; border-radius: 100px; background: rgba(14,26,29,.08); overflow: hidden; }
+.bloco-trilho i { display: block; height: 100%; width: 0; border-radius: 100px; background: var(--teal); transition: width 450ms cubic-bezier(.33,1,.68,1); }
+.bloco-nome { font-size: 11px; line-height: 13px; color: var(--t3); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bloco.feito .bloco-nome { color: var(--t2); }
+.bloco.atual .bloco-nome { color: var(--teal); font-weight: 700; }
+
+/* Mascote com o balao da pergunta. Pequeno, a esquerda; o balao nunca cobre as opcoes (fica no fluxo, em cima). */
+.masc-head { margin-bottom: 20px; }
+.masc-linha { display: flex; align-items: flex-end; gap: 6px; }
+.masc-img { flex: none; display: block; height: 74px; width: auto; transform-origin: 50% 100%; animation: masc-respira 3.4s ease-in-out infinite; }
+.masc-img.entra { animation: masc-pulo 520ms cubic-bezier(.3,1.5,.5,1) both, masc-respira 3.4s ease-in-out 520ms infinite; }
+.masc-head.grande .masc-img { height: 112px; }
+.balao { position: relative; flex: 1; min-width: 0; margin-bottom: 18px; padding: 12px 15px; border-radius: 18px; background: #FFFFFF;
+  box-shadow: 0 2px 12px rgba(14,26,29,.07); cursor: pointer; }
+.balao::before { content: ''; position: absolute; left: -6px; bottom: 14px; width: 14px; height: 14px; background: #FFFFFF; border-radius: 3px; transform: rotate(45deg); }
+.q-title.balao-h1 { position: relative; font-size: 20px; line-height: 1.27; letter-spacing: -.02em; }
+.q-title.balao-h1.grande { font-size: 22px; }
+.balao-fantasma { visibility: hidden; }
+.balao-txt { position: absolute; inset: 0; }
+.masc-head .q-sub { margin-top: 2px; }
+@keyframes masc-pulo { 0% { transform: translateY(16px) scale(.88); opacity: 0; } 60% { transform: translateY(-7px) scale(1.03); opacity: 1; } 100% { transform: none; opacity: 1; } }
+@keyframes masc-respira { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.025, .985); } }
+
+/* Apresentacao (3 falas, avanca sozinha; tocar pula). */
+.oi { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; min-height: 100%; cursor: pointer; padding-bottom: 24px; }
+.masc-img.oi-img { height: 150px; }
+.balao.balao-oi { flex: none; width: 100%; max-width: 380px; margin: 0; padding: 16px 18px; }
+.balao.balao-oi::before { left: 50%; top: -6px; bottom: auto; margin-left: -7px; }
+.balao-oi .balao-h1 { font-size: 21px; }
+.oi-linha { margin: 0 0 8px; }
+.oi-linha:last-child { margin-bottom: 0; }
+
+/* Comemoracao pequena: o cartao escolhido pulsa e aparece um check (~300 ms). */
+.opt.pulso { animation: opt-pulso 300ms ease-out; }
+.opt.pulso::after { content: ''; position: absolute; right: 14px; top: 50%; width: 24px; height: 24px; margin-top: -12px; border-radius: 50%;
+  background: var(--teal) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 15px no-repeat;
+  animation: opt-check 320ms ease-out both; pointer-events: none; }
+@keyframes opt-pulso { 0% { transform: scale(1); } 45% { transform: scale(1.025); } 100% { transform: scale(1); } }
+@keyframes opt-check { 0% { transform: scale(.3); opacity: 0; } 35% { transform: scale(1.12); opacity: 1; } 80% { transform: scale(1); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
+
+/* "Prazer, [nome]!", construindo o plano, "Tudo pronto" e o topo do preco. */
+.masc-img.prazer { height: 140px; margin: 0 auto 10px; }
+.masc-img.construindo { height: 96px; margin: 0 auto 14px; }
+.fx-topo.fx-pronto { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.masc-img.pronto { height: 116px; margin: 0 auto 8px; }
+.fx-sub.fx-sub-forte { font-weight: 600; color: var(--fx-txt); }
+
+/* Preco do /quiz2/ */
+.fx-plano-txt span.fx-parcelado { font-size: 11.5px; color: var(--fx-t3); }
+.fx-palpite { margin: 16px 0 0; padding: 12px 14px; border-radius: 14px; background: var(--fx-roxo-sel); text-align: center; font-size: 15px; line-height: 1.4; color: var(--fx-txt); }
+.fx-confia { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 14px; margin-top: 6px; font-size: 12.5px; color: var(--fx-t2); }
+.fx-confia span { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.fx-passos { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.fx-passos li { display: flex; align-items: center; gap: 12px; }
+.fx-passo-n { flex: none; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; background: var(--fx-lima); color: var(--fx-txt); font-weight: 800; font-size: 14px; }
+.fx-passos b { display: block; font-size: 15px; color: var(--fx-txt); }
+.fx-passos div span { display: block; font-size: 13px; color: var(--fx-t2); }
+
+@media (prefers-reduced-motion: reduce) {
+  .masc-img, .masc-img.entra, .opt.pulso, .opt.pulso::after { animation: none; }
+  .opt.pulso::after { display: none; }
+}
