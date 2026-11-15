@@ -2532,7 +2532,8 @@
       const cartoes = [
         // /quiz2/: Anual com o ano no Mensal riscado (12 x R$ 29,90), a economia, o valor a vista e o equivalente por mes.
         // O parcelado tem juros da Cakto (12x de R$ 23,65): por isso o "a vista" e a linha do parcelado.
-        plano('anual', h('span', { class: 'fx-selo-eco' }, X2.economize.replace('{valor}', brl(dozeMeses - precoAnual))),
+        // A economia e sempre contra o valor riscado: sem oferta, 12 meses no Mensal; com a oferta do anual, o anual normal.
+        plano('anual', h('span', { class: 'fx-selo-eco' }, X2.economize.replace('{valor}', brl((fimAnual ? P.anual : dozeMeses) - precoAnual))),
           X.annual, [X2.anualVista.replace('{anual}', brl(precoAnual)), X2.anualEquivale.replace('{mes}', brl(Math.round((precoAnual / 12) * 100) / 100)),
             h('span', { class: 'fx-parcelado' }, X2.anualParcelado)],
           [h('s', null, brl(fimAnual ? P.anual : dozeMeses)), h('b', null, brl(precoAnual)), h('span', null, X2.porAno)]),
