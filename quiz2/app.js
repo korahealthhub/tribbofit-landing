@@ -31,7 +31,11 @@
   // Entrada pelo anuncio (?entrada=objetivo, vindo da /plano/, ver /plano/entrada.js): o quiz abre direto na pergunta do
   // objetivo (igual a qualquer pergunta do quiz), sem a tela de boas-vindas, e o nome vem depois da "projection".
   // Com ?retomar=, vale o link de volta (preco), como sempre. Chave em /js/funil.js (entradaObjetivo).
-  const ENTRADA = URL_PARAMS.get('entrada') === 'objetivo' && !URL_PARAMS.has('retomar') && !!(window.TF_FUNIL && window.TF_FUNIL.entradaObjetivo);
+  // /quiz2/ (16/11/2026): SEMPRE comeca pela pergunta do objetivo (fluxo da entrada do anuncio), com ou sem ?entrada=objetivo;
+  // o nome vem depois da "projection". Com ?retomar=, vale o link de volta. ENTRADA_URL: so quem chegou com ?entrada=objetivo
+  // (a propriedade entrada=objetivo e o web_quiz_entry_viewed continuam com o mesmo significado).
+  const ENTRADA_URL = URL_PARAMS.get('entrada') === 'objetivo' && !URL_PARAMS.has('retomar') && !!(window.TF_FUNIL && window.TF_FUNIL.entradaObjetivo);
+  const ENTRADA = !URL_PARAMS.has('retomar');
   delete TF.utm.entrada;
   if (ENTRADA) TF.STEPS = TF.ordemEntradaObjetivo(TF.STEPS);
   const PRIMEIRA = ENTRADA ? 'goal' : 'welcome';
@@ -53,7 +57,7 @@
   // Na entrada nova, todos os eventos levam entrada=objetivo (/js/medida.js deixa passar so essa propriedade a mais).
   // Versao do quiz (15/11/2026): quiz_version em todos os eventos do quiz e quizVersion junto das respostas no cadastro.
   const QUIZ_VERSION = 'v2';
-  const medir = (evento, extra) => { if (window.tribboMedida) window.tribboMedida(evento, { ...extra, quiz_version: QUIZ_VERSION, ...(ENTRADA ? { entrada: 'objetivo' } : {}) }); };
+  const medir = (evento, extra) => { if (window.tribboMedida) window.tribboMedida(evento, { ...extra, quiz_version: QUIZ_VERSION, ...(ENTRADA_URL ? { entrada: 'objetivo' } : {}) }); };
   const telaInfo = (id) => { const s = TF.STEPS.find((x) => x.id === id); return { step_number: s ? s.code : '', step_name: id }; };
   let comecou = false;
 
@@ -869,7 +873,7 @@
 
   let entradaVista = false;
   function Goal() {
-    if (ENTRADA && !entradaVista) { entradaVista = true; medir('web_quiz_entry_viewed'); }
+    if (ENTRADA_URL && !entradaVista) { entradaVista = true; medir('web_quiz_entry_viewed'); }
     const draw = () => paint({
       body: [header(a.displayName ? `${a.displayName}, ${T.goal.title}` : cap(T.goal.title)), opts(TF.GOAL_CHOICES.map((g) => optionCard({
         label: g.label, ic: iconOf('goal', g.value), selected: a.goal === g.value,

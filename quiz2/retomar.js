@@ -15,7 +15,8 @@
   try { q = new URLSearchParams(location.search); } catch (e) { return; }
   // Entrada pelo anuncio (?entrada=objetivo, sem ?retomar=): ja mostra a pergunta do objetivo pronta no HTML (#pre-obj),
   // no lugar da tela de boas-vindas (style.css, html.entrada-obj). Chave em /js/funil.js (entradaObjetivo).
-  if (!q.has('retomar') && q.get('entrada') === 'objetivo' && F && F.entradaObjetivo) document.documentElement.classList.add('entrada-obj');
+  // /quiz2/: sempre comeca pelo objetivo (com ou sem ?entrada=objetivo); com ?retomar=, o link de volta.
+  if (!q.has('retomar')) document.documentElement.classList.add('entrada-obj');
   if (!q.has('retomar')) return;
   var raiz = document.documentElement;
   raiz.classList.add('retomando');
