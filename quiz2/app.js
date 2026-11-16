@@ -164,12 +164,15 @@
     for (const p of POSES) { const img = new Image(); img.decoding = 'async'; img.src = MASCOTE(p); }
   }
   // Escreve o texto letra a letra no elemento; devolve uma funcao que mostra tudo de uma vez. fim: chamado ao terminar.
-  function digita(el, texto, fim) {
+  // ms por letra: 18 no balao das perguntas (MS_PERGUNTA), 30 nas falas do mascote sozinho (apresentacao e pausas).
+  // As opcoes de resposta aparecem e aceitam toque desde o primeiro instante: o texto nao segura nada.
+  const MS_PERGUNTA = 18, MS_FALA = 30;
+  function digita(el, texto, fim, ms = MS_FALA) {
     let i = 0, acabou = false;
     const termina = () => { if (acabou) return; acabou = true; el.textContent = texto; if (fim) fim(); };
     if (REDUCED) { termina(); return termina; }
-    const passo = () => { if (acabou) return; i += 1; el.textContent = texto.slice(0, i); if (i >= texto.length) termina(); else later(passo, 30); };
-    later(passo, 30);
+    const passo = () => { if (acabou) return; i += 1; el.textContent = texto.slice(0, i); if (i >= texto.length) termina(); else later(passo, ms); };
+    later(passo, ms);
     return termina;
   }
   // Cabecalho com o mascote: a imagem, e o titulo dentro do balao. O titulo inteiro fica reservado (invisivel) por baixo,
@@ -188,7 +191,7 @@
     const t = h('h1', { class: `q-title balao-h1${grande ? ' grande' : ''}`, tabindex: '-1', 'aria-label': title }, h('span', { class: 'balao-fantasma', 'aria-hidden': 'true' }, title), txt);
     let mostraTudo = null;
     const balao = h('div', { class: 'balao', onclick: () => { if (mostraTudo) mostraTudo(); } }, t);
-    if (primeiraVez) mostraTudo = digita(txt, title);
+    if (primeiraVez) mostraTudo = digita(txt, title, null, MS_PERGUNTA);
     return h('div', { class: `q-head masc-head${grande ? ' grande' : ''}` }, h('div', { class: 'masc-linha' }, img, balao), subtitle && h('p', { class: 'q-sub' }, subtitle));
   }
   const comMascote = () => mascoteLigado && current !== 'welcome';
@@ -3161,11 +3164,13 @@
     });
     // As 3 falas ja ocupam o lugar delas (invisiveis): o balao nao cresce e a tela nao pula enquanto aparecem.
     const alvos = falas.map((f) => { const txt = h('span', { class: 'balao-txt' }); box.append(h('p', { class: 'oi-linha' }, h('span', { class: 'balao-fantasma' }, f), txt)); return txt; });
+    // Avanca sozinha 5 s depois de abrir (as falas terminam antes, em uns 4 s); tocar pula.
+    const inicio = performance.now();
     let i = 0;
     const proxima = () => {
-      if (i >= falas.length) { later(segue, REDUCED ? 3500 : 900); return; }
+      if (i >= falas.length) { later(segue, Math.max(300, 5000 - (performance.now() - inicio))); return; }
       const k = i++;
-      digita(alvos[k], falas[k], () => later(proxima, REDUCED ? 0 : 350));
+      digita(alvos[k], falas[k], () => later(proxima, REDUCED ? 0 : 250));
     };
     proxima();
   }
