@@ -2393,11 +2393,13 @@
     }, REDUCED ? 0 : V.stepMs);
   }
 
-  // Black Friday do anual (so no /quiz2/, DESLIGADA): Anual por R$ 179,90 com o cupom tribboanual ate 30/11/2026 23:59
-  // (Brasilia). Enquanto vale: faixa preta no topo com o contador, o Anual vem marcado e o cupom vai para a Cakto (conferido
-  // em 16/11: com ?coupon=tribboanual a Cakto mostra R$ 178,91 + R$ 0,99 = R$ 179,90). Depois do prazo, volta tudo ao
-  // normal sozinho. Nao vale junto do cupom do suporte. Ligar: ativa: true.
-  const BLACK = { ativa: false, fim: Date.parse('2026-11-30T23:59:59-03:00'), preco: 179.90, cupom: 'tribboanual' };
+  // Black Friday do anual (so no /quiz2/, LIGADA): Anual por R$ 179,90 ate 30/11/2026 23:59 (Brasilia), na oferta propria
+  // da Cakto (OFERTA_BLACK_URL), SEM cupom, com os mesmos parametros do anual (nome, e-mail, telefone, callback, utm).
+  // Conferido em 16/11, so lendo a pagina: abre com R$ 178,91 + R$ 0,99 = R$ 179,90 e os dados preenchidos, sem sufixo.
+  // Enquanto vale: faixa preta no topo com o contador e o Anual marcado. Depois do prazo, volta tudo ao normal sozinho
+  // (link normal do anual). Nao vale junto do cupom do suporte.
+  const OFERTA_BLACK_URL = 'https://pay.cakto.com.br/32m7nk7';
+  const BLACK = { ativa: true, fim: Date.parse('2026-11-30T23:59:59-03:00'), preco: 179.90, url: OFERTA_BLACK_URL };
   // Fim da Black em ms, ou 0 se ela nao vale agora.
   function fimOfertaAnual() {
     if (!BLACK.ativa || !TF.PAGAMENTO_ATIVO || (lead && lead.cupom)) return 0;
@@ -2548,11 +2550,12 @@
             [h('s', null, brl(P.mensal)), h('b', { class: 'fx-grande' }, precoOferta), h('span', { class: 'fx-roxo-forte' }, X.firstMonth)])
           : plano('mensal', null, X.monthly, [X2.mensalSub], [h('b', { class: 'fx-grande' }, brl(P.mensal), h('small', null, X2.barraMes))]);
       // Black Friday: o Anual em cima e marcado, borda lima, etiqueta, "R$ 14,99/mes" grande e, pequeno, o anual normal
-      // riscado, o valor a vista e quanto sai mais barato que 12 meses no Mensal (R$ 179,90 contra R$ 358,80: 50%).
+      // riscado, o valor a vista, a economia contra 12 meses no Mensal (R$ 358,80 - R$ 179,90 = R$ 178,90) e o parcelado.
       const cartaoAnual = fimAnual
         ? plano('anual', h('span', { class: 'fx-selo-black' }, BF.etiqueta),
           X.annual, [h('span', { class: 'fx-vista' }, h('s', null, brl(P.anual)), ' ', BF.vista.replace('{preco}', brl(precoAnual))),
-            h('span', { class: 'fx-mais' }, BF.mais.replace('{pct}', Math.round((1 - precoAnual / dozeMeses) * 100)))],
+            h('span', { class: 'fx-mais' }, BF.economiza.replace('{valor}', brl(dozeMeses - precoAnual))),
+            h('span', { class: 'fx-parcelado' }, BF.parcelado)],
           [h('b', { class: 'fx-grande' }, brl(porMesAnual), h('small', null, X2.barraMes))])
         : plano('anual', h('span', { class: 'fx-selo-eco' }, X2.economize.replace('{valor}', brl(riscado - precoAnual))),
           X.annual, [h('span', { class: 'fx-vista' }, h('s', null, brl(riscado)), ' ', X2.anualVistaCurto.replace('{anual}', brl(precoAnual))),
@@ -2838,8 +2841,9 @@
     const F = window.TF_FUNIL;
     if (!lead) { goTo('lead_form'); return; }
     const plano = F.cakto[planoWeb] ? planoWeb : 'anual';
-    // /quiz2/: o cupom do anual so vai enquanto a Black Friday valer (desligada por BLACK.ativa).
-    const cupom = plano === 'mensal' && lead.cupom ? lead.cupom.codigo : plano === 'anual' && fimOfertaAnual() ? BLACK.cupom : null;
+    const cupom = plano === 'mensal' && lead.cupom ? lead.cupom.codigo : null;
+    // Black Friday: o anual vai para a oferta propria da Cakto (sem cupom), com os mesmos parametros.
+    const destino = plano === 'anual' && fimOfertaAnual() ? BLACK.url : F.cakto[plano];
     medir('web_quiz_checkout_started', { plan: plano, offer: !!cupom });
     const callback = lead.id ? (lead.token ? `${lead.id}.${lead.token}` : lead.id) : null;
     // Registra a ida a Cakto no lead (web-lead-checkout), sem esperar a resposta. sendBeacon primeiro: o navegador
@@ -2873,7 +2877,7 @@
         history.replaceState(history.state, '', `${location.pathname}?${volta}`);
       } catch (e) { /* sem troca de endereco, segue normal */ }
     }
-    location.href = `${F.cakto[plano]}?${q}`;
+    location.href = `${destino}?${q}`;
   }
 
   // Tela 48L, so na web com TF.PAGAMENTO_ATIVO: logo depois do resultado do plano e antes do jogo do preco.

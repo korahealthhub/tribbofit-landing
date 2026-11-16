@@ -152,9 +152,9 @@ window.TF = window.TF || {};
       passosTitulo: 'Como funciona',
       passos: [['Pague', 'Pix ou cartão'], ['Receba o código', 'Por e-mail'], ['Entre no app', null]],
       palpite: 'Você chutou {chute}. No Tribbo sai {mensal} por mês.',
-      // Black Friday do anual (DESLIGADA em app.js, BLACK.ativa): R$ 179,90 com o cupom tribboanual ate 30/11 23:59.
+      // Black Friday do anual (BLACK em app.js): R$ 179,90 na oferta propria da Cakto (sem cupom) ate 30/11 23:59.
       black: { faixa: 'BLACK FRIDAY', linha: 'Anual por {preco} · termina em', etiqueta: 'BLACK FRIDAY', vista: '{preco} por ano à vista',
-        mais: '{pct}% mais barato que o mensal', botao: 'Garantir preço de Black Friday', dias: 'dias', dia: 'dia', horas: 'horas', min: 'min', seg: 'seg' },
+        economiza: 'Economize {valor} em relação ao mensal', parcelado: 'ou em até 12x no cartão, com juros', botao: 'Garantir preço de Black Friday', dias: 'dias', dia: 'dia', horas: 'horas', min: 'min', seg: 'seg' },
       confiaLinha: '7 dias de garantia · Pagamento seguro · Cancele quando quiser',
     },
   };
