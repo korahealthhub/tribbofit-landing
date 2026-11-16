@@ -118,8 +118,8 @@ window.TF = window.TF || {};
   // Nome provisório do mascote: troque só aqui.
   TF.MASCOTE_NOME = 'Tribu';
   TF.V2 = {
-    // Apresentação depois da 1a pergunta: 3 falas e avança sozinha (tocar pula).
-    oi: [`Oi, eu sou o ${TF.MASCOTE_NOME}.`, 'Em poucos minutos eu monto o seu treino e o seu cardápio.', 'Tudo fica no app Tribbo Fit, no seu celular.'],
+    // Apresentação depois da 1a pergunta: 3 falas; depois da última letra, 5 s para ler (botão Continuar que enche).
+    oi: [`Oi, eu sou o ${TF.MASCOTE_NOME}.`, 'Em poucos minutos eu monto o seu treino e o seu cardápio, do seu jeito.', 'E tudo fica no app Tribbo Fit, no seu celular.'],
     pausaMedidas: 'Anotado. Agora as medidas, sem julgamento.',
     pausaNivel: {
       beginner: 'Seu treino começa leve e sobe junto com você.',

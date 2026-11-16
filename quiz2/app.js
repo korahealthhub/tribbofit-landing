@@ -3149,28 +3149,49 @@
   }
 
   // ─── Telas novas do /quiz2/: apresentacao do mascote e pausas curtas ───────
-  // Apresentacao (depois da 1a pergunta): 3 falas letra a letra e avanca sozinha (~6 s); tocar pula.
+  // Apresentacao (depois da 1a pergunta): 3 falas letra a letra (30 ms). Tocar no balao mostra tudo de uma vez.
+  // Depois da ultima letra, a pessoa tem 5 s para ler: o botao "Continuar" enche da esquerda para a direita (lima mais
+  // escuro sobre o lima) e, cheio, avanca sozinho; tocar nele avanca na hora. Com "reduzir movimento": texto todo de uma
+  // vez, sem avancar sozinho, so o botao.
+  const LEITURA_MS = 5000;
   function TribuOi() {
     const falas = TF.V2.oi;
     const box = h('div', { class: 'oi-falas', 'aria-hidden': 'true' });
-    let foi = false;
+    let foi = false, pronto = false, atual = null;
     const segue = () => { if (foi) return; foi = true; next(); };
-    paint({
-      fill: true,
-      body: [h('div', { class: 'oi', onclick: segue },
-        imgMascote('fala', 'oi-img', true),
-        h('div', { class: 'balao balao-oi' }, h('h1', { class: 'q-title balao-h1', tabindex: '-1', 'aria-label': falas.join(' ') }, box)))],
-      footer: [],
-    });
+    const fill = h('span', { class: 'btn-enche-fill', 'aria-hidden': 'true' });
+    const btn = h('button', { type: 'button', class: 'btn btn-enche', onclick: segue }, fill, h('span', { class: 'btn-enche-txt' }, TF.V2.continuar));
+    // Comeca a contar os 5 s (so uma vez): o botao enche e, cheio, avanca.
+    const contar = () => {
+      if (REDUCED) return;
+      requestAnimationFrame(() => { fill.style.transition = `width ${LEITURA_MS}ms linear`; fill.style.width = '100%'; });
+      later(segue, LEITURA_MS + 60);
+    };
     // As 3 falas ja ocupam o lugar delas (invisiveis): o balao nao cresce e a tela nao pula enquanto aparecem.
     const alvos = falas.map((f) => { const txt = h('span', { class: 'balao-txt' }); box.append(h('p', { class: 'oi-linha' }, h('span', { class: 'balao-fantasma' }, f), txt)); return txt; });
-    // Avanca sozinha 5 s depois de abrir (as falas terminam antes, em uns 4 s); tocar pula.
-    const inicio = performance.now();
+    // Tudo escrito (no fim das letras ou no toque no balao): mostra as 3 falas inteiras e comeca a contar.
+    const completa = () => {
+      if (pronto) return;
+      pronto = true;
+      if (atual) atual();
+      alvos.forEach((el, k) => { el.textContent = falas[k]; });
+      contar();
+    };
+    paint({
+      fill: true,
+      body: [h('div', { class: 'oi' },
+        imgMascote('fala', 'oi-img', true),
+        h('div', { class: 'balao balao-oi', onclick: completa }, h('h1', { class: 'q-title balao-h1', tabindex: '-1', 'aria-label': falas.join(' ') }, box)))],
+      footer: [btn],
+    });
+    if (REDUCED) { completa(); return; }
     let i = 0;
     const proxima = () => {
-      if (i >= falas.length) { later(segue, Math.max(300, 5000 - (performance.now() - inicio))); return; }
+      if (pronto) return;
+      if (i >= falas.length) { completa(); return; }
       const k = i++;
-      digita(alvos[k], falas[k], () => later(proxima, REDUCED ? 0 : 250));
+      // Na ultima letra da ultima fala, ja comeca a contar; entre as falas, uma pausa curta.
+      atual = digita(alvos[k], falas[k], () => { if (pronto) return; if (i >= falas.length) completa(); else later(proxima, 250); });
     };
     proxima();
   }

@@ -1057,3 +1057,7 @@ p.fx-confia svg { display: inline-block; vertical-align: -2px; margin-right: 4px
   .fx-topo-preco { gap: 3px; }
   .fx-topo-preco + .fx-planos { margin-top: 12px; }
 }
+/* Apresentacao: botao "Continuar" que enche durante os 5 s de leitura (lima mais escuro sobre o lima). */
+.btn.btn-enche { position: relative; overflow: hidden; isolation: isolate; }
+.btn-enche-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: #BFD200; z-index: -1; }
+.btn-enche-txt { position: relative; }
