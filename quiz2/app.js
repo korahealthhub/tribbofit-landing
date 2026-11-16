@@ -2677,7 +2677,9 @@
         h('div', { class: 'fx-topo-preco' },
           h('h1', { class: 'fx-h1 fx-h1-curto', tabindex: '-1' }, X2.titulo),
           previsaoLinha,
-          a.priceGuess != null && h('p', { class: 'fx-palpite' }, X2.palpite.replace('{chute}', `R$\u00a0${Math.round(a.priceGuess)}`).replace('{mensal}', brl(P.mensal)))),
+          a.priceGuess != null && h('p', { class: 'fx-palpite' }, (fimAnual
+            ? X2.palpiteBlack.replace('{mes}', brl(Math.round((precoAnual / 12) * 100) / 100))
+            : X2.palpite.replace('{mensal}', brl(P.mensal))).replace('{chute}', `R$\u00a0${Math.round(a.priceGuess)}`))),
         escolhaTopo,
         h('div', { class: 'fx-card fx-gap12 fx-mt24' }, h('h2', { class: 'fx-h2b' }, X2.passosTitulo),
           h('ol', { class: 'fx-passos' }, X2.passos.map(([t1, t2], i) => h('li', null, h('span', { class: 'fx-passo-n' }, String(i + 1)), h('div', null, h('b', null, t1), t2 && h('span', null, t2)))))),
