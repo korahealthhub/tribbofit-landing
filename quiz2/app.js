@@ -3147,12 +3147,13 @@
         h('div', { class: 'balao balao-oi' }, h('h1', { class: 'q-title balao-h1', tabindex: '-1', 'aria-label': falas.join(' ') }, box)))],
       footer: [],
     });
+    // As 3 falas ja ocupam o lugar delas (invisiveis): o balao nao cresce e a tela nao pula enquanto aparecem.
+    const alvos = falas.map((f) => { const txt = h('span', { class: 'balao-txt' }); box.append(h('p', { class: 'oi-linha' }, h('span', { class: 'balao-fantasma' }, f), txt)); return txt; });
     let i = 0;
     const proxima = () => {
       if (i >= falas.length) { later(segue, REDUCED ? 3500 : 900); return; }
-      const linha = h('p', { class: 'oi-linha' });
-      box.append(linha);
-      digita(linha, falas[i++], () => later(proxima, REDUCED ? 0 : 350));
+      const k = i++;
+      digita(alvos[k], falas[k], () => later(proxima, REDUCED ? 0 : 350));
     };
     proxima();
   }

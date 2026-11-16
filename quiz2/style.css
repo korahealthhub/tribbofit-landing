@@ -1014,3 +1014,7 @@ p.fx-confia { flex-wrap: nowrap; }
   .fx-prova2, .fx-hoje { font-size: 11.5px; }
   .fx-cta { gap: 6px; }
 }
+/* Telas cheias do mascote: centralizadas na altura toda (sem vazio embaixo); mascote maior em tela alta. */
+.oi, .cheia { flex: 1; min-height: 0; }
+.masc-img.cheia-img, .masc-img.oi-img { height: clamp(150px, 28vh, 230px); }
+.oi-linha { position: relative; }
