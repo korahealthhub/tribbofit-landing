@@ -9,6 +9,9 @@
 (function () {
   'use strict';
   var AMBIENTE = 'prod'; // 'dev' ou 'prod'
+  // /quiz2/ no lugar do /quiz/ (16/11/2026): a /plano/ do anuncio e o proprio /quiz/ levam para o /quiz2/ com toda a query
+  // e o hash (retomar e cupom inclusive). ?v=1 fica no /quiz/ antigo. false = tudo como antes (/quiz/).
+  var REDIRECIONAR_QUIZ2 = true;
 
   var SUPABASE = {
     dev: 'https://wqdxxdwplaoyirdirjif.supabase.co',
@@ -34,6 +37,7 @@
     // a /plano/ redireciona para /quiz/?entrada=objetivo com todos os parâmetros (/plano/entrada.js).
     // false = todo mundo na /plano/ como antes, e /quiz/?entrada=objetivo vira o quiz de sempre.
     entradaObjetivo: true,
+    redirecionarQuiz2: REDIRECIONAR_QUIZ2,
     // Versão dos Termos publicada em /termos/ (gravada junto do aceite).
     termosVersao: '1.2',
     suporte: 'suporte@tribbofit.com.br',

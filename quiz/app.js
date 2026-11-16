@@ -8,6 +8,7 @@
 // le o lead de volta (web-lead-resume). Cada ida a Cakto e registrada no lead (web-lead-checkout).
 (function () {
   'use strict';
+  if (window.TF_REDIRECIONANDO) return; // indo para o /quiz2/ (quiz/retomar.js): nada roda, nenhum evento
   const { T, C } = TF;
   const AUTO_ADVANCE_MS = 220; // src/components/profileQuestions/ui.tsx
   const REDUCED = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;

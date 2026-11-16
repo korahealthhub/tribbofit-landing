@@ -19,5 +19,6 @@
   document.documentElement.style.visibility = 'hidden';
   q.set('entrada', 'objetivo');
   if (window.tribboMedida) window.tribboMedida('web_plano_redirect_quiz', { page: 'plano' });
-  location.replace('/quiz/?' + q.toString());
+  // /quiz2/ com a chave REDIRECIONAR_QUIZ2 (/js/funil.js); ?v=1 fica no /quiz/ antigo.
+  location.replace((F.redirecionarQuiz2 && q.get('v') !== '1' ? '/quiz2/?' : '/quiz/?') + q.toString());
 })();

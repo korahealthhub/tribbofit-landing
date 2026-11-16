@@ -13,6 +13,14 @@
   var F = window.TF_FUNIL;
   var q;
   try { q = new URLSearchParams(location.search); } catch (e) { return; }
+  // /quiz2/ no lugar do /quiz/ (chave REDIRECIONAR_QUIZ2 em /js/funil.js): leva toda a query e o hash (retomar e cupom
+  // inclusive). ?v=1 fica aqui no /quiz/ antigo. Nada do quiz roda (app.js ve TF_REDIRECIONANDO) e a pagina nao pisca.
+  if (F && F.redirecionarQuiz2 && q.get('v') !== '1') {
+    window.TF_REDIRECIONANDO = true;
+    document.documentElement.style.visibility = 'hidden';
+    location.replace('/quiz2/' + location.search + location.hash);
+    return;
+  }
   // Entrada pelo anuncio (?entrada=objetivo, sem ?retomar=): ja mostra a pergunta do objetivo pronta no HTML (#pre-obj),
   // no lugar da tela de boas-vindas (style.css, html.entrada-obj). Chave em /js/funil.js (entradaObjetivo).
   if (!q.has('retomar') && q.get('entrada') === 'objetivo' && F && F.entradaObjetivo) document.documentElement.classList.add('entrada-obj');
