@@ -2393,24 +2393,15 @@
     }, REDUCED ? 0 : V.stepMs);
   }
 
-  // Oferta de boas-vindas do anual (so no /quiz2/, DESLIGADA): R$ 179,90 com o cupom tribboanual, por 30 minutos a
-  // partir da 1a vez que a pessoa ve o preco. O inicio fica no sessionStorage da aba (voltar da Cakto nao reinicia).
-  // Acabou o prazo: a tela volta ao preco normal e o site para de mandar o cupom. Nao vale junto do cupom do suporte.
-  // Ligar (ativa: true) so depois de confirmar que o cupom do anual funciona na Cakto.
-  const OFERTA_ANUAL = { ativa: false, preco: 179.90, cupom: 'tribboanual', minutos: 30 };
-  const CHAVE_OFERTA = 'tf_quiz2_oferta_inicio';
-  let inicioOfertaMemoria = null;
-  // Fim da oferta em ms, ou 0 se ela nao vale agora. inicia: marca o inicio se ainda nao houver (so ao ver o preco).
-  function fimOfertaAnual(inicia) {
-    if (!OFERTA_ANUAL.ativa || !TF.PAGAMENTO_ATIVO || (lead && lead.cupom)) return 0;
-    let ini = inicioOfertaMemoria;
-    try { ini = Number(sessionStorage.getItem(CHAVE_OFERTA)) || ini; } catch (e) { /* sem sessionStorage: so na memoria */ }
-    if (!ini && inicia) {
-      ini = Date.now(); inicioOfertaMemoria = ini;
-      try { sessionStorage.setItem(CHAVE_OFERTA, String(ini)); } catch (e) { /* nada */ }
-    }
-    const fim = ini ? ini + OFERTA_ANUAL.minutos * 60000 : 0;
-    return fim > Date.now() ? fim : 0;
+  // Black Friday do anual (so no /quiz2/, DESLIGADA): Anual por R$ 179,90 com o cupom tribboanual ate 30/11/2026 23:59
+  // (Brasilia). Enquanto vale: faixa preta no topo com o contador, o Anual vem marcado e o cupom vai para a Cakto (conferido
+  // em 16/11: com ?coupon=tribboanual a Cakto mostra R$ 178,91 + R$ 0,99 = R$ 179,90). Depois do prazo, volta tudo ao
+  // normal sozinho. Nao vale junto do cupom do suporte. Ligar: ativa: true.
+  const BLACK = { ativa: false, fim: Date.parse('2026-11-30T23:59:59-03:00'), preco: 179.90, cupom: 'tribboanual' };
+  // Fim da Black em ms, ou 0 se ela nao vale agora.
+  function fimOfertaAnual() {
+    if (!BLACK.ativa || !TF.PAGAMENTO_ATIVO || (lead && lead.cupom)) return 0;
+    return BLACK.fim > Date.now() ? BLACK.fim : 0;
   }
 
   // Cupom vencido: a tela volta ao preco normal, sem cupom (como o link vencido, em que o servidor nao manda cupom).
@@ -2482,10 +2473,11 @@
     // "Menos de R$ 0,65 por dia" (Feito pro que voce contou): o anual / 365, arredondado para cima nos 5 centavos.
     const porDia = brl(Math.ceil((P.anual / 365) * 20) / 20);
     const parcela = brl(P.parcelaAnual);
-    // /quiz2/: o Mensal vem marcado (com ou sem o cupom do suporte).
-    planoWeb = 'mensal';
-    const fimAnual = oferta ? 0 : fimOfertaAnual(true);
-    const precoAnual = fimAnual ? OFERTA_ANUAL.preco : P.anual;
+    // /quiz2/: o Mensal vem marcado (com ou sem o cupom do suporte); durante a Black Friday, o Anual.
+    const fimAnual = oferta ? 0 : fimOfertaAnual();
+    planoWeb = fimAnual ? 'anual' : 'mensal';
+    const precoAnual = fimAnual ? BLACK.preco : P.anual;
+    const BF = TF.V2.preco.black;
     const X2 = TF.V2.preco;
     const dozeMeses = P.mensal * 12; // 12 x R$ 29,90 = R$ 358,80 (o mesmo ano no Mensal)
 
@@ -2549,30 +2541,40 @@
       // contra o valor riscado: sem oferta, 12 meses no Mensal; com a oferta do anual (desligada), o anual normal.
       const riscado = fimAnual ? P.anual : dozeMeses;
       const porMesAnual = Math.round((precoAnual / 12) * 100) / 100;
-      const cartoes = [
+      const cartaoMensal =
         oferta
           ? plano('mensal', h('span', { class: 'fx-selo-off' }, pctOferta ? X.offerTag.replace('{pct}', pctOferta) : X.firstMonth),
             X.monthly, `${X.then} ${brl(P.mensal)}${X.perMonthShort}`,
             [h('s', null, brl(P.mensal)), h('b', { class: 'fx-grande' }, precoOferta), h('span', { class: 'fx-roxo-forte' }, X.firstMonth)])
-          : plano('mensal', null, X.monthly, [X2.mensalSub], [h('b', { class: 'fx-grande' }, brl(P.mensal), h('small', null, X2.barraMes))]),
-        plano('anual', h('span', { class: 'fx-selo-eco' }, X2.economize.replace('{valor}', brl(riscado - precoAnual))),
+          : plano('mensal', null, X.monthly, [X2.mensalSub], [h('b', { class: 'fx-grande' }, brl(P.mensal), h('small', null, X2.barraMes))]);
+      // Black Friday: o Anual em cima e marcado, borda lima, etiqueta, "R$ 14,99/mes" grande e, pequeno, o anual normal
+      // riscado, o valor a vista e quanto sai mais barato que 12 meses no Mensal (R$ 179,90 contra R$ 358,80: 50%).
+      const cartaoAnual = fimAnual
+        ? plano('anual', h('span', { class: 'fx-selo-black' }, BF.etiqueta),
+          X.annual, [h('span', { class: 'fx-vista' }, h('s', null, brl(P.anual)), ' ', BF.vista.replace('{preco}', brl(precoAnual))),
+            h('span', { class: 'fx-mais' }, BF.mais.replace('{pct}', Math.round((1 - precoAnual / dozeMeses) * 100)))],
+          [h('b', { class: 'fx-grande' }, brl(porMesAnual), h('small', null, X2.barraMes))])
+        : plano('anual', h('span', { class: 'fx-selo-eco' }, X2.economize.replace('{valor}', brl(riscado - precoAnual))),
           X.annual, [h('span', { class: 'fx-vista' }, h('s', null, brl(riscado)), ' ', X2.anualVistaCurto.replace('{anual}', brl(precoAnual))),
             h('span', { class: 'fx-parcelado' }, X2.anualParcelado)],
-          [h('b', { class: 'fx-grande' }, brl(porMesAnual), h('small', null, X2.barraMes))]),
-      ];
+          [h('b', { class: 'fx-grande' }, brl(porMesAnual), h('small', null, X2.barraMes))]);
+      if (fimAnual) cartaoAnual.classList.add('fx-black');
+      const cartoes = fimAnual ? [cartaoAnual, cartaoMensal] : [cartaoMensal, cartaoAnual];
       const btn = primary(F.buttonPay, comprar);
       const hoje = h('p', { class: 'fx-hoje' });
       const acessoEl = escolhe && lead && lead.email ? acesso() : null;
       // Embaixo do botao: a renovacao do plano marcado, o selo de compra segura e o aviso do CPF.
       // /quiz2/: 7 dias de garantia, pagamento seguro pela Cakto e Pix ou cartao, e o aviso do CPF.
-      const seguro = escolhe && [h('p', { class: 'fx-confia' }, icon('lock-closed', 13, '#5B34D6'), X2.confia), h('p', { class: 'fx-prova2' }, X2.prova), h('p', { class: 'fx-cpf' }, X.cpf)];
-      const e = { cartoes, btn, hoje, el: [h('div', { class: 'fx-planos', role: escolhe ? 'radiogroup' : null, 'aria-label': X.choose }, cartoes), h('div', { class: 'fx-cta' }, acessoEl, btn, hoje, seguro)] };
+      // Embaixo do botao, so duas linhas: confianca (com o cadeado) e a prova social. Sem a linha da renovacao (o "por mes"
+      // e o "por ano" ja estao no plano) e sem o aviso do CPF (a Cakto pede no checkout).
+      const seguro = escolhe && [h('p', { class: 'fx-confia' }, icon('lock-closed', 13, '#5B34D6'), X2.confiaLinha), h('p', { class: 'fx-prova2' }, X2.prova)];
+      const e = { cartoes, btn, hoje, el: [h('div', { class: 'fx-planos', role: escolhe ? 'radiogroup' : null, 'aria-label': X.choose }, cartoes), h('div', { class: 'fx-cta' }, acessoEl, btn, seguro)] };
       escolhas.push(e);
       return e.el;
     }
     function atualiza() {
       const ofertaNoMensal = oferta && planoWeb === 'mensal';
-      const rotulo = !escolhe ? R.button : ofertaNoMensal ? X.buttonOffer.replace('{preco}', precoOferta) : F.buttonPay;
+      const rotulo = !escolhe ? R.button : ofertaNoMensal ? X.buttonOffer.replace('{preco}', precoOferta) : fimAnual && planoWeb === 'anual' ? BF.botao : F.buttonPay;
       const linha = !escolhe ? '' : planoWeb === 'anual' ? X.todayAnnual
         : ofertaNoMensal ? X.todayOffer.replace('{oferta}', precoOferta).replace('{mensal}', brl(P.mensal))
           : X.todayMonthly.replace('{mensal}', brl(P.mensal));
@@ -2599,9 +2601,7 @@
         campo = null;
         if (!aberto) {
           el.replaceChildren(h('p', { class: 'fx-acesso-l' }, `${X.access} `, h('b', null, lead.email), ' · ',
-            h('button', { type: 'button', class: 'fx-acesso-corrigir', onclick: () => { for (const o of acessos) o.desenha(false); desenha(true); } }, X.fix)),
-            // O WhatsApp do cadastro, so para conferir (corrige voltando ao cadastro).
-            lead.whatsapp && h('p', { class: 'fx-acesso-l fx-acesso-w' }, `${X.accessWhats} `, h('b', null, mascaraWhats(lead.whatsapp))));
+            h('button', { type: 'button', class: 'fx-acesso-corrigir', onclick: () => { for (const o of acessos) o.desenha(false); desenha(true); } }, X.fix)));
           return;
         }
         const id = `fx-acesso-${idx}`;
@@ -2637,9 +2637,11 @@
         input.addEventListener('input', () => { mostraErro(''); atualizaDica(); });
         input.addEventListener('blur', () => { const e = input.value.trim().toLowerCase(); if (e && !emailValido(e)) mostraErro(L.errors.email); atualizaDica(); });
         input.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); salvar(); } });
+        // /quiz2/: o WhatsApp do cadastro aparece so com o campo aberto, para conferir.
         el.replaceChildren(h('label', { class: 'fx-acesso-rot', for: id }, X.accessLabel),
           h('div', { class: 'fx-acesso-linha' }, input, botao),
-          erro, dica);
+          erro, dica,
+          lead.whatsapp && h('p', { class: 'fx-acesso-l fx-acesso-w' }, `${X.accessWhats} `, h('b', null, mascaraWhats(lead.whatsapp))));
         atualizaDica();
         input.focus();
       };
@@ -2690,19 +2692,23 @@
       ],
       footer: [],
     });
-    // Faixa da oferta do anual (so com OFERTA_ANUAL.ativa): contador ate o fim; a zero, a tela volta ao preco normal.
+    // Faixa da Black Friday (so com BLACK.ativa e dentro do prazo), fixa no topo: "BLACK FRIDAY" grande, a linha do preco
+    // e o contador (dias, horas, minutos e segundos) ate 30/11 23:59. A zero, a tela volta ao preco normal sozinha.
     if (fimAnual) {
-      const OF = X2.oferta;
-      const relogio = h('b', { class: 'fx-cd-n' });
+      const caixa = (rot) => { const n = h('b', null, '00'); return [n, h('span', { class: 'bf-cx' }, n, h('small', null, rot))]; };
+      const [nd, cd] = caixa(BF.dias), [nh, ch] = caixa(BF.horas), [nm, cm] = caixa(BF.min), [ns, cs] = caixa(BF.seg);
+      const dois = (x) => String(x).padStart(2, '0');
       const tique = () => {
         const resta = fimAnual - Date.now();
         if (resta <= 0) { if (current === 'price_reveal') { resetScreen(); repintaPreco = true; render('price_reveal'); } return; }
-        const t = Math.floor(resta / 1000);
-        relogio.textContent = `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(t % 60).padStart(2, '0')}`;
+        const t = Math.floor(resta / 1000), d = Math.floor(t / 86400);
+        nd.textContent = dois(d); nd.nextSibling.textContent = d === 1 ? BF.dia : BF.dias;
+        nh.textContent = dois(Math.floor((t % 86400) / 3600)); nm.textContent = dois(Math.floor((t % 3600) / 60)); ns.textContent = dois(t % 60);
       };
-      const faixa = h('div', { class: 'fx-faixa', role: 'note' },
-        h('div', { class: 'fx-faixa-esq' }, h('b', null, OF.faixa), h('span', null, OF.linha.replace('{preco}', brl(OFERTA_ANUAL.preco)))),
-        h('div', { class: 'fx-cd', role: 'timer' }, h('span', { class: 'fx-cd-rot' }, OF.termina), relogio));
+      const faixa = h('div', { class: 'bf-faixa', role: 'timer' },
+        h('b', { class: 'bf-tit' }, BF.faixa),
+        h('p', { class: 'bf-linha' }, BF.linha.replace('{preco}', brl(BLACK.preco))),
+        h('div', { class: 'bf-cd' }, cd, ch, cm, cs));
       tique();
       const id = setInterval(tique, 1000);
       cleanups.push(() => clearInterval(id));
@@ -2832,8 +2838,8 @@
     const F = window.TF_FUNIL;
     if (!lead) { goTo('lead_form'); return; }
     const plano = F.cakto[planoWeb] ? planoWeb : 'anual';
-    // /quiz2/: o cupom do anual so vai enquanto a oferta de boas-vindas valer (desligada por OFERTA_ANUAL.ativa).
-    const cupom = plano === 'mensal' && lead.cupom ? lead.cupom.codigo : plano === 'anual' && fimOfertaAnual(false) ? OFERTA_ANUAL.cupom : null;
+    // /quiz2/: o cupom do anual so vai enquanto a Black Friday valer (desligada por BLACK.ativa).
+    const cupom = plano === 'mensal' && lead.cupom ? lead.cupom.codigo : plano === 'anual' && fimOfertaAnual() ? BLACK.cupom : null;
     medir('web_quiz_checkout_started', { plan: plano, offer: !!cupom });
     const callback = lead.id ? (lead.token ? `${lead.id}.${lead.token}` : lead.id) : null;
     // Registra a ida a Cakto no lead (web-lead-checkout), sem esperar a resposta. sendBeacon primeiro: o navegador
