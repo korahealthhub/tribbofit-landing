@@ -509,6 +509,80 @@
     .back-top.show { display: flex; }
 
     .back-top svg { width: 16px; height: 16px; }
+    /* PASSO A PASSO (topo): letra grande, um tema por vez, botoes desenhados como no app */
+    .hero .hero-pp { font-size: 20px; line-height: 1.5; color: var(--text); margin-bottom: 0; }
+    .pp { font-size: 19px; line-height: 1.55; margin-bottom: 56px; }
+    .pp b { color: #fff; font-weight: 700; }
+    .pp-n {
+      flex: none; width: 36px; height: 36px; border-radius: 50%;
+      background: var(--teal); color: #0A0A0A; font-weight: 800; font-size: 18px;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .pp-n-ajuda { background: transparent; color: var(--teal); border: 2px solid var(--teal); }
+    .pp-indice { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+    .pp-indice a {
+      display: flex; align-items: center; gap: 14px; min-height: 64px; padding: 12px 16px;
+      border: 1px solid var(--border); border-radius: 14px; background: rgba(226,244,8,0.04);
+      color: var(--text); text-decoration: none; font-weight: 600; font-size: 19px; line-height: 1.3;
+    }
+    .pp-indice a:active { background: rgba(226,244,8,0.12); }
+    .pp-tema { border: 1px solid var(--border); border-radius: 16px; margin-bottom: 18px; background: rgba(255,255,255,0.025); }
+    .pp-cab { display: flex; align-items: center; gap: 14px; padding: 18px 16px 16px; font-size: 22px; font-weight: 800; line-height: 1.25; color: #fff; }
+    .pp-t { flex: 1; }
+    .pp-voltar { display: inline-block; margin-top: 16px; font-size: 17px; font-weight: 600; }
+    #indice { scroll-margin-top: 80px; }
+    .pp-corpo { padding: 0 16px 22px; }
+    .pp-aviso { background: rgba(226,244,8,0.08); border-left: 4px solid var(--teal); padding: 12px 14px; border-radius: 8px; margin-bottom: 18px; }
+    .pp-passos { list-style: none; counter-reset: passo; padding: 0; }
+    .pp-passos[start="3"] { counter-reset: passo 2; }
+    .pp-passos > li { counter-increment: passo; position: relative; padding: 0 0 18px 50px; }
+    .pp-passos > li::before {
+      content: counter(passo); position: absolute; left: 0; top: -2px; width: 34px; height: 34px; border-radius: 50%;
+      border: 2px solid var(--teal); color: var(--teal); font-weight: 800; font-size: 17px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .pp-obs, .pp-atencao { display: block; margin-top: 8px; color: rgba(245,240,230,0.8); font-size: 17px; }
+    .pp-atencao { color: #FFB4A8; }
+    .pp-atencao b { color: #FFB4A8; }
+    .pp-sub { list-style: none; padding: 6px 0 0; }
+    .pp-sub li { padding: 4px 0; }
+    .pp-sub-t { font-weight: 800; color: var(--teal); margin: 6px 0 12px; font-size: 19px; }
+    .pp-dica { margin-top: 6px; padding-top: 12px; border-top: 1px solid var(--border-l); }
+    .pp-errado { margin-top: 4px; padding: 14px; border-radius: 12px; background: rgba(255,255,255,0.04); }
+    .pp-errado p + p { margin-top: 10px; }
+    .pp-errado-t { font-weight: 800; color: #fff; }
+    .pp-corpo a:not(.bt):not(.pp-loja) { color: var(--teal); }
+    .pp-lojas { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .pp-loja { display: inline-block; padding: 8px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.25); color: #fff; text-decoration: none; font-size: 16px; font-weight: 600; }
+    /* Botoes como aparecem no app */
+    .bt {
+      display: inline-flex; align-items: center; gap: 6px; vertical-align: middle; white-space: nowrap;
+      padding: 6px 16px; margin: 2px 2px; border-radius: 100px; background: var(--teal); color: #0A0A0A;
+      font-weight: 700; font-size: 17px; line-height: 1.3; text-decoration: none;
+      box-shadow: 0 0 0 3px rgba(226,244,8,0.18);
+    }
+    .bt svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    .bt-contorno { background: transparent; color: #fff; border: 2px solid #fff; box-shadow: none; }
+    .bt-escuro { background: #2A3335; color: #fff; box-shadow: 0 0 0 2px var(--teal); }
+    .bt-texto { background: transparent; color: var(--teal); box-shadow: none; padding: 2px 4px; text-decoration: underline; text-underline-offset: 3px; white-space: normal; }
+    .bt-aba { background: #2A3335; color: #fff; box-shadow: 0 0 0 2px var(--teal); border-radius: 14px; flex-direction: column; gap: 0; padding: 6px 14px; font-size: 14px; }
+    .bt-aba svg { width: 22px; height: 22px; }
+    .bt-icone { width: 42px; height: 42px; padding: 0; justify-content: center; background: #2A3335; color: #fff; box-shadow: 0 0 0 2px var(--teal); font-size: 20px; }
+    .bt-icone svg { width: 22px; height: 22px; }
+    .bt-icone-lima { background: var(--teal); color: #0A0A0A; }
+    .bt-mini { width: 32px; height: 32px; font-size: 17px; }
+    .bt-mini svg { width: 18px; height: 18px; }
+    .bt-gravando { background: #EF4444; color: #fff; box-shadow: 0 0 0 4px rgba(239,68,68,0.3); }
+    .bt-quadrado { width: 12px; height: 12px; background: #fff; border-radius: 2px; }
+    .bt-tribu {
+      display: inline-block; vertical-align: middle; width: 48px; height: 48px; border-radius: 50%;
+      border: 3px solid var(--teal); background: #2B1F4D url(/quiz2/assets/mascote/fala.webp) no-repeat 50% 4% / 150%;
+      box-shadow: 0 0 0 3px rgba(226,244,8,0.18);
+    }
+    .bt-grande { font-size: 19px; padding: 14px 26px; margin-top: 12px; }
+    .pp-ajuda { text-align: center; padding: 26px 16px; border: 1px solid var(--border); border-radius: 16px; margin-top: 22px; scroll-margin-top: 80px; }
+    .pp-ajuda p { font-size: 20px; font-weight: 700; }
+    .guia-completo-t { font-size: 26px; font-weight: 800; margin-bottom: 16px; padding-top: 32px; border-top: 1px solid var(--border-l); }
   </style>
 <!-- Faixa de cookies + Meta Pixel (só após aceite) -->
 <script src="/consent.js" defer></script>
@@ -531,13 +605,142 @@
 
   <!-- HERO -->
   <div class="hero">
-    <h1>Guia do usuário</h1>
-    <p>Tudo que você precisa saber para aproveitar ao máximo o Tribbo, do primeiro acesso ao dia a dia.</p>
-    <div class="badges">
-      <span class="badge">14 seções</span>
-      <span class="badge">Usuários novos</span>
+    <h1>Guia do Tribbo Fit</h1>
+    <p class="hero-pp">Passo a passo, com calma. Toque no assunto que você quer aprender.</p>
+  </div>
+
+  <!-- PASSO A PASSO (link direto para cada tema: /guia/#entrar, #foto, #treino, #tribu) -->
+  <div class="pp">
+    <div class="pp-indice" id="indice" role="navigation" aria-label="Assuntos do passo a passo">
+      <a href="#entrar"><span class="pp-n">1</span>Entrar no app com o seu código</a>
+      <a href="#foto"><span class="pp-n">2</span>Registrar a refeição com foto</a>
+      <a href="#treino"><span class="pp-n">3</span>Começar o treino do dia</a>
+      <a href="#tribu"><span class="pp-n">4</span>Falar com o Tribu</a>
+      <a href="#ajuda"><span class="pp-n pp-n-ajuda">?</span>Precisa de ajuda?</a>
+    </div>
+
+    <!-- 1. Entrar com o código -->
+    <section class="pp-tema" id="entrar">
+      <h2 class="pp-cab"><span class="pp-n">1</span><span class="pp-t">Entrar no app com o seu código</span></h2>
+      <div class="pp-corpo">
+        <p class="pp-aviso">Você vai precisar do <b>código de login</b> que chegou no e-mail do pagamento. Ele começa com <b>TRB</b>.</p>
+        <ol class="pp-passos">
+          <li>Baixe o app Tribbo Fit.
+            <span class="pp-lojas">
+              <a class="pp-loja" href="https://apps.apple.com/br/app/id6769632514">App Store (iPhone)</a>
+              <a class="pp-loja" href="https://play.google.com/store/apps/details?id=com.usekoraapp.health">Google Play (Android)</a>
+            </span>
+          </li>
+          <li>Abra o app. Na primeira tela, toque em <span class="bt bt-contorno">Já sou assinante</span>
+            <span class="pp-atencao"><b>Atenção:</b> não toque em "Criar meu plano". Sua assinatura já está paga. Não assine de novo.</span>
+          </li>
+          <li>Abra o e-mail do pagamento. Toque e segure no código e escolha <b>"Copiar"</b>.</li>
+          <li>Volte ao app e toque em <span class="bt bt-escuro">Colar</span>
+            <span class="pp-obs">Se o botão Colar não aparecer, toque e segure no campo e escolha "Colar".</span>
+          </li>
+          <li>Toque em <span class="bt">Entrar</span> Não precisa de senha.</li>
+          <li>O app monta o seu plano em poucos segundos. Siga as telas até chegar no Início.
+            <span class="pp-obs">Se aparecer "Vincule sua conta Apple ou Google", pode tocar em <span class="bt bt-texto">Agora não</span></span>
+          </li>
+        </ol>
+        <div class="pp-errado">
+          <p class="pp-errado-t">Deu errado?</p>
+          <p><b>"Código não encontrado"</b>: confira se copiou o código inteiro. Ou toque em <span class="bt bt-texto">Receber código no e-mail do pagamento</span> Chega um código de 6 números no seu e-mail.</p>
+          <p><b>"Esse código de login venceu"</b>: o código vale 7 dias. Faça o mesmo: peça o código de 6 números.</p>
+          <p><b>Não achou o e-mail?</b> Olhe no spam ou <a href="#ajuda">fale com a gente no WhatsApp</a>.</p>
+        </div>
+        <a class="pp-voltar" href="#indice">Voltar aos assuntos</a>
+      </div>
+    </section>
+
+    <!-- 2. Foto do prato -->
+    <section class="pp-tema" id="foto">
+      <h2 class="pp-cab"><span class="pp-n">2</span><span class="pp-t">Registrar a refeição com foto</span></h2>
+      <div class="pp-corpo">
+        <ol class="pp-passos">
+          <li>Na barra de baixo, toque em <span class="bt bt-aba"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3v7a3 3 0 003 3v8M8 3v6M11 3v7a3 3 0 01-3 3M19 21V3c-2.5 1-4 4-4 8h4"/></svg>Nutrição</span></li>
+          <li>Em "Refeições", encontre a refeição que você fez, por exemplo Almoço. Dentro dela, toque em <span class="bt bt-escuro"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Adicionar</span></li>
+          <li>Toque em <span class="bt bt-escuro">Registro rápido com IA</span></li>
+          <li>Toque no desenho da câmera. <span class="bt bt-icone" aria-label="Câmera"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></span>
+            <span class="pp-obs">Na primeira vez, o celular pede permissão: toque em "Permitir".</span>
+          </li>
+          <li>Fotografe o prato de cima, com toda a comida aparecendo.</li>
+          <li>Toque no botão de confirmar, o sinal de certo. <span class="bt bt-icone bt-icone-lima" aria-label="Confirmar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></li>
+          <li>Espere alguns segundos. O app descobre os alimentos e calcula as calorias.</li>
+          <li>Confira a lista:
+            <ul class="pp-sub">
+              <li>Use <span class="bt bt-icone bt-mini">–</span> e <span class="bt bt-icone bt-mini">+</span> para mudar a quantidade.</li>
+              <li>Toque na lixeira <span class="bt bt-icone bt-mini" aria-label="Lixeira"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/></svg></span> para tirar um item.</li>
+              <li>Faltou algo? Toque em <span class="bt bt-escuro">Adicionar item</span></li>
+            </ul>
+          </li>
+          <li>Toque em <span class="bt">Salvar</span> Pronto, a refeição está no seu dia.</li>
+        </ol>
+        <p class="pp-dica"><b>Dica:</b> em vez da foto, você também pode escrever ou falar o que comeu. Por exemplo: "1 prato de arroz, feijão e frango".</p>
+        <a class="pp-voltar" href="#indice">Voltar aos assuntos</a>
+      </div>
+    </section>
+
+    <!-- 3. Treino do dia (aba Treino nova, WORKOUT_TAB_V2) -->
+    <section class="pp-tema" id="treino">
+      <h2 class="pp-cab"><span class="pp-n">3</span><span class="pp-t">Começar o treino do dia</span></h2>
+      <div class="pp-corpo">
+        <ol class="pp-passos">
+          <li>No Início, procure o cartão "Hoje: Treino A" e toque em <span class="bt bt-escuro">Ver meu treino</span>
+            <span class="pp-obs">Ou toque em <span class="bt bt-aba"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h18M6 8v8M3 10v4M18 8v8M21 10v4"/></svg>Treino</span> na barra de baixo.</span>
+          </li>
+          <li>No cartão "HOJE" aparecem o nome do treino, quantos exercícios são e quanto tempo leva. Toque em <span class="bt">Começar</span></li>
+          <li>Toque no exercício para abrir. Veja o desenho que mostra o movimento. Se tiver dúvida, toque em <span class="bt bt-escuro">Como fazer</span></li>
+          <li>Fez uma série? Toque no número dela, na coluna SÉRIE. <span class="bt bt-icone bt-icone-lima bt-mini">1</span>
+            <span class="pp-obs">O descanso começa a contar sozinho. Para não esperar, toque em <span class="bt bt-texto">Pular</span></span>
+          </li>
+          <li>Repita até terminar todos os exercícios.</li>
+          <li>Toque em <span class="bt">Concluir treino</span></li>
+        </ol>
+        <p class="pp-dica"><b>Quer parar antes?</b> Toque em <span class="bt bt-escuro">Finalizar</span> e depois em <span class="bt bt-escuro">Encerrar e salvar</span></p>
+        <p class="pp-dica"><b>Hoje é dia de descanso?</b> No Início, toque em <span class="bt bt-escuro">Descanso</span></p>
+        <a class="pp-voltar" href="#indice">Voltar aos assuntos</a>
+      </div>
+    </section>
+
+    <!-- 4. Tribu (Coach) -->
+    <section class="pp-tema" id="tribu">
+      <h2 class="pp-cab"><span class="pp-n">4</span><span class="pp-t">Falar com o Tribu</span></h2>
+      <div class="pp-corpo">
+        <ol class="pp-passos">
+          <li>Toque na bolinha com o rosto do Tribu. <span class="bt-tribu" role="img" aria-label="Bolinha do Tribu"></span> Ela fica no canto da tela, acima da barra de baixo.
+            <span class="pp-obs">Não vê a bolinha? Atualize o Tribbo Fit na App Store ou no Google Play.</span>
+          </li>
+          <li>Na primeira vez, leia o aviso e toque em <span class="bt">Entendi e aceito</span></li>
+        </ol>
+        <p class="pp-sub-t">Para escrever</p>
+        <ol class="pp-passos" start="3">
+          <li>Toque na caixa de mensagem, embaixo, e escreva a sua pergunta.</li>
+          <li>Toque na seta para cima para enviar. <span class="bt bt-icone bt-icone-lima" aria-label="Enviar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span></li>
+        </ol>
+        <p class="pp-sub-t">Para falar</p>
+        <ol class="pp-passos" start="3">
+          <li>Toque no microfone, uma vez só. Não precisa segurar. <span class="bt bt-icone" aria-label="Microfone"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21"/></svg></span>
+            <span class="pp-obs">Na primeira vez, toque em "Permitir".</span>
+          </li>
+          <li>Fale normalmente. Enquanto grava, o botão fica vermelho. <span class="bt bt-gravando"><span class="bt-quadrado" aria-hidden="true"></span>0:07</span></li>
+          <li>Terminou de falar? Toque no botão vermelho. O que você falou vira texto.</li>
+          <li>Confira o texto e toque na seta para enviar. <span class="bt bt-icone bt-icone-lima" aria-label="Enviar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span></li>
+        </ol>
+        <p class="pp-dica"><b>Ideias de pergunta:</b> "O que jantar hoje?", "Quanta proteína falta?", "Como foi minha semana?"</p>
+        <p class="pp-dica">Se aparecer <b>"Microfone bloqueado"</b>, toque em <span class="bt bt-texto">Abrir Ajustes</span> e libere o microfone.</p>
+        <a class="pp-voltar" href="#indice">Voltar aos assuntos</a>
+      </div>
+    </section>
+
+    <!-- Ajuda -->
+    <div class="pp-ajuda" id="ajuda">
+      <p>Ainda com dúvida? Fale com a gente.</p>
+      <a class="bt bt-grande" href="https://wa.me/5511949268402?text=Oi!%20Preciso%20de%20ajuda%20com%20meu%20acesso%20ao%20Tribbo%20Fit">Chamar no WhatsApp</a>
     </div>
   </div>
+
+  <h2 class="guia-completo-t">Guia completo</h2>
 
   <!-- SUMÁRIO ACCORDION -->
   <div class="toc-wrap">
@@ -926,7 +1129,7 @@
 
     <p>O Coach faz: responde perguntas sobre saúde, analisa seus dados do dia e do período, registra refeições por texto ou foto, e gera planos alimentares e de treino personalizados.</p>
     <p>O Coach não faz: não da diagnósticos médicos, não acessa a internet, não substitui profissional de saúde. Todas as respostas tem caráter educativo.</p>
-    <p>Como acessar: ícone de estrelas no canto superior direito da home ou da tela de Nutrição.</p>
+    <p>Como acessar: toque na bolinha com o rosto do Tribu, no canto da tela, acima da barra de baixo.</p>
     <p>O Coach sabe sobre você: dados do check-in, plano alimentar ativo, histórico de refeições, plano de treino, histórico de sessões e dados do perfil. Quanto mais você usar o app, mais contexto o Coach tem para personalizar as respostas.</p>
     <p>Exemplos de perguntas uteis:</p>
     <ul class="body-list">
