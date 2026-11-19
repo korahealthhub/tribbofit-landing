@@ -509,7 +509,7 @@
     .back-top.show { display: flex; }
 
     .back-top svg { width: 16px; height: 16px; }
-    /* PASSO A PASSO (topo): letra grande, um tema por vez, botoes desenhados como no app */
+    /* PASSO A PASSO (topo): telas do app com círculos numerados e legenda; letra grande */
     .hero .hero-pp { font-size: 20px; line-height: 1.5; color: var(--text); margin-bottom: 0; }
     .pp { font-size: 19px; line-height: 1.55; margin-bottom: 56px; }
     .pp b { color: #fff; font-weight: 700; }
@@ -518,70 +518,38 @@
       background: var(--teal); color: #0A0A0A; font-weight: 800; font-size: 18px;
       display: inline-flex; align-items: center; justify-content: center;
     }
-    .pp-n-ajuda { background: transparent; color: var(--teal); border: 2px solid var(--teal); }
-    .pp-indice { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+    .pp-indice { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; scroll-margin-top: 80px; }
+    .pp-grupo { font-size: 14px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-dim); margin: 10px 0 2px; }
     .pp-indice a {
       display: flex; align-items: center; gap: 14px; min-height: 64px; padding: 12px 16px;
       border: 1px solid var(--border); border-radius: 14px; background: rgba(226,244,8,0.04);
       color: var(--text); text-decoration: none; font-weight: 600; font-size: 19px; line-height: 1.3;
     }
     .pp-indice a:active { background: rgba(226,244,8,0.12); }
-    .pp-tema { border: 1px solid var(--border); border-radius: 16px; margin-bottom: 18px; background: rgba(255,255,255,0.025); }
-    .pp-cab { display: flex; align-items: center; gap: 14px; padding: 18px 16px 16px; font-size: 22px; font-weight: 800; line-height: 1.25; color: #fff; }
+    .pp-secao { font-size: 26px; font-weight: 800; margin: 36px 0 14px; color: #fff; }
+    .pp-tema { border: 1px solid var(--border); border-radius: 16px; margin-bottom: 18px; background: rgba(255,255,255,0.025); scroll-margin-top: 72px; }
+    .pp-cab { display: flex; align-items: center; gap: 14px; padding: 18px 16px 12px; font-size: 22px; font-weight: 800; line-height: 1.25; color: #fff; }
     .pp-t { flex: 1; }
-    .pp-voltar { display: inline-block; margin-top: 16px; font-size: 17px; font-weight: 600; }
-    #indice { scroll-margin-top: 80px; }
     .pp-corpo { padding: 0 16px 22px; }
     .pp-aviso { background: rgba(226,244,8,0.08); border-left: 4px solid var(--teal); padding: 12px 14px; border-radius: 8px; margin-bottom: 18px; }
-    .pp-passos { list-style: none; counter-reset: passo; padding: 0; }
-    .pp-passos[start="3"] { counter-reset: passo 2; }
-    .pp-passos > li { counter-increment: passo; position: relative; padding: 0 0 18px 50px; }
-    .pp-passos > li::before {
-      content: counter(passo); position: absolute; left: 0; top: -2px; width: 34px; height: 34px; border-radius: 50%;
-      border: 2px solid var(--teal); color: var(--teal); font-weight: 800; font-size: 17px;
+    .pp-intro { margin-bottom: 18px; }
+    .pp-voltar { display: inline-block; margin-top: 8px; font-size: 17px; font-weight: 600; color: var(--teal); }
+    /* Tela do celular com os círculos por cima */
+    .tela { margin: 0 0 30px; }
+    .tela-cel { position: relative; width: 100%; max-width: 300px; margin: 0 auto; border-radius: 30px; overflow: hidden; border: 3px solid #2A3335; background: #000; box-shadow: 0 10px 30px rgba(0,0,0,.45); }
+    .tela-cel img { display: block; width: 100%; height: auto; }
+    .mk {
+      position: absolute; transform: translate(-50%, -50%); width: 26px; height: 26px; border-radius: 50%;
+      background: var(--teal); color: #0A0A0A; font-weight: 800; font-size: 15px; line-height: 1;
       display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 0 2px #0A1A18, 0 0 0 4px rgba(226,244,8,0.6), 0 2px 6px rgba(0,0,0,.6);
     }
-    .pp-obs, .pp-atencao { display: block; margin-top: 8px; color: rgba(245,240,230,0.8); font-size: 17px; }
-    .pp-atencao { color: #FFB4A8; }
-    .pp-atencao b { color: #FFB4A8; }
-    .pp-sub { list-style: none; padding: 6px 0 0; }
-    .pp-sub li { padding: 4px 0; }
-    .pp-sub-t { font-weight: 800; color: var(--teal); margin: 6px 0 12px; font-size: 19px; }
-    .pp-dica { margin-top: 6px; padding-top: 12px; border-top: 1px solid var(--border-l); }
-    .pp-errado { margin-top: 4px; padding: 14px; border-radius: 12px; background: rgba(255,255,255,0.04); }
-    .pp-errado p + p { margin-top: 10px; }
-    .pp-errado-t { font-weight: 800; color: #fff; }
-    .pp-corpo a:not(.bt):not(.pp-loja) { color: var(--teal); }
-    .pp-lojas { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-    .pp-loja { display: inline-block; padding: 8px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.25); color: #fff; text-decoration: none; font-size: 16px; font-weight: 600; }
-    /* Botoes como aparecem no app */
-    .bt {
-      display: inline-flex; align-items: center; gap: 6px; vertical-align: middle; white-space: nowrap;
-      padding: 6px 16px; margin: 2px 2px; border-radius: 100px; background: var(--teal); color: #0A0A0A;
-      font-weight: 700; font-size: 17px; line-height: 1.3; text-decoration: none;
-      box-shadow: 0 0 0 3px rgba(226,244,8,0.18);
-    }
-    .bt svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-    .bt-contorno { background: transparent; color: #fff; border: 2px solid #fff; box-shadow: none; }
-    .bt-escuro { background: #2A3335; color: #fff; box-shadow: 0 0 0 2px var(--teal); }
-    .bt-texto { background: transparent; color: var(--teal); box-shadow: none; padding: 2px 4px; text-decoration: underline; text-underline-offset: 3px; white-space: normal; }
-    .bt-aba { background: #2A3335; color: #fff; box-shadow: 0 0 0 2px var(--teal); border-radius: 14px; flex-direction: column; gap: 0; padding: 6px 14px; font-size: 14px; }
-    .bt-aba svg { width: 22px; height: 22px; }
-    .bt-icone { width: 42px; height: 42px; padding: 0; justify-content: center; background: #2A3335; color: #fff; box-shadow: 0 0 0 2px var(--teal); font-size: 20px; }
-    .bt-icone svg { width: 22px; height: 22px; }
-    .bt-icone-lima { background: var(--teal); color: #0A0A0A; }
-    .bt-mini { width: 32px; height: 32px; font-size: 17px; }
-    .bt-mini svg { width: 18px; height: 18px; }
-    .bt-gravando { background: #EF4444; color: #fff; box-shadow: 0 0 0 4px rgba(239,68,68,0.3); }
-    .bt-quadrado { width: 12px; height: 12px; background: #fff; border-radius: 2px; }
-    .bt-tribu {
-      display: inline-block; vertical-align: middle; width: 48px; height: 48px; border-radius: 50%;
-      border: 3px solid var(--teal); background: #2B1F4D url(/quiz2/assets/mascote/fala.webp) no-repeat 50% 4% / 150%;
-      box-shadow: 0 0 0 3px rgba(226,244,8,0.18);
-    }
-    .bt-grande { font-size: 19px; padding: 14px 26px; margin-top: 12px; }
-    .pp-ajuda { text-align: center; padding: 26px 16px; border: 1px solid var(--border); border-radius: 16px; margin-top: 22px; scroll-margin-top: 80px; }
-    .pp-ajuda p { font-size: 20px; font-weight: 700; }
+    .leg { list-style: none; padding: 0; margin: 18px 0 0; }
+    .leg li { display: flex; gap: 12px; align-items: flex-start; padding: 6px 0; }
+    .mk-n { flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--teal); color: #0A0A0A; font-weight: 800; font-size: 16px; display: inline-flex; align-items: center; justify-content: center; margin-top: 1px; }
+    .tela-nota { margin-top: 10px; padding: 10px 12px; border-radius: 10px; background: rgba(255,255,255,0.05); color: rgba(245,240,230,0.85); font-size: 17px; }
+    .pp-ajuda { margin-top: 26px; text-align: center; font-size: 17px; color: var(--text-dim); scroll-margin-top: 80px; }
+    .pp-ajuda a { color: var(--teal); font-weight: 600; }
     .guia-completo-t { font-size: 26px; font-weight: 800; margin-bottom: 16px; padding-top: 32px; border-top: 1px solid var(--border-l); }
   </style>
 <!-- Faixa de cookies + Meta Pixel (só após aceite) -->
@@ -606,138 +574,30 @@
   <!-- HERO -->
   <div class="hero">
     <h1>Guia do Tribbo Fit</h1>
-    <p class="hero-pp">Passo a passo, com calma. Toque no assunto que você quer aprender.</p>
+    <p class="hero-pp">Passo a passo, com as telas do app. Toque no assunto que você quer aprender.</p>
   </div>
 
-  <!-- PASSO A PASSO (link direto para cada tema: /guia/#entrar, #foto, #treino, #tribu) -->
+  <!-- PASSO A PASSO COM AS TELAS DO APP 1.2.8 (etapa 1). Links diretos: #entrar, #quiz, #login, #foto, #treino, #tribu -->
   <div class="pp">
-    <div class="pp-indice" id="indice" role="navigation" aria-label="Assuntos do passo a passo">
-      <a href="#entrar"><span class="pp-n">1</span>Entrar no app com o seu código</a>
-      <a href="#foto"><span class="pp-n">2</span>Registrar a refeição com foto</a>
-      <a href="#treino"><span class="pp-n">3</span>Começar o treino do dia</a>
-      <a href="#tribu"><span class="pp-n">4</span>Falar com o Tribu</a>
-      <a href="#ajuda"><span class="pp-n pp-n-ajuda">?</span>Precisa de ajuda?</a>
+    <div class="pp-indice" id="indice" role="navigation" aria-label="Assuntos do guia">
+      <p class="pp-grupo">Primeiros passos</p>
+      <a href="#entrar"><span class="pp-n">1</span>Entrar com o seu código</a>
+      <a href="#quiz"><span class="pp-n">2</span>Começar pelo app</a>
+      <a href="#login"><span class="pp-n">3</span>Entrar de novo (troquei de celular)</a>
+      <p class="pp-grupo">No dia a dia</p>
+      <a href="#foto"><span class="pp-n">4</span>Registrar a refeição com foto</a>
+      <a href="#treino"><span class="pp-n">5</span>Começar o treino do dia</a>
+      <a href="#tribu"><span class="pp-n">6</span>Falar com o Tribu</a>
     </div>
-
-    <!-- 1. Entrar com o código -->
-    <section class="pp-tema" id="entrar">
-      <h2 class="pp-cab"><span class="pp-n">1</span><span class="pp-t">Entrar no app com o seu código</span></h2>
-      <div class="pp-corpo">
-        <p class="pp-aviso">Você vai precisar do <b>código de login</b> que chegou no e-mail do pagamento. Ele começa com <b>TRB</b>.</p>
-        <ol class="pp-passos">
-          <li>Baixe o app Tribbo Fit.
-            <span class="pp-lojas">
-              <a class="pp-loja" href="https://apps.apple.com/br/app/id6769632514">App Store (iPhone)</a>
-              <a class="pp-loja" href="https://play.google.com/store/apps/details?id=com.usekoraapp.health">Google Play (Android)</a>
-            </span>
-          </li>
-          <li>Abra o app. Na primeira tela, toque em <span class="bt bt-contorno">Já sou assinante</span>
-            <span class="pp-atencao"><b>Atenção:</b> não toque em "Criar meu plano". Sua assinatura já está paga. Não assine de novo.</span>
-          </li>
-          <li>Abra o e-mail do pagamento. Toque e segure no código e escolha <b>"Copiar"</b>.</li>
-          <li>Volte ao app e toque em <span class="bt bt-escuro">Colar</span>
-            <span class="pp-obs">Se o botão Colar não aparecer, toque e segure no campo e escolha "Colar".</span>
-          </li>
-          <li>Toque em <span class="bt">Entrar</span> Não precisa de senha.</li>
-          <li>O app monta o seu plano em poucos segundos. Siga as telas até chegar no Início.
-            <span class="pp-obs">Se aparecer "Vincule sua conta Apple ou Google", pode tocar em <span class="bt bt-texto">Agora não</span></span>
-          </li>
-        </ol>
-        <div class="pp-errado">
-          <p class="pp-errado-t">Deu errado?</p>
-          <p><b>"Código não encontrado"</b>: confira se copiou o código inteiro. Ou toque em <span class="bt bt-texto">Receber código no e-mail do pagamento</span> Chega um código de 6 números no seu e-mail.</p>
-          <p><b>"Esse código de login venceu"</b>: o código vale 7 dias. Faça o mesmo: peça o código de 6 números.</p>
-          <p><b>Não achou o e-mail?</b> Olhe no spam ou <a href="#ajuda">fale com a gente no WhatsApp</a>.</p>
-        </div>
-        <a class="pp-voltar" href="#indice">Voltar aos assuntos</a>
-      </div>
-    </section>
-
-    <!-- 2. Foto do prato -->
-    <section class="pp-tema" id="foto">
-      <h2 class="pp-cab"><span class="pp-n">2</span><span class="pp-t">Registrar a refeição com foto</span></h2>
-      <div class="pp-corpo">
-        <ol class="pp-passos">
-          <li>Na barra de baixo, toque em <span class="bt bt-aba"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3v7a3 3 0 003 3v8M8 3v6M11 3v7a3 3 0 01-3 3M19 21V3c-2.5 1-4 4-4 8h4"/></svg>Nutrição</span></li>
-          <li>Em "Refeições", encontre a refeição que você fez, por exemplo Almoço. Dentro dela, toque em <span class="bt bt-escuro"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Adicionar</span></li>
-          <li>Toque em <span class="bt bt-escuro">Registro rápido com IA</span></li>
-          <li>Toque no desenho da câmera. <span class="bt bt-icone" aria-label="Câmera"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></span>
-            <span class="pp-obs">Na primeira vez, o celular pede permissão: toque em "Permitir".</span>
-          </li>
-          <li>Fotografe o prato de cima, com toda a comida aparecendo.</li>
-          <li>Toque no botão de confirmar, o sinal de certo. <span class="bt bt-icone bt-icone-lima" aria-label="Confirmar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></li>
-          <li>Espere alguns segundos. O app descobre os alimentos e calcula as calorias.</li>
-          <li>Confira a lista:
-            <ul class="pp-sub">
-              <li>Use <span class="bt bt-icone bt-mini">–</span> e <span class="bt bt-icone bt-mini">+</span> para mudar a quantidade.</li>
-              <li>Toque na lixeira <span class="bt bt-icone bt-mini" aria-label="Lixeira"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/></svg></span> para tirar um item.</li>
-              <li>Faltou algo? Toque em <span class="bt bt-escuro">Adicionar item</span></li>
-            </ul>
-          </li>
-          <li>Toque em <span class="bt">Salvar</span> Pronto, a refeição está no seu dia.</li>
-        </ol>
-        <p class="pp-dica"><b>Dica:</b> em vez da foto, você também pode escrever ou falar o que comeu. Por exemplo: "1 prato de arroz, feijão e frango".</p>
-        <a class="pp-voltar" href="#indice">Voltar aos assuntos</a>
-      </div>
-    </section>
-
-    <!-- 3. Treino do dia (aba Treino nova, WORKOUT_TAB_V2) -->
-    <section class="pp-tema" id="treino">
-      <h2 class="pp-cab"><span class="pp-n">3</span><span class="pp-t">Começar o treino do dia</span></h2>
-      <div class="pp-corpo">
-        <ol class="pp-passos">
-          <li>No Início, procure o cartão "Hoje: Treino A" e toque em <span class="bt bt-escuro">Ver meu treino</span>
-            <span class="pp-obs">Ou toque em <span class="bt bt-aba"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h18M6 8v8M3 10v4M18 8v8M21 10v4"/></svg>Treino</span> na barra de baixo.</span>
-          </li>
-          <li>No cartão "HOJE" aparecem o nome do treino, quantos exercícios são e quanto tempo leva. Toque em <span class="bt">Começar</span></li>
-          <li>Toque no exercício para abrir. Veja o desenho que mostra o movimento. Se tiver dúvida, toque em <span class="bt bt-escuro">Como fazer</span></li>
-          <li>Fez uma série? Toque no número dela, na coluna SÉRIE. <span class="bt bt-icone bt-icone-lima bt-mini">1</span>
-            <span class="pp-obs">O descanso começa a contar sozinho. Para não esperar, toque em <span class="bt bt-texto">Pular</span></span>
-          </li>
-          <li>Repita até terminar todos os exercícios.</li>
-          <li>Toque em <span class="bt">Concluir treino</span></li>
-        </ol>
-        <p class="pp-dica"><b>Quer parar antes?</b> Toque em <span class="bt bt-escuro">Finalizar</span> e depois em <span class="bt bt-escuro">Encerrar e salvar</span></p>
-        <p class="pp-dica"><b>Hoje é dia de descanso?</b> No Início, toque em <span class="bt bt-escuro">Descanso</span></p>
-        <a class="pp-voltar" href="#indice">Voltar aos assuntos</a>
-      </div>
-    </section>
-
-    <!-- 4. Tribu (Coach) -->
-    <section class="pp-tema" id="tribu">
-      <h2 class="pp-cab"><span class="pp-n">4</span><span class="pp-t">Falar com o Tribu</span></h2>
-      <div class="pp-corpo">
-        <ol class="pp-passos">
-          <li>Toque na bolinha com o rosto do Tribu. <span class="bt-tribu" role="img" aria-label="Bolinha do Tribu"></span> Ela fica no canto da tela, acima da barra de baixo.
-            <span class="pp-obs">Não vê a bolinha? Atualize o Tribbo Fit na App Store ou no Google Play.</span>
-          </li>
-          <li>Na primeira vez, leia o aviso e toque em <span class="bt">Entendi e aceito</span></li>
-        </ol>
-        <p class="pp-sub-t">Para escrever</p>
-        <ol class="pp-passos" start="3">
-          <li>Toque na caixa de mensagem, embaixo, e escreva a sua pergunta.</li>
-          <li>Toque na seta para cima para enviar. <span class="bt bt-icone bt-icone-lima" aria-label="Enviar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span></li>
-        </ol>
-        <p class="pp-sub-t">Para falar</p>
-        <ol class="pp-passos" start="3">
-          <li>Toque no microfone, uma vez só. Não precisa segurar. <span class="bt bt-icone" aria-label="Microfone"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21"/></svg></span>
-            <span class="pp-obs">Na primeira vez, toque em "Permitir".</span>
-          </li>
-          <li>Fale normalmente. Enquanto grava, o botão fica vermelho. <span class="bt bt-gravando"><span class="bt-quadrado" aria-hidden="true"></span>0:07</span></li>
-          <li>Terminou de falar? Toque no botão vermelho. O que você falou vira texto.</li>
-          <li>Confira o texto e toque na seta para enviar. <span class="bt bt-icone bt-icone-lima" aria-label="Enviar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></span></li>
-        </ol>
-        <p class="pp-dica"><b>Ideias de pergunta:</b> "O que jantar hoje?", "Quanta proteína falta?", "Como foi minha semana?"</p>
-        <p class="pp-dica">Se aparecer <b>"Microfone bloqueado"</b>, toque em <span class="bt bt-texto">Abrir Ajustes</span> e libere o microfone.</p>
-        <a class="pp-voltar" href="#indice">Voltar aos assuntos</a>
-      </div>
-    </section>
-
-    <!-- Ajuda -->
-    <div class="pp-ajuda" id="ajuda">
-      <p>Ainda com dúvida? Fale com a gente.</p>
-      <a class="bt bt-grande" href="https://wa.me/5511949268402?text=Oi!%20Preciso%20de%20ajuda%20com%20meu%20acesso%20ao%20Tribbo%20Fit">Chamar no WhatsApp</a>
-    </div>
+    <h2 class="pp-secao" id="primeiros-passos">Primeiros passos</h2>
+    <section class="pp-tema" id="entrar"><h3 class="pp-cab"><span class="pp-n">1</span><span class="pp-t">Entrar com o seu código</span></h3><div class="pp-corpo"><p class="pp-aviso">Para quem comprou no site. Você vai precisar do <b>código de login</b> que chegou no e-mail do pagamento. Ele começa com <b>TRB</b>.</p><figure class="tela"><div class="tela-cel"><img src="telas/1-01-splash.webp" width="600" height="1304" loading="lazy" decoding="async" alt="Primeira tela do app"><span class="mk" style="left:10%;top:86%" aria-hidden="true">1</span><span class="mk" style="left:10%;top:78.5%" aria-hidden="true">2</span><span class="mk" style="left:27%;top:92.8%" aria-hidden="true">3</span></div><figcaption><ol class="leg"><li><span class="mk-n" aria-hidden="true">1</span><span><b>Já sou assinante</b>: toque aqui se você comprou no site.</span></li><li><span class="mk-n" aria-hidden="true">2</span><span><b>Criar meu plano</b>: só para quem ainda não assinou. Se você já pagou, não toque aqui.</span></li><li><span class="mk-n" aria-hidden="true">3</span><span><b>Já tenho conta</b>: para entrar com Apple, Google ou e-mail.</span></li></ol></figcaption></figure><figure class="tela"><div class="tela-cel"><img src="telas/1-02-codigo.webp" width="600" height="1304" loading="lazy" decoding="async" alt="Tela do código de login"><span class="mk" style="left:62%;top:37.4%" aria-hidden="true">1</span><span class="mk" style="left:81%;top:37.4%" aria-hidden="true">2</span><span class="mk" style="left:10%;top:42%" aria-hidden="true">3</span><span class="mk" style="left:8%;top:48.7%" aria-hidden="true">4</span><span class="mk" style="left:14%;top:87%" aria-hidden="true">5</span></div><figcaption><ol class="leg"><li><span class="mk-n" aria-hidden="true">1</span><span>O campo do código: é aqui que ele aparece.</span></li><li><span class="mk-n" aria-hidden="true">2</span><span><b>Colar</b>: cola o código que você copiou do e-mail.</span></li><li><span class="mk-n" aria-hidden="true">3</span><span><b>Entrar</b>: toque depois de colar. Não precisa de senha.</span></li><li><span class="mk-n" aria-hidden="true">4</span><span><b>Receber código no e-mail do pagamento</b>: se o código não funcionar, chega um código de 6 números no seu e-mail.</span></li><li><span class="mk-n" aria-hidden="true">5</span><span><b>WhatsApp</b> e <b>E-mail</b>: fale com a gente se não conseguir entrar.</span></li></ol></figcaption></figure><figure class="tela"><div class="tela-cel"><img src="telas/1-03-preparando.webp" width="600" height="1304" loading="lazy" decoding="async" alt="Tela Preparando seu plano"><span class="mk" style="left:23%;top:56.3%" aria-hidden="true">1</span></div><figcaption><ol class="leg"><li><span class="mk-n" aria-hidden="true">1</span><span><b>Continuar sem esperar</b>: o app termina de montar o seu plano e mostra no Início.</span></li></ol><p class="tela-nota">Em poucos segundos o app monta as suas metas, o cardápio e o treino.</p></figcaption></figure><figure class="tela"><div class="tela-cel"><img src="telas/1-04-vincular.webp" width="600" height="1304" loading="lazy" decoding="async" alt="Tela para vincular Apple ou Google"><span class="mk" style="left:9%;top:57.3%" aria-hidden="true">1</span><span class="mk" style="left:9%;top:65%" aria-hidden="true">2</span><span class="mk" style="left:33%;top:91.4%" aria-hidden="true">3</span></div><figcaption><ol class="leg"><li><span class="mk-n" aria-hidden="true">1</span><span><b>Continuar com a Apple</b>: na próxima vez, você entra com um toque, sem código.</span></li><li><span class="mk-n" aria-hidden="true">2</span><span><b>Continuar com o Google</b>: o mesmo, para quem usa conta Google.</span></li><li><span class="mk-n" aria-hidden="true">3</span><span><b>Agora não</b>: pula esta parte. Dá para fazer depois, no Perfil.</span></li></ol></figcaption></figure><a class="pp-voltar" href="#indice">Voltar aos assuntos</a></div></section>
+    <section class="pp-tema" id="quiz"><h3 class="pp-cab"><span class="pp-n">2</span><span class="pp-t">Começar pelo app</span></h3><div class="pp-corpo"><p class="pp-intro">Para quem ainda não assinou. Na primeira tela, toque em <b>Criar meu plano</b>. O app faz algumas perguntas e monta o seu plano.</p><figure class="tela"><div class="tela-cel"><img src="telas/1-05-quiz.webp" width="600" height="1304" loading="lazy" decoding="async" alt="Pergunta do quiz"><span class="mk" style="left:13%;top:10.2%" aria-hidden="true">1</span><span class="mk" style="left:60%;top:6.8%" aria-hidden="true">2</span><span class="mk" style="left:75%;top:29.2%" aria-hidden="true">3</span></div><figcaption><ol class="leg"><li><span class="mk-n" aria-hidden="true">1</span><span>Seta: volta para a pergunta anterior.</span></li><li><span class="mk-n" aria-hidden="true">2</span><span>Barra: mostra quanto falta para terminar.</span></li><li><span class="mk-n" aria-hidden="true">3</span><span>Toque na resposta que combina com você.</span></li></ol></figcaption></figure><figure class="tela"><div class="tela-cel"><img src="telas/1-06-plano-pronto.webp" width="600" height="1304" loading="lazy" decoding="async" alt="Tela do plano pronto"><span class="mk" style="left:91%;top:27.5%" aria-hidden="true">1</span><span class="mk" style="left:91%;top:57.3%" aria-hidden="true">2</span><span class="mk" style="left:91%;top:69.5%" aria-hidden="true">3</span><span class="mk" style="left:10%;top:91.2%" aria-hidden="true">4</span></div><figcaption><ol class="leg"><li><span class="mk-n" aria-hidden="true">1</span><span>O gráfico mostra onde você pode chegar.</span></li><li><span class="mk-n" aria-hidden="true">2</span><span>O seu treino.</span></li><li><span class="mk-n" aria-hidden="true">3</span><span>A sua alimentação: calorias e nutrientes por dia.</span></li><li><span class="mk-n" aria-hidden="true">4</span><span><b>Quero meu plano</b>: segue para a assinatura.</span></li></ol></figcaption></figure><figure class="tela"><div class="tela-cel"><img src="telas/1-07-assinatura.webp" width="600" height="1304" loading="lazy" decoding="async" alt="Tela de assinatura"><span class="mk" style="left:45%;top:58%" aria-hidden="true">1</span><span class="mk" style="left:9%;top:83.8%" aria-hidden="true">2</span><span class="mk" style="left:88%;top:97.4%" aria-hidden="true">3</span></div><figcaption><ol class="leg"><li><span class="mk-n" aria-hidden="true">1</span><span>Escolha o plano: anual ou mensal.</span></li><li><span class="mk-n" aria-hidden="true">2</span><span><b>Assinar</b>: confirma a compra pela loja do celular.</span></li><li><span class="mk-n" aria-hidden="true">3</span><span><b>Já sou assinante? Entrar · Restaurar</b>: para quem já assinou.</span></li></ol></figcaption></figure><figure class="tela"><div class="tela-cel"><img src="telas/1-08-proteger-conta.webp" width="600" height="1304" loading="lazy" decoding="async" alt="Tela Proteja seu plano"><span class="mk" style="left:9%;top:55.5%" aria-hidden="true">1</span><span class="mk" style="left:9%;top:63.3%" aria-hidden="true">2</span><span class="mk" style="left:9%;top:71%" aria-hidden="true">3</span><span class="mk" style="left:33%;top:91.4%" aria-hidden="true">4</span></div><figcaption><ol class="leg"><li><span class="mk-n" aria-hidden="true">1</span><span><b>Continuar com a Apple</b></span></li><li><span class="mk-n" aria-hidden="true">2</span><span><b>Continuar com o Google</b></span></li><li><span class="mk-n" aria-hidden="true">3</span><span><b>Continuar com e-mail</b>: crie a sua conta para não perder o plano se trocar de celular.</span></li><li><span class="mk-n" aria-hidden="true">4</span><span><b>Agora não</b>: pula esta parte.</span></li></ol></figcaption></figure><a class="pp-voltar" href="#indice">Voltar aos assuntos</a></div></section>
+    <section class="pp-tema" id="login"><h3 class="pp-cab"><span class="pp-n">3</span><span class="pp-t">Entrar de novo (troquei de celular)</span></h3><div class="pp-corpo"><p class="pp-intro">Na primeira tela, toque em <b>Já tenho conta</b> e depois em <b>Continuar com e-mail</b>.</p><figure class="tela"><div class="tela-cel"><img src="telas/1-09-login.webp" width="600" height="1304" loading="lazy" decoding="async" alt="Tela Entrar com e-mail"><span class="mk" style="left:91%;top:26.3%" aria-hidden="true">1</span><span class="mk" style="left:79%;top:35.3%" aria-hidden="true">2</span><span class="mk" style="left:9%;top:45.2%" aria-hidden="true">3</span><span class="mk" style="left:9%;top:51.4%" aria-hidden="true">4</span><span class="mk" style="left:9%;top:59%" aria-hidden="true">5</span></div><figcaption><ol class="leg"><li><span class="mk-n" aria-hidden="true">1</span><span>Seu e-mail.</span></li><li><span class="mk-n" aria-hidden="true">2</span><span>Sua senha.</span></li><li><span class="mk-n" aria-hidden="true">3</span><span><b>Receber código de 6 números</b>: entra sem senha, com um código que chega no seu e-mail.</span></li><li><span class="mk-n" aria-hidden="true">4</span><span><b>Criar ou trocar senha</b>: se você esqueceu a senha.</span></li><li><span class="mk-n" aria-hidden="true">5</span><span><b>Entrar</b></span></li></ol></figcaption></figure><a class="pp-voltar" href="#indice">Voltar aos assuntos</a></div></section>
+    <h2 class="pp-secao">No dia a dia</h2>
+    <section class="pp-tema" id="foto"><h3 class="pp-cab"><span class="pp-n">4</span><span class="pp-t">Registrar a refeição com foto</span></h3><div class="pp-corpo"><p class="pp-intro">Na barra de baixo, toque em <b>Nutrição</b>. Na refeição que você fez, toque em <b>Adicionar</b> e depois em <b>Registro rápido com IA</b>.</p><figure class="tela"><div class="tela-cel"><img src="telas/3-07-registro-ia.webp" width="600" height="1304" loading="lazy" decoding="async" alt="Tela do registro rápido com IA"><span class="mk" style="left:88%;top:78%" aria-hidden="true">1</span><span class="mk" style="left:14.5%;top:88.8%" aria-hidden="true">2</span><span class="mk" style="left:28%;top:88.8%" aria-hidden="true">3</span><span class="mk" style="left:41.5%;top:88.8%" aria-hidden="true">4</span><span class="mk" style="left:55%;top:88.8%" aria-hidden="true">5</span><span class="mk" style="left:84%;top:88.8%" aria-hidden="true">6</span></div><figcaption><ol class="leg"><li><span class="mk-n" aria-hidden="true">1</span><span>Caixa de texto: se preferir, escreva o que comeu.</span></li><li><span class="mk-n" aria-hidden="true">2</span><span>Câmera: tire a foto do prato, de cima, com toda a comida aparecendo.</span></li><li><span class="mk-n" aria-hidden="true">3</span><span>Galeria: use uma foto que já está no celular.</span></li><li><span class="mk-n" aria-hidden="true">4</span><span>Código de barras: para produtos de pacote.</span></li><li><span class="mk-n" aria-hidden="true">5</span><span>Microfone: fale o que você comeu.</span></li><li><span class="mk-n" aria-hidden="true">6</span><span>Confirmar: envia para o app analisar. Espere alguns segundos.</span></li></ol></figcaption></figure><figure class="tela"><div class="tela-cel"><img src="telas/3-08-revisao.webp" width="600" height="1304" loading="lazy" decoding="async" alt="Tela de revisão da refeição"><span class="mk" style="left:64%;top:17%" aria-hidden="true">1</span><span class="mk" style="left:60%;top:48.2%" aria-hidden="true">2</span><span class="mk" style="left:88%;top:41.6%" aria-hidden="true">3</span><span class="mk" style="left:50%;top:71.4%" aria-hidden="true">4</span><span class="mk" style="left:10%;top:91.2%" aria-hidden="true">5</span></div><figcaption><ol class="leg"><li><span class="mk-n" aria-hidden="true">1</span><span>Nome do prato: dá para mudar.</span></li><li><span class="mk-n" aria-hidden="true">2</span><span><b>–</b> e <b>+</b>: diminuem ou aumentam a quantidade. Para escolher outra medida, toque na quantidade.</span></li><li><span class="mk-n" aria-hidden="true">3</span><span>Lixeira: tira um item que não estava no prato.</span></li><li><span class="mk-n" aria-hidden="true">4</span><span><b>Adicionar item</b>: inclui algo que faltou.</span></li><li><span class="mk-n" aria-hidden="true">5</span><span><b>Salvar</b>: pronto, a refeição está no seu dia.</span></li></ol></figcaption></figure><a class="pp-voltar" href="#indice">Voltar aos assuntos</a></div></section>
+    <section class="pp-tema" id="treino"><h3 class="pp-cab"><span class="pp-n">5</span><span class="pp-t">Começar o treino do dia</span></h3><div class="pp-corpo"><p class="pp-intro">Na barra de baixo, toque em <b>Treino</b>.</p><figure class="tela"><div class="tela-cel"><img src="telas/4-01-aba-treino.webp" width="600" height="1304" loading="lazy" decoding="async" alt="Aba Treino"><span class="mk" style="left:79.5%;top:15.3%" aria-hidden="true">1</span><span class="mk" style="left:90.5%;top:15.3%" aria-hidden="true">2</span><span class="mk" style="left:50%;top:30.6%" aria-hidden="true">3</span><span class="mk" style="left:90%;top:30.4%" aria-hidden="true">4</span><span class="mk" style="left:22%;top:50.7%" aria-hidden="true">5</span><span class="mk" style="left:70%;top:50.7%" aria-hidden="true">6</span></div><figcaption><ol class="leg"><li><span class="mk-n" aria-hidden="true">1</span><span>Gráfico: a sua evolução.</span></li><li><span class="mk-n" aria-hidden="true">2</span><span>Relógio: os treinos que você já fez.</span></li><li><span class="mk-n" aria-hidden="true">3</span><span>Dias da semana.</span></li><li><span class="mk-n" aria-hidden="true">4</span><span><b>Começar</b>: abre o treino de hoje.</span></li><li><span class="mk-n" aria-hidden="true">5</span><span><b>Treino rápido</b>: o app monta um treino na hora.</span></li><li><span class="mk-n" aria-hidden="true">6</span><span><b>Treino livre</b>: você escolhe os exercícios.</span></li></ol></figcaption></figure><figure class="tela"><div class="tela-cel"><img src="telas/4-11-treino-iniciado.webp" width="600" height="1304" loading="lazy" decoding="async" alt="Treino iniciado"><span class="mk" style="left:4.5%;top:7%" aria-hidden="true">1</span><span class="mk" style="left:5%;top:18.5%" aria-hidden="true">2</span><span class="mk" style="left:93%;top:17.5%" aria-hidden="true">3</span><span class="mk" style="left:64%;top:28.3%" aria-hidden="true">4</span><span class="mk" style="left:88%;top:66.3%" aria-hidden="true">5</span></div><figcaption><ol class="leg"><li><span class="mk-n" aria-hidden="true">1</span><span>X: sai do treino.</span></li><li><span class="mk-n" aria-hidden="true">2</span><span>Pausar o tempo do treino.</span></li><li><span class="mk-n" aria-hidden="true">3</span><span><b>Finalizar</b>: encerra o treino.</span></li><li><span class="mk-n" aria-hidden="true">4</span><span><b>Reordenar</b>: muda a ordem dos exercícios.</span></li><li><span class="mk-n" aria-hidden="true">5</span><span><b>Entendi</b>: fecha a dica. O app já traz a carga e as repetições da última vez.</span></li></ol></figcaption></figure><figure class="tela"><div class="tela-cel"><img src="telas/4-12-exercicio-aberto.webp" width="600" height="1304" loading="lazy" decoding="async" alt="Exercício aberto com uma série feita"><span class="mk" style="left:12%;top:37%" aria-hidden="true">1</span><span class="mk" style="left:55%;top:53.7%" aria-hidden="true">2</span><span class="mk" style="left:4.5%;top:73.5%" aria-hidden="true">3</span><span class="mk" style="left:49%;top:68.4%" aria-hidden="true">4</span><span class="mk" style="left:22%;top:96%" aria-hidden="true">5</span></div><figcaption><ol class="leg"><li><span class="mk-n" aria-hidden="true">1</span><span>O desenho mostra o movimento.</span></li><li><span class="mk-n" aria-hidden="true">2</span><span><b>Como fazer</b>: explica o exercício.</span></li><li><span class="mk-n" aria-hidden="true">3</span><span>Fez a série? Toque no número dela. Ela fica marcada.</span></li><li><span class="mk-n" aria-hidden="true">4</span><span><b>KG</b> e <b>REPS</b>: toque para mudar a carga e as repetições.</span></li><li><span class="mk-n" aria-hidden="true">5</span><span><b>Concluir todas as séries</b>: marca todas de uma vez.</span></li></ol></figcaption></figure><figure class="tela"><div class="tela-cel"><img src="telas/4-13-descanso.webp" width="600" height="1304" loading="lazy" decoding="async" alt="Descanso entre séries"><span class="mk" style="left:66%;top:87.6%" aria-hidden="true">1</span><span class="mk" style="left:84%;top:86.6%" aria-hidden="true">2</span></div><figcaption><ol class="leg"><li><span class="mk-n" aria-hidden="true">1</span><span><b>+15 s</b>: mais tempo de descanso.</span></li><li><span class="mk-n" aria-hidden="true">2</span><span><b>Pular</b>: segue sem esperar.</span></li></ol><p class="tela-nota">Depois de marcar uma série, o descanso começa a contar sozinho.</p></figcaption></figure><figure class="tela"><div class="tela-cel"><img src="telas/4-15-encerrar.webp" width="600" height="1304" loading="lazy" decoding="async" alt="Encerrar treino"><span class="mk" style="left:20%;top:52.4%" aria-hidden="true">1</span><span class="mk" style="left:20%;top:59%" aria-hidden="true">2</span></div><figcaption><ol class="leg"><li><span class="mk-n" aria-hidden="true">1</span><span><b>Encerrar e salvar</b>: o treino fica registrado no seu dia.</span></li><li><span class="mk-n" aria-hidden="true">2</span><span><b>Continuar treinando</b>: volta para o treino.</span></li></ol><p class="tela-nota">Terminou tudo? Toque em <b>Concluir treino</b>, no fim da tela. Quer parar antes? Toque em <b>Finalizar</b>.</p></figcaption></figure><p class="tela-nota">Depois de salvar, aparece o resumo do treino. <b>Compartilhar</b> manda o resumo para quem você quiser, e <b>Ver meu dia</b> volta para o Início.</p><a class="pp-voltar" href="#indice">Voltar aos assuntos</a></div></section>
+    <section class="pp-tema" id="tribu"><h3 class="pp-cab"><span class="pp-n">6</span><span class="pp-t">Falar com o Tribu</span></h3><div class="pp-corpo"><p class="pp-intro">O Tribu é o seu coach no app. Você pode escrever ou falar com ele.</p><figure class="tela"><div class="tela-cel"><img src="telas/5-01-bolinha.webp" width="600" height="1304" loading="lazy" decoding="async" alt="Início com a bolinha do Tribu"><span class="mk" style="left:76%;top:44.5%" aria-hidden="true">1</span></div><figcaption><ol class="leg"><li><span class="mk-n" aria-hidden="true">1</span><span>A bolinha do Tribu: toque para conversar. O número vermelho mostra mensagens novas.</span></li></ol><p class="tela-nota">Não vê a bolinha? Atualize o Tribbo Fit na App Store ou no Google Play. Na primeira conversa, leia o aviso e toque em <b>Entendi e aceito</b>.</p></figcaption></figure><figure class="tela"><div class="tela-cel"><img src="telas/5-02-chat.webp" width="600" height="1304" loading="lazy" decoding="async" alt="Conversa com o Tribu"><span class="mk" style="left:80.5%;top:15.5%" aria-hidden="true">1</span><span class="mk" style="left:91%;top:15.5%" aria-hidden="true">2</span><span class="mk" style="left:45%;top:57.8%" aria-hidden="true">3</span><span class="mk" style="left:62%;top:91.4%" aria-hidden="true">4</span><span class="mk" style="left:90.5%;top:86%" aria-hidden="true">5</span></div><figcaption><ol class="leg"><li><span class="mk-n" aria-hidden="true">1</span><span>i: sobre o Tribu.</span></li><li><span class="mk-n" aria-hidden="true">2</span><span>X: fecha a conversa.</span></li><li><span class="mk-n" aria-hidden="true">3</span><span>Sugestões rápidas: toque numa pergunta pronta.</span></li><li><span class="mk-n" aria-hidden="true">4</span><span>Caixa de mensagem: escreva aqui. Depois toque na seta para enviar.</span></li><li><span class="mk-n" aria-hidden="true">5</span><span>Microfone: toque uma vez para falar. Não precisa segurar.</span></li></ol></figcaption></figure><figure class="tela"><div class="tela-cel"><img src="telas/5-03-gravando.webp" width="600" height="1304" loading="lazy" decoding="async" alt="Gravando a voz"><span class="mk" style="left:88%;top:86.3%" aria-hidden="true">1</span><span class="mk" style="left:70%;top:88.5%" aria-hidden="true">2</span></div><figcaption><ol class="leg"><li><span class="mk-n" aria-hidden="true">1</span><span>Botão vermelho: está gravando. Terminou de falar? Toque nele.</span></li><li><span class="mk-n" aria-hidden="true">2</span><span>O que você falou vira texto aqui. Confira e toque na seta para enviar.</span></li></ol></figcaption></figure><figure class="tela"><div class="tela-cel"><img src="telas/5-04-exercicios.webp" width="600" height="1304" loading="lazy" decoding="async" alt="Tribu mostrando um exercício"><span class="mk" style="left:16%;top:31.5%" aria-hidden="true">1</span><span class="mk" style="left:86%;top:58%" aria-hidden="true">2</span></div><figcaption><ol class="leg"><li><span class="mk-n" aria-hidden="true">1</span><span>O Tribu mostra o exercício com o desenho. Toque no desenho para ver de novo.</span></li><li><span class="mk-n" aria-hidden="true">2</span><span>O passo a passo de como fazer.</span></li></ol></figcaption></figure><figure class="tela"><div class="tela-cel"><img src="telas/5-05-registrar.webp" width="600" height="1304" loading="lazy" decoding="async" alt="Resposta do Tribu com botão Registrar na Nutrição"><span class="mk" style="left:64%;top:77.8%" aria-hidden="true">1</span><span class="mk" style="left:31%;top:82.2%" aria-hidden="true">2</span></div><figcaption><ol class="leg"><li><span class="mk-n" aria-hidden="true">1</span><span><b>Registrar na Nutrição</b>: abre o registro da refeição.</span></li><li><span class="mk-n" aria-hidden="true">2</span><span>Gostei ou não gostei: avalie a resposta.</span></li></ol></figcaption></figure><a class="pp-voltar" href="#indice">Voltar aos assuntos</a></div></section>
+    <p class="pp-ajuda" id="ajuda">Precisa de ajuda? <a href="https://wa.me/5511949268402?text=Oi!%20Preciso%20de%20ajuda%20com%20o%20app%20Tribbo%20Fit">Fale com a gente no WhatsApp</a></p>
   </div>
 
   <h2 class="guia-completo-t">Guia completo</h2>
