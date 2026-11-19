@@ -41,7 +41,7 @@
   const PRIMEIRA = ENTRADA ? 'goal' : 'welcome';
   // Logo e "Voltar ao site" levam a /plano/ com site=1, que desliga o redirecionamento do anuncio (sem volta infinita).
   const PARAMS_SITE = new URLSearchParams(URL_PARAMS); PARAMS_SITE.delete('retomar'); PARAMS_SITE.delete('cupom'); PARAMS_SITE.delete('entrada');
-  if (ENTRADA) PARAMS_SITE.set('site', '1');
+  PARAMS_SITE.set('site', '1'); // sempre, inclusive no link ?retomar= (a /plano/ sem site=1 redireciona para o quiz)
   const SITE = T.exit.home + (PARAMS_SITE.toString() ? `?${PARAMS_SITE}` : '');
 
   let a = TF.emptyAnswers();

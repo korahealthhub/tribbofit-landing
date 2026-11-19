@@ -1,24 +1,27 @@
 /*
- * Anuncio do Meta direto na primeira pergunta do quiz. Roda no topo do <head> da /plano/, antes do CSS, do pixel
- * (consent.js) e do plano.js: com utm_source=FB (sem diferenciar maiuscula) e a chave ligada (/js/funil.js,
- * entradaObjetivo), troca a pagina por /quiz/?entrada=objetivo com TODOS os parametros da URL (utm_*, fbclid e outros).
+ * A /plano/ nao e mais mostrada: roda no topo do <head>, antes do CSS, do pixel (consent.js) e do plano.js, e troca a
+ * pagina pelo quiz com TODA a query e o hash (utm_*, fbclid, retomar, cupom e outros), igual ao /quiz/.
+ *  - Chave REDIRECIONAR_QUIZ2 ligada (/js/funil.js): todo mundo vai para o /quiz2/; ?v=1 vai para o /quiz/ antigo.
+ *  - Anuncio do Meta (utm_source=FB, sem diferenciar maiuscula) ganha entrada=objetivo, como antes.
+ *  - site=1 (logo, "Voltar ao site" e "Sair" do quiz) desliga o redirecionamento e mostra a /plano/ (sem volta infinita).
+ *  - Chave desligada: so o anuncio (com entradaObjetivo) vai para o /quiz/; o resto fica na /plano/ como antes.
  * location.replace: a /plano/ nao fica no historico, entao o Voltar do quiz nao cai aqui de novo.
- * fbclid sozinho NAO redireciona (o Facebook e o Instagram poem fbclid em qualquer link, inclusive organico).
- * site=1 (logo e "Voltar ao site" do quiz) desliga o redirecionamento.
  */
 (function () {
   'use strict';
   var F = window.TF_FUNIL;
-  if (!F || !F.entradaObjetivo) return;
+  if (!F) return;
   var q;
   try { q = new URLSearchParams(location.search); } catch (e) { return; }
   if (q.get('site') === '1') return;
-  if (String(q.get('utm_source') || '').toLowerCase() !== 'fb') return;
+  var anuncio = !!F.entradaObjetivo && String(q.get('utm_source') || '').toLowerCase() === 'fb';
+  if (!F.redirecionarQuiz2 && !anuncio) return;
   // plano.js e consent.js nao rodam (nem web_plano_viewed nem pixel) e a pagina nao pisca enquanto troca.
   window.TF_REDIRECIONANDO = true;
   document.documentElement.style.visibility = 'hidden';
-  q.set('entrada', 'objetivo');
-  if (window.tribboMedida) window.tribboMedida('web_plano_redirect_quiz', { page: 'plano' });
-  // /quiz2/ com a chave REDIRECIONAR_QUIZ2 (/js/funil.js); ?v=1 fica no /quiz/ antigo.
-  location.replace((F.redirecionarQuiz2 && q.get('v') !== '1' ? '/quiz2/?' : '/quiz/?') + q.toString());
+  if (anuncio) q.set('entrada', 'objetivo');
+  var destino = F.redirecionarQuiz2 && q.get('v') !== '1' ? '/quiz2/' : '/quiz/';
+  if (window.tribboMedida) window.tribboMedida('web_plano_redirect_quiz', { page: 'plano', motivo: anuncio ? 'anuncio' : 'direto' });
+  var busca = q.toString();
+  location.replace(destino + (busca ? '?' + busca : '') + location.hash);
 })();
