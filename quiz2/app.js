@@ -2400,13 +2400,13 @@
     }, REDUCED ? 0 : V.stepMs);
   }
 
-  // Black Friday do anual (so no /quiz2/, LIGADA): Anual por R$ 179,90 ate 30/11/2026 23:59 (Brasilia), na oferta propria
+  // Black Friday do anual (so no /quiz2/, LIGADA): Anual por R$ 149,90 ate 30/11/2026 23:59 (Brasilia), na oferta propria
   // da Cakto (OFERTA_BLACK_URL), SEM cupom, com os mesmos parametros do anual (nome, e-mail, telefone, callback, utm).
-  // Conferido em 16/11, so lendo a pagina: abre com R$ 178,91 + R$ 0,99 = R$ 179,90 e os dados preenchidos, sem sufixo.
+  // Na Cakto: R$ 148,91 + R$ 0,99 = R$ 149,90. Dados preenchidos e sem sufixo: conferido em 16/11, com o preco anterior.
   // Enquanto vale: faixa preta no topo com o contador e o Anual marcado. Depois do prazo, volta tudo ao normal sozinho
   // (link normal do anual). Nao vale junto do cupom do suporte.
   const OFERTA_BLACK_URL = 'https://pay.cakto.com.br/32m7nk7';
-  const BLACK = { ativa: true, fim: Date.parse('2026-11-30T23:59:59-03:00'), preco: 179.90, url: OFERTA_BLACK_URL };
+  const BLACK = { ativa: true, fim: Date.parse('2026-11-30T23:59:59-03:00'), preco: 149.90, url: OFERTA_BLACK_URL };
   // Fim da Black em ms, ou 0 se ela nao vale agora.
   function fimOfertaAnual() {
     if (!BLACK.ativa || !TF.PAGAMENTO_ATIVO || (lead && lead.cupom)) return 0;
@@ -2556,8 +2556,8 @@
             X.monthly, `${X.then} ${brl(P.mensal)}${X.perMonthShort}`,
             [h('s', null, brl(P.mensal)), h('b', { class: 'fx-grande' }, precoOferta), h('span', { class: 'fx-roxo-forte' }, X.firstMonth)])
           : plano('mensal', null, X.monthly, [X2.mensalSub], [h('b', { class: 'fx-grande' }, brl(P.mensal), h('small', null, X2.barraMes))]);
-      // Black Friday: o Anual em cima e marcado, borda lima, etiqueta, "R$ 14,99/mes" grande e, pequeno, o anual normal
-      // riscado, o valor a vista, a economia contra 12 meses no Mensal (R$ 358,80 - R$ 179,90 = R$ 178,90) e o parcelado.
+      // Black Friday: o Anual em cima e marcado, borda lima, etiqueta, "R$ 12,49/mes" grande e, pequeno, o anual normal
+      // riscado, o valor a vista, a economia contra 12 meses no Mensal (R$ 358,80 - R$ 149,90 = R$ 208,90) e o parcelado.
       const cartaoAnual = fimAnual
         ? plano('anual', h('span', { class: 'fx-selo-black' }, BF.etiqueta),
           X.annual, [h('span', { class: 'fx-vista' }, h('s', null, brl(P.anual)), ' ', BF.vista.replace('{preco}', brl(precoAnual))),
