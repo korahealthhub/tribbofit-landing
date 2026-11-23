@@ -2402,7 +2402,7 @@
 
   // Black Friday do anual (so no /quiz2/, LIGADA): Anual por R$ 149,90 ate 30/11/2026 23:59 (Brasilia), na oferta propria
   // da Cakto (OFERTA_BLACK_URL), SEM cupom, com os mesmos parametros do anual (nome, e-mail, telefone, callback, utm).
-  // Na Cakto: R$ 148,91 + R$ 0,99 = R$ 149,90. Dados preenchidos e sem sufixo: conferido em 16/11, com o preco anterior.
+  // Na Cakto: R$ 148,91 + R$ 0,99 = R$ 149,90 (valor conferido em 23/11). Dados preenchidos e sem sufixo: conferido em 16/11.
   // Enquanto vale: faixa preta no topo com o contador e o Anual marcado. Depois do prazo, volta tudo ao normal sozinho
   // (link normal do anual). Nao vale junto do cupom do suporte.
   const OFERTA_BLACK_URL = 'https://pay.cakto.com.br/32m7nk7';
@@ -2479,13 +2479,14 @@
     // Preco por dia nos cartoes: anual / 365 e mensal / 30, nos centavos (R$ 0,63 e R$ 1,00).
     const diaAnual = brl(Math.round((P.anual / 365) * 100) / 100);
     const diaMensal = brl(Math.round((P.mensal / 30) * 100) / 100);
-    // "Menos de R$ 0,65 por dia" (Feito pro que voce contou): o anual / 365, arredondado para cima nos 5 centavos.
-    const porDia = brl(Math.ceil((P.anual / 365) * 20) / 20);
     const parcela = brl(P.parcelaAnual);
     // /quiz2/: o Mensal vem marcado (com ou sem o cupom do suporte); durante a Black Friday, o Anual.
     const fimAnual = oferta ? 0 : fimOfertaAnual();
     planoWeb = fimAnual ? 'anual' : 'mensal';
     const precoAnual = fimAnual ? BLACK.preco : P.anual;
+    // "Menos de R$ 0,65 por dia" (Feito pro que voce contou): o anual / 365, arredondado para cima nos 5 centavos.
+    // Durante a Black Friday, o anual da Black / 365, arredondado para cima no centavo: "menos de R$ 0,42 por dia".
+    const porDia = brl(fimAnual ? Math.ceil((precoAnual / 365) * 100) / 100 : Math.ceil((P.anual / 365) * 20) / 20);
     const BF = TF.V2.preco.black;
     const X2 = TF.V2.preco;
     const dozeMeses = P.mensal * 12; // 12 x R$ 29,90 = R$ 358,80 (o mesmo ano no Mensal)
