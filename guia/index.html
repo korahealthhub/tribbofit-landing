@@ -253,12 +253,12 @@
 </button>
 
 <script>
-  // Links do guia antigo (#s1 a #s14): levam ao tema novo mais parecido.
+  // Links do guia antigo (#s1 a #s14) e #nutricao (link do Tribu): levam ao tema novo mais parecido.
   // Sem tema novo, abre no topo. Na etapa 2, é só completar esta lista.
-  const ANTIGOS = { s2: 'entrar', s5: 'refeicao', s6: 'refeicao', s8: 'treino', s9: 'treino', s11: 'tribu' };
+  const ANTIGOS = { s2: 'entrar', s5: 'refeicao', s6: 'refeicao', s8: 'treino', s9: 'treino', s11: 'tribu', nutricao: 'refeicao' };
   function linkAntigo() {
     const h = location.hash.slice(1).toLowerCase();
-    if (!/^s([1-9]|1[0-4])$/.test(h)) return;
+    if (!/^(s([1-9]|1[0-4])|nutricao)$/.test(h)) return;
     if (ANTIGOS[h]) { location.replace('#' + ANTIGOS[h]); return; }
     history.replaceState(null, '', location.pathname + location.search);
     window.scrollTo(0, 0);
