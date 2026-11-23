@@ -197,6 +197,8 @@
     .pp-ajuda { margin-top: 26px; text-align: center; font-size: 17px; color: var(--text-dim); }
     .pp-ajuda a { color: var(--teal); font-weight: 600; }
   </style>
+<!-- Aberto de dentro do app (?app=1): o consent.js sai na primeira linha, sem faixa e sem GA4, TikTok e Meta, mesmo com aceite antigo -->
+<script>if (new URLSearchParams(location.search).get('app') === '1') window.TF_REDIRECIONANDO = true;</script>
 <!-- Faixa de cookies + Meta Pixel (só após aceite) -->
 <script src="/consent.js" defer></script>
 </head>
