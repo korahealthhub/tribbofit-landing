@@ -754,7 +754,7 @@ window.TF = window.TF || {};
     },
     // So na web: cadastro (tela 48L, com TF.PAGAMENTO_ATIVO), depois do resultado e antes do preco. Envia para o web-lead.
     leadForm: {
-      title: 'Para onde mandamos o seu acesso ao app?', subtitle: 'Depois do pagamento, o seu código chega na hora por e-mail.', name: 'Nome', email: 'E-mail', whatsapp: 'WhatsApp',
+      title: 'Seu plano está pronto. Para quem é?', subtitle: 'Deixe seu contato para ver o seu plano completo.', name: 'Nome', email: 'E-mail', whatsapp: 'WhatsApp',
       whatsappPh: '(11) 99999-9999', suggest: 'Você quis dizer',
       button: 'Continuar', sending: 'Um instante...', saved: 'Prazer, {nome}!',
       privacy: 'Usamos seus dados para criar sua conta e montar o seu plano no app.',
