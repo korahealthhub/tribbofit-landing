@@ -15,6 +15,10 @@ window.TF = window.TF || {};
     { id: 'plano', label: 'Seu plano' },
   ];
 
+  // Jogo do preco (tela 49, 'value': os 3 apps e a regua do palpite). Desligado em 23/11/2026 para teste: do resumo
+  // (48) vai direto para o preco (49B), sem palpite. true = religa. Vai nos eventos como price_game: 'on' ou 'off' (app.js).
+  TF.MOSTRAR_JOGO_PRECO = false;
+
   // ==== src/onboarding/steps.ts: ordem das telas e quando cada uma e pulada ====
   // Fora do quiz, de proposito: so o que existe apenas no app: 3 (aceites; na web eles ficam no cadastro final),
   // 45 (pedido de notificacao), 48A (avaliacao na loja) e 49A (rastreamento da Apple).
@@ -82,7 +86,7 @@ window.TF = window.TF || {};
     { id: 'plan_summary', code: '48', section: 'plano' },
     // Com TF.PAGAMENTO_ATIVO (preco.js): cadastro logo depois do resultado e antes do preco; da revelacao vai direto para a Cakto.
     // Com ele falso: sem cadastro, e depois do preco entra a tela das lojas.
-    { id: 'value', code: '49', section: 'plano' },
+    { id: 'value', code: '49', section: 'plano', skip: () => !TF.MOSTRAR_JOGO_PRECO },
     { id: 'price_reveal', code: '49B', section: 'plano' },
     { id: 'download', code: '50B', section: 'plano', skip: () => !!TF.PAGAMENTO_ATIVO },
   ];

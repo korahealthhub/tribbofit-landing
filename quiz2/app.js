@@ -57,7 +57,9 @@
   // Na entrada nova, todos os eventos levam entrada=objetivo (/js/medida.js deixa passar so essa propriedade a mais).
   // Versao do quiz (15/11/2026): quiz_version em todos os eventos do quiz e quizVersion junto das respostas no cadastro.
   const QUIZ_VERSION = 'v2';
-  const medir = (evento, extra) => { if (window.tribboMedida) window.tribboMedida(evento, { ...extra, quiz_version: QUIZ_VERSION, ...(ENTRADA_URL ? { entrada: 'objetivo' } : {}) }); };
+  // price_game (23/11/2026): 'off' com o jogo do preco desligado (TF.MOSTRAR_JOGO_PRECO, perguntas.js), 'on' com ele ligado.
+  const PRICE_GAME = TF.MOSTRAR_JOGO_PRECO === false ? 'off' : 'on';
+  const medir = (evento, extra) => { if (window.tribboMedida) window.tribboMedida(evento, { ...extra, quiz_version: QUIZ_VERSION, price_game: PRICE_GAME, ...(ENTRADA_URL ? { entrada: 'objetivo' } : {}) }); };
   const telaInfo = (id) => { const s = TF.STEPS.find((x) => x.id === id); return { step_number: s ? s.code : '', step_name: id }; };
   let comecou = false;
 
