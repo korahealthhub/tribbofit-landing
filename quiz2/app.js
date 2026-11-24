@@ -877,7 +877,7 @@
   function Goal() {
     if (ENTRADA_URL && !entradaVista) { entradaVista = true; medir('web_quiz_entry_viewed'); }
     const draw = () => paint({
-      body: [header(a.displayName ? `${a.displayName}, ${T.goal.title}` : cap(T.goal.title)), opts(TF.GOAL_CHOICES.map((g) => optionCard({
+      body: [header(a.displayName ? `${a.displayName}, ${T.goal.title}` : cap(T.goal.title), a.displayName ? null : T.goal.subtitle), opts(TF.GOAL_CHOICES.map((g) => optionCard({
         label: g.label, ic: iconOf('goal', g.value), selected: a.goal === g.value,
         onPress: () => { if (g.value !== a.goal) update({ goal: g.value, targetWeightKg: null, pace: null, targetDate: null }); draw(); autoNext(); },
       })))],

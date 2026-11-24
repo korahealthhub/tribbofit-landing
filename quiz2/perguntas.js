@@ -448,7 +448,8 @@ window.TF = window.TF || {};
     },
     // src/components/profileQuestions/questions.tsx
     name: { title: 'Qual é o seu nome?', label: 'Nome e sobrenome', reloaded: 'A página recarregou. Confirme seu nome para continuar de onde parou.' },
-    goal: { title: 'qual é o seu principal objetivo?' },
+    // subtitle: so enquanto a pessoa ainda nao disse o nome (app.js, Goal). Repetido no #pre-obj do index.html: mudou aqui, muda la.
+    goal: { title: 'qual é o seu principal objetivo?', subtitle: 'Responda e receba seu plano de treino e alimentação. Leva poucos minutos.' },
     triedTitle: { lose_weight: 'perder peso', gain_muscle: 'ganhar massa', maintain_weight: 'manter o peso', improve_health: 'cuidar da saúde' },
     motivation: { title: 'Qual é o seu principal motivo?' },
     gender: { title: 'Como você se identifica?', subtitle: 'Usamos isso para calcular quanta energia seu corpo precisa.', note: 'Vamos usar uma média nos cálculos.' },
