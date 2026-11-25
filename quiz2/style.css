@@ -985,7 +985,18 @@ html.entrada-obj #pre-obj { display: block; }
 .fx-plano-txt span.fx-vista s { color: var(--fx-verm); font-weight: 600; }
 p.fx-confia { display: flex; align-items: center; justify-content: center; gap: 5px; margin: 4px 0 0; font-size: 12.5px; color: var(--fx-t2); white-space: nowrap; }
 p.fx-confia svg { flex: none; }
-.fx-prova2 { text-align: center; font-size: 12.5px; font-weight: 600; color: var(--fx-txt); margin: 0; }
+/* Selo da nota: estrelas, nota e "avaliacoes" entre dois ramos de louro dourados. */
+.fx-nota { display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 2px; }
+.fx-louro { flex: none; color: #D9AE45; }
+.fx-louro.dir { transform: scaleX(-1); }
+.fx-nota-meio { display: flex; flex-direction: column; align-items: center; color: var(--fx-txt); }
+.fx-nota-est { display: flex; gap: 1px; color: #F2B526; }
+.fx-nota-meio b { font-size: 28px; line-height: 1; font-weight: 800; letter-spacing: -0.02em; margin-top: 3px; }
+.fx-nota-meio span { font-size: 11px; line-height: 1.2; margin-top: 2px; }
+/* Prova social embaixo do selo: titulo e os depoimentos em cartoes brancos, um embaixo do outro. */
+.fx-depos { margin-top: 20px; color: var(--fx-txt); }
+.fx-depos .fx-h2b { text-align: center; }
+.fx-depos .fx-card { padding: 16px 18px; }
 .fx-nunca.fx-nunca-escuro { color: #FFFFFF; }
 .fx-nunca.fx-nunca-escuro > span { color: var(--fx-lima); }
 .fx-mt8 { margin-top: 8px; }
@@ -1011,7 +1022,6 @@ p.fx-confia { flex-wrap: nowrap; }
   .fx-plano-txt span { font-size: 12.5px; }
   .fx-plano-txt span.fx-vista { font-size: 12px; }
   p.fx-confia { font-size: 11.5px; gap: 4px; }
-  .fx-prova2, .fx-hoje { font-size: 11.5px; }
   .fx-cta { gap: 6px; }
 }
 /* Telas cheias do mascote: centralizadas na altura toda (sem vazio embaixo); mascote maior em tela alta. */
@@ -1019,7 +1029,7 @@ p.fx-confia { flex-wrap: nowrap; }
 .masc-img.cheia-img, .masc-img.oi-img { height: clamp(150px, 28vh, 230px); }
 .oi-linha { position: relative; }
 
-/* Black Friday (so com BLACK.ativa): faixa preta fixa no topo e o Anual com borda lima. */
+/* Black Friday (so com BLACK.ativa): faixa preta fixa no topo e o selo preto no Anual. */
 .bf-faixa { flex: none; background: #121417; color: #FFFFFF; text-align: center; padding: 10px 16px 12px; padding-top: max(10px, env(safe-area-inset-top, 0px)); }
 .bf-tit { display: block; color: var(--fx-lima, #E2F70F); font-size: 28px; line-height: 1; font-weight: 900; letter-spacing: .05em; }
 .bf-linha { margin: 6px 0 8px; font-size: 13.5px; color: #E8EAEC; }
@@ -1027,9 +1037,6 @@ p.fx-confia { flex-wrap: nowrap; }
 .bf-cx { display: flex; flex-direction: column; align-items: center; min-width: 52px; padding: 5px 6px 4px; border-radius: 10px; background: rgba(255,255,255,.1); }
 .bf-cx b { font-size: 22px; line-height: 1.05; font-weight: 800; font-variant-numeric: tabular-nums; color: #FFFFFF; }
 .bf-cx small { font-size: 10px; color: #B8BDC3; }
-.fx-plano.fx-black, .fx-plano.fx-black.sel { border-color: #C9DD00; background: #FBFFE6; box-shadow: 0 0 0 1px #C9DD00; }
-.fx-plano.fx-black .fx-radio { border-color: #121417; }
-.fx-plano.fx-black.sel .fx-radio { background: #121417; border-color: #121417; }
 .fx-selo-black { position: absolute; top: -11px; left: 14px; padding: 4px 10px; border-radius: 999px; background: #121417; color: var(--fx-lima, #E2F70F); font-size: 11px; font-weight: 900; letter-spacing: .05em; }
 .fx-plano-txt span.fx-mais { font-size: 12px; font-weight: 700; color: var(--fx-txt); }
 @media (max-width: 380px) {
@@ -1067,14 +1074,16 @@ p.fx-confia svg { display: inline-block; vertical-align: -2px; margin-right: 4px
 .fx-total s { color: var(--fx-t2); }
 /* Selo longo do Anual depois da Black: tarja lima no alto do cartao (uma linha em 360 e 390 px). */
 .fx-planos .fx-plano { padding: 14px 14px 12px; }
+/* Os 3 cartoes brancos e iguais; o marcado muda so o contorno (roxo). */
+.fx-planos .fx-plano.sel { background: #FFFFFF; }
 .fx-planos .fx-plano.fx-black { padding-top: 20px; margin-top: 6px; }
 .fx-plano .fx-selo-eco { position: static; flex: 0 0 calc(100% + 28px); margin: -14px -14px 6px; padding: 6px 4px; border-radius: 16px 16px 0 0; text-align: center; line-height: 1.3; letter-spacing: -0.01em; }
-.fx-hoje { font-size: 13px; line-height: 1.4; text-wrap: balance; }
+/* Uma linha so a partir de 360 px, tambem na frase do anual (a mais longa). */
+.fx-hoje { margin: 0 -10px; font-size: clamp(10.8px, 3.02vw, 13px); letter-spacing: -0.015em; line-height: 1.4; text-wrap: balance; }
 .fx-fundador { align-self: center; padding: 4px 8px; font-size: 13.5px; font-weight: 600; color: var(--fx-roxo); text-decoration: underline; text-underline-offset: 2px; }
 .bf-tit { font-size: 17px; line-height: 1.2; font-weight: 800; letter-spacing: 0; margin-bottom: 8px; }
 @media (max-width: 380px) {
   .fx-planos .fx-plano { gap: 4px 8px; }
   .fx-plano .fx-selo-eco { font-size: 10.5px; padding: 5px 2px; letter-spacing: -0.02em; }
-  .fx-hoje { font-size: 12.5px; }
   .bf-tit { font-size: 16px; margin-bottom: 5px; }
 }

@@ -1171,13 +1171,15 @@
   function stars(size) {
     return h('div', { class: 'stars', 'aria-label': '5 estrelas' }, Array.from({ length: 5 }, () => icon('star', size, C.gold)));
   }
+  // Um depoimento (foto, nome, 5 estrelas e texto): na tela de avaliacoes e na do preco.
+  const depoimento = (r) => [
+    h('div', { class: 'rev-head' }, h('img', { class: 'avatar', src: r.photo, alt: '' }), h('div', { class: 'rev-who' }, h('div', { class: 'rev-name' }, r.name), stars(13))),
+    h('p', { class: 'rev-txt' }, `"${r.text}"`)];
   function Reviews() {
     paint({
       body: [
         header(`${T.reviews.titleA} ${T.reviews.peopleLabel} ${T.reviews.titleB}`, T.reviews.subtitle),
-        h('div', { class: 'reviews' }, T.reviewList.map((r) => h('div', { class: 'card' },
-          h('div', { class: 'rev-head' }, h('img', { class: 'avatar', src: r.photo, alt: '' }), h('div', { class: 'rev-who' }, h('div', { class: 'rev-name' }, r.name), stars(13))),
-          h('p', { class: 'rev-txt' }, `"${r.text}"`)))),
+        h('div', { class: 'reviews' }, T.reviewList.map((r) => h('div', { class: 'card' }, depoimento(r)))),
       ],
       footer: [primary(T.reviews.button, () => next())],
     });
@@ -2443,6 +2445,28 @@
   // do site, com 33 px (escolhido em 15/11/2026).
   const escudoSeguro = () => svg('svg', { class: 'fx-selo-ico', width: 33, height: 33, viewBox: '0 0 256 256', 'aria-hidden': 'true' },
     svg('path', { fill: '#5B34D6', d: 'M208,40H48A16,16,0,0,0,32,56v56c0,52.72,25.52,84.67,46.93,102.19,23.06,18.86,46,25.26,47,25.53a8,8,0,0,0,4.2,0c1-.27,23.91-6.67,47-25.53C198.48,196.67,224,164.72,224,112V56A16,16,0,0,0,208,40Zm-34.32,69.66-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32Z' }));
+  // Selo da nota (25/11/2026): 5 estrelas, a nota e "avaliacoes" entre dois ramos de louro. Desenho nosso, sem imagem de fora.
+  // O ramo e um arco com folhas dos dois lados; o da direita e o mesmo, espelhado no CSS.
+  function ramoLouro(lado) {
+    const n = (x) => x.toFixed(1), folhas = [];
+    const ponto = (g) => { const t = (g * Math.PI) / 180; return [32 + 24 * Math.cos(t), 33 + 29 * Math.sin(t), (Math.atan2(29 * Math.cos(t), -24 * Math.sin(t)) * 180) / Math.PI]; };
+    const folha = (x, y, giro, k) => folhas.push(svg('path', { d: 'M0 0C2.6-3.6 7.4-3.8 11 0C7.4 2.6 2.6 2.4 0 0Z', transform: `translate(${n(x)} ${n(y)}) rotate(${n(giro)}) scale(${k})` }));
+    for (let i = 0; i < 6; i++) {
+      const [x, y, dir] = ponto(112 + i * 22), k = 1.28 - i * 0.07;
+      folha(x, y, dir - 40, k); folha(x, y, dir + 40, k * 0.85);
+    }
+    const [tx, ty, td] = ponto(238); folha(tx, ty, td, 0.75);
+    const [x0, y0] = ponto(98);
+    return svg('svg', { class: `fx-louro ${lado}`, width: 30, height: 60, viewBox: '-1 -2 34 68', fill: 'currentColor', 'aria-hidden': 'true' },
+      svg('path', { d: `M${n(x0)} ${n(y0)}A24 29 0 0 1 ${n(tx)} ${n(ty)}`, fill: 'none', stroke: 'currentColor', 'stroke-width': 1.3, 'stroke-linecap': 'round' }), folhas);
+  }
+  function seloNota(X2) {
+    const estrela = () => svg('svg', { width: 12, height: 12, viewBox: '0 0 24 24', fill: 'currentColor', 'aria-hidden': 'true' },
+      svg('path', { d: 'M12 1.6l3.2 6.6 7.2 1-5.2 5.1 1.2 7.2L12 18.1l-6.4 3.4 1.2-7.2L1.6 9.2l7.2-1z' }));
+    return h('div', { class: 'fx-nota', role: 'img', 'aria-label': X2.notaAlt }, ramoLouro('esq'),
+      h('div', { class: 'fx-nota-meio', 'aria-hidden': 'true' }, h('div', { class: 'fx-nota-est' }, [0, 1, 2, 3, 4].map(estrela)), h('b', null, X2.nota), h('span', null, X2.notaTxt)),
+      ramoLouro('dir'));
+  }
   // Valor em reais de um texto como "R$ 14,99" (preco do cupom vindo do servidor), ou null.
   const reaisDe = (s) => { const x = /(\d+)[,.](\d{2})/.exec(String(s || '')); return x ? Number(`${x[1]}.${x[2]}`) : null; };
   // "Feito pro que voce contou": ate 3 linhas com as respostas da pessoa (ja tentou, maior dificuldade, motivo + meta).
@@ -2560,7 +2584,7 @@
       const cartaoTrimestral = P.trimestral && window.TF_FUNIL && window.TF_FUNIL.cakto.trimestral
         ? plano('trimestral', null, X2.trimestral, porMes(P.trimestral / 3), X2.trimestralTotal.replace('{valor}', brl(P.trimestral)))
         : null;
-      // Anual: na Black, borda lima, selo preto com a economia sobre o anual normal, e o normal riscado antes do total.
+      // Anual: na Black, selo preto com a economia sobre o anual normal, e o normal riscado antes do total.
       // Depois dela, o selo com a economia contra 12 meses no Mensal (R$ 478,80 - R$ 229,90 = R$ 248,90), sem riscado.
       const totalAnual = X2.anualTotal.replace('{valor}', brl(precoAnual));
       const cartaoAnual = fimAnual
@@ -2573,11 +2597,11 @@
       const btn = primary(F.buttonPay, comprar);
       const hoje = h('p', { class: 'fx-hoje' });
       const acessoEl = escolhe && lead && lead.email ? acesso() : null;
-      // Embaixo do botao: o que se paga hoje e a renovacao do plano marcado (muda com a escolha), a confianca (com o
-      // cadeado e os 7 dias do reembolso), o WhatsApp do fundador e a nota da App Store.
+      // Embaixo do botao: a renovacao do plano marcado (muda com a escolha), a confianca (com o
+      // cadeado e os 7 dias do reembolso), o WhatsApp do fundador e o selo da nota.
       const seguro = escolhe && [h('p', { class: 'fx-confia' }, icon('lock-closed', 13, '#5B34D6'), X2.confiaLinha),
         h('a', { class: 'fx-fundador', href: `https://wa.me/${(window.TF_FUNIL || {}).whatsapp || '5511949268402'}`, target: '_blank', rel: 'noopener' }, X2.fundador),
-        h('p', { class: 'fx-prova2' }, X2.prova)];
+        seloNota(X2)];
       const e = { cartoes, btn, hoje, el: [h('div', { class: 'fx-planos', role: escolhe ? 'radiogroup' : null, 'aria-label': X.choose }, cartoes), h('div', { class: 'fx-cta' }, acessoEl, btn, escolhe && hoje, seguro)] };
       escolhas.push(e);
       return e.el;
@@ -2585,9 +2609,9 @@
     function atualiza() {
       const ofertaNoMensal = oferta && planoWeb === 'mensal';
       const rotulo = !escolhe ? R.button : ofertaNoMensal ? X.buttonOffer.replace('{preco}', precoOferta) : F.buttonPay;
-      const linha = !escolhe ? '' : planoWeb === 'anual' ? X.todayAnnual.replaceAll('{valor}', brl(precoAnual))
+      const linha = !escolhe ? '' : planoWeb === 'anual' ? X.todayAnnual
         : ofertaNoMensal ? X.todayOffer.replace('{oferta}', precoOferta).replace('{mensal}', brl(P.mensal))
-          : planoWeb === 'trimestral' ? X.todayQuarterly.replace('{valor}', brl(P.trimestral)) : X.todayMonthly.replace('{valor}', brl(P.mensal));
+          : planoWeb === 'trimestral' ? X.todayQuarterly : X.todayMonthly;
       for (const e of escolhas) {
         for (const c of e.cartoes) {
           const sel = escolhe && c.dataset.plano === planoWeb;
@@ -2675,7 +2699,7 @@
     }));
 
     // /quiz2/ (preco limpo): a primeira tela, sem rolar, tem o titulo curto, a previsao numa linha, os planos,
-    // o botao, a confianca e a prova social. Abaixo: como funciona, o que voce recebe (5 itens), nunca mais e personalizado
+    // o botao, a confianca e a prova social. Abaixo: os depoimentos, como funciona, o que voce recebe (7 itens), nunca mais e personalizado
     // num bloco so, a garantia, as perguntas e os planos de novo.
     const previsaoLinha = (m.kind === 'lose' || m.kind === 'gain') && m.alvo && m.mes && m.dif >= 1
       ? h('p', { class: 'fx-prev-linha' }, icon(m.kind === 'gain' ? 'trending-up-outline' : 'trending-down-outline', 16, '#5B34D6'), X2.previsao.replace('{alvo}', m.alvo).replace('{mes}', m.mes)) : null;
@@ -2685,10 +2709,13 @@
           h('h1', { class: 'fx-h1 fx-h1-curto', tabindex: '-1' }, X2.titulo),
           previsaoLinha),
         escolhaTopo,
-        h('div', { class: 'fx-card fx-gap12 fx-mt24' }, h('h2', { class: 'fx-h2b' }, X2.passosTitulo),
+        // Prova social: os 3 primeiros depoimentos da tela de avaliacoes, cada um no seu cartao.
+        h('div', { class: 'fx-depos' }, h('h2', { class: 'fx-h2b' }, (X2.provaTitulo || '').replace('{n}', T.reviews.peopleLabel)),
+          T.reviewList.slice(0, 3).map((r) => h('div', { class: 'fx-card' }, depoimento(r)))),
+        h('div', { class: 'fx-card fx-gap12' }, h('h2', { class: 'fx-h2b' }, X2.passosTitulo),
           h('ol', { class: 'fx-passos' }, X2.passos.map(([t1, t2], i) => h('li', null, h('span', { class: 'fx-passo-n' }, String(i + 1)), h('div', null, h('b', null, t1), t2 && h('span', null, t2)))))),
         h('div', { class: 'fx-card fx-gap14' }, h('h2', { class: 'fx-h2b' }, X.get.title),
-          X.get.items.slice(0, 5).map(([emo, t1, t2]) => h('div', { class: 'fx-item' }, h('span', { class: 'fx-item-emo', 'aria-hidden': 'true' }, emo), h('div', null, h('b', null, t1), h('span', null, t2))))),
+          X.get.items.slice(0, 7).map(([emo, t1, t2]) => h('div', { class: 'fx-item' }, h('span', { class: 'fx-item-emo', 'aria-hidden': 'true' }, emo), h('div', null, h('b', null, t1), h('span', null, t2))))),
         h('div', { class: 'fx-card fx-escuro fx-feito fx-gap14' },
           h('h2', { class: 'fx-h2b' }, X2.nuncaTitulo),
           X.never.items.map((t1) => h('div', { class: 'fx-nunca fx-nunca-escuro' }, h('span', { 'aria-hidden': 'true' }, '✕'), t1)),

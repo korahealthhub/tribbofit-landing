@@ -147,12 +147,13 @@ window.TF = window.TF || {};
       trimestral: 'Trimestral', barraMes: '/mês', mensalTotal: 'cobrado todo mês', trimestralTotal: '{valor} a cada 3 meses', anualTotal: '{valor} à vista por 12 meses',
       // Primeira tela do preco (sem rolar): titulo curto, previsao numa linha, planos, botao, confianca e prova.
       titulo: 'Seu plano está pronto', previsao: '{alvo} kg até {mes}',
-      prova: '4,8 na App Store', // App Store 4,86 (store_stats, 15/11/2026)
+      nota: '4,9', notaTxt: 'avaliações', notaAlt: 'Nota 4,9 de 5 nas avaliações', // App Store 4,86 (conferido em 25/11/2026)
+      provaTitulo: 'Junte-se a mais de {n} pessoas', // {n}: o mesmo da tela de avaliações (reviews.peopleLabel)
       nuncaTitulo: 'Nunca mais', feitoTitulo: 'Personalizado pra você',
       recomendado: 'Recomendado para seu objetivo · economize {valor} por ano',
       garantia: '7 dias de garantia', seguro: 'Pagamento seguro pela Cakto', formas: 'Pix ou cartão',
       passosTitulo: 'Como funciona',
-      passos: [['Pague', 'Pix ou cartão'], ['Receba o código', 'Por e-mail'], ['Entre no app', null]],
+      passos: [['Efetue o pagamento', 'Pix ou cartão'], ['Receba o código', 'Por e-mail e WhatsApp'], ['Comece a usar o app', null]],
       // Black Friday do anual (BLACK em app.js): R$ 149,90 na oferta propria da Cakto (sem cupom) ate 30/11 23:59.
       black: { faixa: 'Black Friday · termina 30/11 às 23h59', etiqueta: 'Black Friday · economize {valor}',
         dias: 'dias', dia: 'dia', horas: 'horas', min: 'min', seg: 'seg' },
@@ -690,23 +691,24 @@ window.TF = window.TF || {};
         access: 'Seu acesso vai para:', accessWhats: 'WhatsApp:', fix: 'corrigir', save: 'Salvar', saving: 'Salvando...', accessLabel: 'E-mail para receber o seu acesso',
         secure: 'Compra segura', secureSub: 'Pix ou cartão pela Cakto · 7 dias de garantia', cpf: 'A Cakto vai pedir seu CPF.',
         buttonOffer: 'Começar por {preco}',
-        // Linha embaixo do botao, pelo plano marcado: o que se paga hoje e a renovacao (valores conferidos na Cakto em 24/11/2026).
-        todayAnnual: 'Hoje: {valor}. Renova em 12 meses por {valor}. Cancele quando quiser.',
-        todayMonthly: 'Hoje: {valor}. Renova todo mês. Cancele quando quiser.',
-        todayQuarterly: 'Hoje: {valor}. Renova a cada 3 meses. Cancele quando quiser.',
+        // Linha embaixo do botao, pelo plano marcado: a renovacao, numa linha so (renova pelo preco da compra: conferido na Cakto em 24/11/2026).
+        todayAnnual: 'Renova a cada 12 meses pelo mesmo valor. Cancele quando quiser.',
+        todayMonthly: 'Renova todo mês. Cancele quando quiser.',
+        todayQuarterly: 'Renova a cada 3 meses. Cancele quando quiser.',
         todayOffer: '{oferta} no 1º mês, depois {mensal} · cancele quando quiser',
         get: {
           title: 'O que você recebe no app',
           items: [
-            ['📅', 'Cardápio do dia', 'Com as porções certas pra sua meta.'],
-            ['🏋️', 'Treinos da semana prontos', 'Vídeo de cada exercício e controle de carga.'],
+            ['🥗', 'Cardápio do dia', 'Com as porções certas pra sua meta.'],
+            ['🏋️', 'Treinos da semana prontos', 'Demonstração de cada exercício e controle de carga.'],
             ['🤖', 'Um assistente com IA', 'Te acompanha, responde dúvidas e manda lembretes.'],
             ['📸', 'Registre suas refeições em segundos', 'Por foto, voz, texto ou código de barras, e veja as calorias na hora.'],
+            ['💧', 'Controle de hidratação', 'Sua meta de água do dia e lembrete pra beber água.'],
+            ['📈', 'Acompanhe sua evolução', 'Progressão de carga, seus resultados do dia a dia e onde dá pra melhorar.'],
             ['🔄', 'Troca de alimentos', 'Não gostou? Troca mantendo as calorias.'],
-            ['💧', 'Água, sono e metas do dia', 'Com lembretes no celular.'],
+            // Daqui para baixo não aparece: a tela mostra os 7 primeiros.
             ['💊', 'Lembrete dos seus suplementos', 'Avisa a hora de tomar e você marca que tomou.'],
             ['🎯', 'Gere novos planos quando quiser', 'Mudou o objetivo? Crie uma nova ficha de treino e um novo plano alimentar no app.'],
-            ['📈', 'Sua evolução e conquistas', 'Gráficos da sua evolução por semana e por mês, histórico dos últimos 3 meses e conquistas a cada meta batida.'],
             ['👥', 'Comunidade com o fundador', 'Contato direto com quem faz o app.'],
           ],
         },
