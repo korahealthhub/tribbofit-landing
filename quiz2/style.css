@@ -980,7 +980,6 @@ html.entrada-obj #pre-obj { display: block; }
 .fx-prev-linha { display: inline-flex; align-items: center; gap: 6px; margin: 0; font-size: 15px; font-weight: 600; color: var(--fx-txt); }
 .fx-topo-preco .fx-palpite { margin: 6px 0 0; padding: 8px 12px; font-size: 14px; }
 .fx-topo-preco + .fx-planos { margin-top: 14px; }
-.fx-plano-preco b.fx-grande small { font-size: 14px; font-weight: 700; margin-left: 1px; }
 .fx-plano-txt span.fx-vista { font-size: 12.5px; color: var(--fx-t2); }
 .fx-plano-txt span.fx-vista s { color: var(--fx-verm); font-weight: 600; }
 p.fx-confia { display: flex; align-items: center; justify-content: center; gap: 5px; margin: 4px 0 0; font-size: 12.5px; color: var(--fx-t2); white-space: nowrap; }
@@ -1018,7 +1017,6 @@ p.fx-confia { flex-wrap: nowrap; }
   .fx-prev-linha { font-size: 14px; }
   .fx-topo-preco .fx-palpite { font-size: 13px; padding: 6px 10px; }
   .fx-plano-preco b.fx-grande { font-size: 24px; }
-  .fx-plano-preco b.fx-grande small { font-size: 12.5px; }
   .fx-plano-txt b { font-size: 16px; }
   .fx-plano-txt span { font-size: 12.5px; }
   .fx-plano-txt span.fx-vista { font-size: 12px; }
@@ -1069,9 +1067,9 @@ p.fx-confia svg { display: inline-block; vertical-align: -2px; margin-right: 4px
 .btn.btn-enche { position: relative; overflow: hidden; isolation: isolate; }
 .btn-enche-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: #BFD200; z-index: -1; }
 .btn-enche-txt { position: relative; }
-/* Escada de precos (24/11/2026): nome e valor por mes (grande) na mesma linha; embaixo, o total cobrado. */
+/* Escada de precos (25/11/2026): a esquerda o nome e o total cobrado; a direita o valor por dia (grande). */
 .fx-plano { flex-wrap: wrap; row-gap: 4px; }
-.fx-total { flex: 0 0 100%; text-align: right; font-size: 14px; line-height: 1.35; color: var(--fx-t2); }
+.fx-plano-txt span.fx-total { font-size: 12.5px; line-height: 1.35; color: var(--fx-t2); letter-spacing: -0.01em; }
 .fx-total s { color: var(--fx-t2); }
 /* Selo longo do Anual depois da Black: tarja lima no alto do cartao (uma linha em 360 e 390 px). */
 .fx-planos .fx-plano { padding: 14px 14px 12px; }
@@ -1085,6 +1083,7 @@ p.fx-confia svg { display: inline-block; vertical-align: -2px; margin-right: 4px
 .bf-tit { font-size: 17px; line-height: 1.2; font-weight: 800; letter-spacing: 0; margin-bottom: 8px; }
 @media (max-width: 380px) {
   .fx-planos .fx-plano { gap: 4px 8px; }
+  .fx-plano-txt span.fx-total { font-size: 11.8px; letter-spacing: -0.015em; }
   .fx-plano .fx-selo-eco { font-size: 10.5px; padding: 5px 2px; letter-spacing: -0.02em; }
   .bf-tit { font-size: 16px; margin-bottom: 5px; }
 }

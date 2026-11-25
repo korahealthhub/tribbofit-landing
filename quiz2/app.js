@@ -2503,9 +2503,6 @@
     // Quanto o anual sai mais barato que 12 meses do mensal (229,90 contra 478,80: 51%).
     const doze = P.mensal * 12;
     const pctAnual = Math.floor((1 - P.anual / doze) * 100);
-    // Preco por dia nos cartoes: anual / 365 e mensal / 30, nos centavos (R$ 0,63 e R$ 1,33).
-    const diaAnual = brl(Math.round((P.anual / 365) * 100) / 100);
-    const diaMensal = brl(Math.round((P.mensal / 30) * 100) / 100);
     // /quiz2/: o Anual vem marcado, na Black e depois dela; so com o cupom do suporte vem o Mensal.
     const fimAnual = oferta ? 0 : fimOfertaAnual();
     planoWeb = oferta ? 'mensal' : 'anual';
@@ -2567,31 +2564,31 @@
     };
     const escolhas = [];
     function escolha() {
-      // Cartao: o nome e o valor por mes (grande) na mesma linha; embaixo, menor, o total cobrado.
+      // Cartao: a esquerda o nome e, embaixo, o total cobrado; a direita o valor por dia (anual / 365, trimestral / 90, mensal / 30).
       const plano = (key, badge, titulo, preco, total) => h(escolhe ? 'button' : 'div', {
         type: escolhe ? 'button' : null, role: escolhe ? 'radio' : null, class: 'fx-plano', 'data-plano': key,
         onclick: escolhe ? () => { if (planoWeb !== key) { planoWeb = key; medir('web_quiz_plan_selected', { plan: key }); atualiza(); } } : null,
-      }, badge, escolhe && h('span', { class: 'fx-radio' }), h('span', { class: 'fx-plano-txt' }, h('b', null, titulo)),
-      h('span', { class: 'fx-plano-preco' }, preco), h('span', { class: 'fx-total' }, total));
-      const porMes = (n) => h('b', { class: 'fx-grande' }, brl(n), h('small', null, X2.barraMes));
+      }, badge, escolhe && h('span', { class: 'fx-radio' }), h('span', { class: 'fx-plano-txt' }, h('b', null, titulo), h('span', { class: 'fx-total' }, total)),
+      h('span', { class: 'fx-plano-preco' }, preco));
+      const porDiaDe = (valor, dias) => [h('b', { class: 'fx-grande' }, brl(Math.round((valor / dias) * 100) / 100)), h('span', null, X.perDay)];
       const cartaoMensal =
         oferta
           ? plano('mensal', h('span', { class: 'fx-selo-off' }, pctOferta ? X.offerTag.replace('{pct}', pctOferta) : X.firstMonth),
             X.monthly, [h('s', null, brl(P.mensal)), h('b', { class: 'fx-grande' }, precoOferta), h('span', { class: 'fx-roxo-forte' }, X.firstMonth)],
             `${X.then} ${brl(P.mensal)}${X.perMonthShort}`)
-          : plano('mensal', null, X.monthly, porMes(P.mensal), X2.mensalTotal);
+          : plano('mensal', null, X.monthly, porDiaDe(P.mensal, 30), X2.mensalTotal.replace('{valor}', brl(P.mensal)));
       // Trimestral so com a oferta em js/funil.js (sem ela, o toque cairia no anual).
       const cartaoTrimestral = P.trimestral && window.TF_FUNIL && window.TF_FUNIL.cakto.trimestral
-        ? plano('trimestral', null, X2.trimestral, porMes(P.trimestral / 3), X2.trimestralTotal.replace('{valor}', brl(P.trimestral)))
+        ? plano('trimestral', null, X2.trimestral, porDiaDe(P.trimestral, 90), X2.trimestralTotal.replace('{valor}', brl(P.trimestral)))
         : null;
       // Anual: na Black, selo preto com a economia sobre o anual normal, e o normal riscado antes do total.
       // Depois dela, o selo com a economia contra 12 meses no Mensal (R$ 478,80 - R$ 229,90 = R$ 248,90), sem riscado.
       const totalAnual = X2.anualTotal.replace('{valor}', brl(precoAnual));
       const cartaoAnual = fimAnual
         ? plano('anual', h('span', { class: 'fx-selo-black' }, BF.etiqueta.replace('{valor}', inteiro(P.anual - precoAnual))),
-          X.annual, porMes(precoAnual / 12), [h('s', null, brl(P.anual)), ' ', totalAnual])
+          X.annual, porDiaDe(precoAnual, 365), [h('s', null, brl(P.anual)), ' ', totalAnual])
         : plano('anual', oferta ? null : h('span', { class: 'fx-selo-eco' }, X2.recomendado.replace('{valor}', inteiro(P.mensal * 12 - precoAnual))),
-          X.annual, porMes(precoAnual / 12), totalAnual);
+          X.annual, porDiaDe(precoAnual, 365), totalAnual);
       if (fimAnual) cartaoAnual.classList.add('fx-black');
       const cartoes = (oferta ? [cartaoMensal, cartaoTrimestral, cartaoAnual] : [cartaoAnual, cartaoTrimestral, cartaoMensal]).filter(Boolean);
       const btn = primary(F.buttonPay, comprar);

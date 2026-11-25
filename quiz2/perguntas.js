@@ -143,8 +143,8 @@ window.TF = window.TF || {};
     ],
     tudoPronto: 'Tudo pronto, {nome}!', tudoProntoSemNome: 'Tudo pronto!',
     preco: {
-      // Cartoes: o valor por mes grande e, embaixo, o total cobrado. Nada de parcelas na tela.
-      trimestral: 'Trimestral', barraMes: '/mês', mensalTotal: 'cobrado todo mês', trimestralTotal: '{valor} a cada 3 meses', anualTotal: '{valor} à vista por 12 meses',
+      // Cartoes: a esquerda o nome e, embaixo, o total cobrado; a direita o valor por dia (calculado no app.js). Nada de parcelas na tela.
+      trimestral: 'Trimestral', mensalTotal: '{valor} por mês', trimestralTotal: '{valor} a cada 3 meses', anualTotal: '{valor} por ano',
       // Primeira tela do preco (sem rolar): titulo curto, previsao numa linha, planos, botao, confianca e prova.
       titulo: 'Seu plano está pronto', previsao: '{alvo} kg até {mes}',
       nota: '4,9', notaTxt: 'avaliações', notaAlt: 'Nota 4,9 de 5 nas avaliações', // App Store 4,86 (conferido em 25/11/2026)
@@ -429,7 +429,7 @@ window.TF = window.TF || {};
     reviews: { titleA: 'Mais de', titleB: 'pessoas', peopleLabel: '6 mil', subtitle: 'já começaram com o Tribbo Fit', button: 'Quero começar também' },
     // Reservas de src/onboarding/peopleCount.ts: PEOPLE_COUNT_FALLBACK. O app busca o numero no servidor; o quiz usa a reserva.
     peopleCount: 4000,
-    // Depoimentos validados por Roberto Rosa em 25/11/2026: clientes reais, com autorização (docs/depoimentos.md).
+    // Os 4 depoimentos (Carol B., Lais M., Caio T. e Andre C.) foram validados por Roberto Rosa em 25/11/2026: clientes reais, com autorização (docs/depoimentos.md).
     reviewList: [
       { name: 'Carol B.', photo: 'assets/reviews/carol_b.webp', text: 'Agora consigo acompanhar minha evolução na academia e não fico mais com dúvida do movimento dos exercícios.' },
       { name: 'Lais M.', photo: 'assets/reviews/lais_m.webp', text: 'Muito bom para treinar e fazer dieta.' },

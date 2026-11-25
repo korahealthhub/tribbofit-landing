@@ -1,6 +1,6 @@
 # Depoimentos do quiz
 
-Validados por Roberto Rosa em 25/11/2026: são clientes reais, com autorização.
+Roberto Rosa confirmou em 25/11/2026: todos os depoimentos da tela de avaliações do quiz (Carol B., Lais M., Caio T. e Andre C.) são de clientes reais, com autorização.
 Este registro guarda a confirmação do Roberto; os comprovantes ficam com ele.
 
 - **Lista:** `reviewList` em `quiz2/perguntas.js` (Carol B., Lais M., Caio T. e Andre C.), com as fotos em `quiz2/assets/reviews/`.
