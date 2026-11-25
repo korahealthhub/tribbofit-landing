@@ -13,7 +13,30 @@ Todo link que leva alguém a baixar o app passa por `tribbofit.com.br`. O site c
 | Anúncios no TikTok | `tribbofit.com.br/tt-ads` | tiktok / paid / lancamento |
 | Qualquer outra coisa | `tribbofit.com.br/download?utm_source=…&utm_medium=…&utm_campaign=…&utm_content=…` | o que estiver na URL |
 
-Os quatro links curtos aceitam `utm_content` para separar criativos:
+### Links de bio por perfil (desde 25/11/2026)
+
+Um link para cada perfil, com a campanha própria. Funcionam igual ao `/tt` e ao `/ig`, que continuam
+no ar sem mudança (`campaign = perfil`).
+
+| Link na bio | Origem / mídia / campanha | `ct` da Apple | Entrada em `link_clicks` |
+|---|---|---|---|
+| `tribbofit.com.br/tt-a` | tiktok / organic / tt_tribbofit_app | `tiktok_organic_tt_tribbofit_app` | `tt-a` |
+| `tribbofit.com.br/tt-b` | tiktok / organic / tt_tribbofit_reels | `tiktok_organic_tt_tribbofit_reels` | `tt-b` |
+| `tribbofit.com.br/tt-c` | tiktok / organic / tt_roberto_rosa | `tiktok_organic_tt_roberto_rosa` | `tt-c` |
+| `tribbofit.com.br/tt-d` | tiktok / organic / tt_martin | `tiktok_organic_tt_martin` | `tt-d` |
+| `tribbofit.com.br/ig-a` | instagram / organic / ig_tribbofit_app | `instagram_organic_ig_tribbofit_app` | `ig-a` |
+| `tribbofit.com.br/ig-b` | instagram / organic / ig_tribbofit_reels | `instagram_organic_ig_tribbofit_reels` | `ig-b` |
+| `tribbofit.com.br/ig-c` | instagram / organic / ig_betoarosa | `instagram_organic_ig_betoarosa` | `ig-c` |
+
+- Google Play: `referrer=utm_source=…&utm_medium=organic&utm_campaign=<campanha>` (codificado). No Android o app
+  grava essa campanha na pessoa (`install_utm_campaign` no PostHog, `acq_campaign` no perfil).
+- iPhone: a Apple só mostra números agregados por `ct`, não por pessoa. Na bio do Instagram, que acrescenta
+  `utm_content=link_in_bio`, o `ct` fica com a campanha inteira e o conteúdo cortado em 40 caracteres
+  (ex.: `instagram_organic_ig_tribbofit_reels_lin`): somar as linhas que começam com o `ct` da tabela.
+- Para juntar todos os links de bio de uma rede: `medium = 'organic'` e a `source`; por perfil: `campaign`.
+- Linhas com campanha `teste_…` em `link_clicks` (25/11/2026) são do teste destes links: não contar.
+
+Os links curtos aceitam `utm_content` para separar criativos:
 `tribbofit.com.br/ig-ads?utm_content=video-03`.
 
 Nos links curtos, **origem e mídia da página sempre vencem** (o Instagram acrescenta sozinho
