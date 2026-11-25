@@ -30,7 +30,7 @@
     // "corrigir" da tela de preço: troca o e-mail do lead ainda não pago (mesmo callback assinado da Cakto).
     leadEmail: SUPABASE[AMBIENTE] + '/functions/v1/web-lead-email',
     // Escada de precos (24/11/2026): mensal R$ 39,90, trimestral R$ 89,90 e anual R$ 229,90 (conferidos no checkout, com a
-    // taxa de R$ 0,99). Durante a Black, o /quiz2/ manda o anual para a oferta 32m7nk7, R$ 149,90 (BLACK em quiz2/app.js).
+    // taxa de R$ 0,99). Durante a Black, o /quiz2/ manda o anual para a oferta 37fuap8, R$ 99,90 (ate 25/11 era a 32m7nk7, R$ 149,90; BLACK em quiz2/app.js).
     cakto: {
       mensal: 'https://pay.cakto.com.br/6fxjnt9',
       trimestral: 'https://pay.cakto.com.br/358bsew',

@@ -155,7 +155,7 @@ window.TF = window.TF || {};
       garantia: '7 dias de garantia', seguro: 'Pagamento seguro pela Cakto', formas: 'Pix ou cartão',
       passosTitulo: 'Como funciona',
       passos: [['Efetue o pagamento', 'Pix ou cartão'], ['Receba o código', 'Por e-mail e WhatsApp'], ['Comece a usar o app', null]],
-      // Black Friday do anual (BLACK em app.js): R$ 149,90 na oferta propria da Cakto (sem cupom) ate 30/11 23:59.
+      // Black Friday do anual (BLACK em app.js): R$ 99,90 na oferta propria da Cakto (37fuap8) (sem cupom) ate 30/11 23:59.
       black: { faixa: 'Black Friday · termina 30/11 às 23h59', etiqueta: 'Black Friday · economize {valor}',
         dias: 'dias', dia: 'dia', horas: 'horas', min: 'min', seg: 'seg' },
       confiaLinha: 'Pix ou cartão\u00a0· Pagamento seguro\u00a0· 7 dias para pedir o reembolso',

@@ -2404,14 +2404,16 @@
     }, REDUCED ? 0 : V.stepMs);
   }
 
-  // Black Friday do anual (so no /quiz2/, LIGADA): Anual por R$ 149,90 ate 30/11/2026 23:59 (Brasilia), na oferta propria
+  // Black Friday do anual (so no /quiz2/, LIGADA): Anual por R$ 99,90 ate 30/11/2026 23:59 (Brasilia), na oferta propria
   // da Cakto (OFERTA_BLACK_URL), SEM cupom, com os mesmos parametros do anual (nome, e-mail, telefone, callback, utm).
-  // Na Cakto: R$ 148,91 + R$ 0,99 = R$ 149,90 (valor conferido em 23/11). Dados preenchidos e sem sufixo: conferido em 16/11.
+  // Na Cakto: oferta 37fuap8 ("Black Friday 57% OFF", produto Anual 99bccc80), R$ 98,91 + R$ 0,99 = R$ 99,90, a cada 365 dias
+  // (conferido em 25/11). Ate 25/11 era a 32m7nk7, R$ 149,90. Dados preenchidos e sem sufixo: conferido em 16/11.
+  // Na tela tudo sai de BLACK.preco: R$ 0,27 por dia no card, economia de R$ 130 sobre os R$ 229,90.
   // Renova a cada 365 dias pelo preco da compra (conferido na Cakto em 24/11). O texto da faixa (perguntas.js) traz a data.
   // Enquanto vale: faixa preta no topo com o contador e o Anual marcado. Depois do prazo, volta tudo ao normal sozinho
   // (link normal do anual). Nao vale junto do cupom do suporte.
-  const OFERTA_BLACK_URL = 'https://pay.cakto.com.br/32m7nk7';
-  const BLACK = { ativa: true, fim: Date.parse('2026-11-30T23:59:59-03:00'), preco: 149.90, url: OFERTA_BLACK_URL };
+  const OFERTA_BLACK_URL = 'https://pay.cakto.com.br/37fuap8';
+  const BLACK = { ativa: true, fim: Date.parse('2026-11-30T23:59:59-03:00'), preco: 99.90, url: OFERTA_BLACK_URL };
   // Fim da Black em ms, ou 0 se ela nao vale agora.
   function fimOfertaAnual() {
     if (!BLACK.ativa || !TF.PAGAMENTO_ATIVO || (lead && lead.cupom)) return 0;
@@ -2508,7 +2510,8 @@
     planoWeb = oferta ? 'mensal' : 'anual';
     const precoAnual = fimAnual ? BLACK.preco : P.anual;
     // "Menos de R$ 0,65 por dia" (Feito pro que voce contou): o anual / 365, arredondado para cima nos 5 centavos.
-    // Durante a Black Friday, o anual da Black / 365, arredondado para cima no centavo: "menos de R$ 0,42 por dia".
+    // Durante a Black Friday, o anual da Black / 365, arredondado para cima no centavo: "menos de R$ 0,28 por dia"
+    // (99,90 / 365 = 0,2737; o card mostra R$ 0,27, arredondado no centavo).
     const porDia = brl(fimAnual ? Math.ceil((precoAnual / 365) * 100) / 100 : Math.ceil((P.anual / 365) * 20) / 20);
     const BF = TF.V2.preco.black;
     const X2 = TF.V2.preco;
