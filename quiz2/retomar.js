@@ -27,7 +27,7 @@
   var curto = bruto.indexOf('.') < 0 && /^[A-Za-z0-9_-]{12}$/.test(bruto) ? bruto : null;
   var m = curto ? null : /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\.([0-9a-f]{16,64})$/i.exec(bruto);
   if ((!m && !curto) || !F || !F.leadResume || !window.fetch) return;
-  var cupom = curto ? ((q.get('cupom') || '').trim().slice(0, 40) || null) : null;
+  var cupom = curto && F.cupomAtivo ? ((q.get('cupom') || '').trim().slice(0, 40) || null) : null;
   var pedido = curto ? (cupom ? { token: curto, cupom: cupom } : { token: curto }) : { lead_id: m[1].toLowerCase(), token: m[2].toLowerCase() };
   var ctl = window.AbortController ? new AbortController() : null;
   var limite = ctl ? setTimeout(function () { ctl.abort(); }, 8000) : null;

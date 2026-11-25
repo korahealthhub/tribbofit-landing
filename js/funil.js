@@ -29,17 +29,23 @@
     leadCheckout: SUPABASE[AMBIENTE] + '/functions/v1/web-lead-checkout',
     // "corrigir" da tela de preço: troca o e-mail do lead ainda não pago (mesmo callback assinado da Cakto).
     leadEmail: SUPABASE[AMBIENTE] + '/functions/v1/web-lead-email',
+    // Escada de precos (24/11/2026): mensal R$ 39,90, trimestral R$ 89,90 e anual R$ 229,90 (conferidos no checkout, com a
+    // taxa de R$ 0,99). Durante a Black, o /quiz2/ manda o anual para a oferta 32m7nk7, R$ 149,90 (BLACK em quiz2/app.js).
     cakto: {
-      mensal: 'https://pay.cakto.com.br/vck2kfj_1298134',
+      mensal: 'https://pay.cakto.com.br/6fxjnt9',
+      trimestral: 'https://pay.cakto.com.br/358bsew',
       anual: 'https://pay.cakto.com.br/cons8xz_1298173'
     },
+    // Cupom do link curto do suporte (tribo15, 1o mes a R$ 14,99): so existe na oferta antiga do mensal (vck2kfj).
+    // false: o site ignora o &cupom= do link e o cupom da resposta do servidor, e mostra o preco normal.
+    cupomAtivo: false,
     // Anúncio do Meta (utm_source=FB, sem diferenciar maiúscula) cai direto na primeira pergunta do quiz:
     // a /plano/ redireciona para /quiz/?entrada=objetivo com todos os parâmetros (/plano/entrada.js).
     // false = todo mundo na /plano/ como antes, e /quiz/?entrada=objetivo vira o quiz de sempre.
     entradaObjetivo: true,
     redirecionarQuiz2: REDIRECIONAR_QUIZ2,
     // Versão dos Termos publicada em /termos/ (gravada junto do aceite).
-    termosVersao: '1.2',
+    termosVersao: '1.3',
     suporte: 'suporte@tribbofit.com.br',
     // WhatsApp do Tribbo Fit (+55 11 94926-8402), só dígitos.
     whatsapp: '5511949268402',

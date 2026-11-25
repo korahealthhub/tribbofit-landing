@@ -94,7 +94,7 @@
       return d;
     } catch (e) { return null; }
   }
-  let planoWeb = 'mensal'; // plano escolhido na tela 49B (so com TF.PAGAMENTO_ATIVO); no /quiz2/ o Mensal vem marcado
+  let planoWeb = 'mensal'; // plano escolhido na tela 49B (so com TF.PAGAMENTO_ATIVO); la, o Anual vem marcado
 
   // ─── Ajudantes ──────────────────────────────────────────────────────────────
 
@@ -2405,6 +2405,7 @@
   // Black Friday do anual (so no /quiz2/, LIGADA): Anual por R$ 149,90 ate 30/11/2026 23:59 (Brasilia), na oferta propria
   // da Cakto (OFERTA_BLACK_URL), SEM cupom, com os mesmos parametros do anual (nome, e-mail, telefone, callback, utm).
   // Na Cakto: R$ 148,91 + R$ 0,99 = R$ 149,90 (valor conferido em 23/11). Dados preenchidos e sem sufixo: conferido em 16/11.
+  // Renova a cada 365 dias pelo preco da compra (conferido na Cakto em 24/11). O texto da faixa (perguntas.js) traz a data.
   // Enquanto vale: faixa preta no topo com o contador e o Anual marcado. Depois do prazo, volta tudo ao normal sozinho
   // (link normal do anual). Nao vale junto do cupom do suporte.
   const OFERTA_BLACK_URL = 'https://pay.cakto.com.br/32m7nk7';
@@ -2458,7 +2459,7 @@
   }
 
   // ─── Tela 49B, so na web: o preco (prototipos Preco e PrecoOferta). Um destaque por tela, Anual sempre em cima.
-  // Sem oferta: Anual pre-selecionado com "Economize". Com oferta (so a confirmada pelo servidor no link curto,
+  // Sem oferta: Anual pre-selecionado (selo da Black ou "Recomendado"). Com oferta (so a confirmada pelo servidor no link curto,
   // lead.cupom): faixa com o prazo e o Mensal pre-selecionado com o 1o mes em destaque. Valores de preco.js (TF.PRECO).
   function PriceReveal() {
     const F = T.fim, X = F.price, R = T.priceReveal, P = TF.PRECO;
@@ -2475,23 +2476,22 @@
     const precoOferta = oferta ? lead.cupom.preco.replace(/R\$\s+/, 'R$\u00a0') : null; // texto do servidor ("R$ 14,99"), com o mesmo espaco
     const valorOferta = oferta ? reaisDe(precoOferta) : null;
     const pctOferta = valorOferta ? Math.floor((1 - valorOferta / P.mensal) * 100) : null;
-    // Quanto o anual sai mais barato que 12 meses do mensal (229,90 contra 358,80: 35%).
+    // Quanto o anual sai mais barato que 12 meses do mensal (229,90 contra 478,80: 51%).
     const doze = P.mensal * 12;
     const pctAnual = Math.floor((1 - P.anual / doze) * 100);
-    // Preco por dia nos cartoes: anual / 365 e mensal / 30, nos centavos (R$ 0,63 e R$ 1,00).
+    // Preco por dia nos cartoes: anual / 365 e mensal / 30, nos centavos (R$ 0,63 e R$ 1,33).
     const diaAnual = brl(Math.round((P.anual / 365) * 100) / 100);
     const diaMensal = brl(Math.round((P.mensal / 30) * 100) / 100);
-    const parcela = brl(P.parcelaAnual);
-    // /quiz2/: o Mensal vem marcado (com ou sem o cupom do suporte); durante a Black Friday, o Anual.
+    // /quiz2/: o Anual vem marcado, na Black e depois dela; so com o cupom do suporte vem o Mensal.
     const fimAnual = oferta ? 0 : fimOfertaAnual();
-    planoWeb = fimAnual ? 'anual' : 'mensal';
+    planoWeb = oferta ? 'mensal' : 'anual';
     const precoAnual = fimAnual ? BLACK.preco : P.anual;
     // "Menos de R$ 0,65 por dia" (Feito pro que voce contou): o anual / 365, arredondado para cima nos 5 centavos.
     // Durante a Black Friday, o anual da Black / 365, arredondado para cima no centavo: "menos de R$ 0,42 por dia".
     const porDia = brl(fimAnual ? Math.ceil((precoAnual / 365) * 100) / 100 : Math.ceil((P.anual / 365) * 20) / 20);
     const BF = TF.V2.preco.black;
     const X2 = TF.V2.preco;
-    const dozeMeses = P.mensal * 12; // 12 x R$ 29,90 = R$ 358,80 (o mesmo ano no Mensal)
+    const inteiro = (n) => `R$\u00a0${Math.floor(n + 1e-6)}`; // economia sem centavos, arredondada para baixo
 
     // Faixa preta do topo (prototipo "Oferta A"), so com a oferta confirmada pelo servidor: "OFERTA ESPECIAL", o selo
     // "49% OFF" com o preco do 1o mes e o contador ate o coupon_until real do lead (vem do servidor, entao recarregar
@@ -2543,54 +2543,51 @@
     };
     const escolhas = [];
     function escolha() {
-      const plano = (key, badge, titulo, sub, preco) => h(escolhe ? 'button' : 'div', {
+      // Cartao: o nome e o valor por mes (grande) na mesma linha; embaixo, menor, o total cobrado.
+      const plano = (key, badge, titulo, preco, total) => h(escolhe ? 'button' : 'div', {
         type: escolhe ? 'button' : null, role: escolhe ? 'radio' : null, class: 'fx-plano', 'data-plano': key,
         onclick: escolhe ? () => { if (planoWeb !== key) { planoWeb = key; medir('web_quiz_plan_selected', { plan: key }); atualiza(); } } : null,
-      }, badge, escolhe && h('span', { class: 'fx-radio' }), h('span', { class: 'fx-plano-txt' }, h('b', null, titulo), [].concat(sub).filter(Boolean).map((s) => (typeof s === 'string' ? h('span', null, s) : s))), h('span', { class: 'fx-plano-preco' }, preco));
-      // /quiz2/ (preco limpo): Mensal em cima e marcado, "R$ 29,90/mes" grande. Anual com "R$ 19,16/mes" grande (o anual
-      // a vista dividido por 12), e embaixo, pequeno, o R$ 358,80 riscado (12 meses no Mensal) com "R$ 229,90 a vista (Pix
-      // ou cartao em 1x)" e a linha do parcelado (a Cakto cobra juros no parcelado: 12x de R$ 23,65). A economia e sempre
-      // contra o valor riscado: sem oferta, 12 meses no Mensal; com a oferta do anual (desligada), o anual normal.
-      const riscado = fimAnual ? P.anual : dozeMeses;
-      const porMesAnual = Math.round((precoAnual / 12) * 100) / 100;
+      }, badge, escolhe && h('span', { class: 'fx-radio' }), h('span', { class: 'fx-plano-txt' }, h('b', null, titulo)),
+      h('span', { class: 'fx-plano-preco' }, preco), h('span', { class: 'fx-total' }, total));
+      const porMes = (n) => h('b', { class: 'fx-grande' }, brl(n), h('small', null, X2.barraMes));
       const cartaoMensal =
         oferta
           ? plano('mensal', h('span', { class: 'fx-selo-off' }, pctOferta ? X.offerTag.replace('{pct}', pctOferta) : X.firstMonth),
-            X.monthly, `${X.then} ${brl(P.mensal)}${X.perMonthShort}`,
-            [h('s', null, brl(P.mensal)), h('b', { class: 'fx-grande' }, precoOferta), h('span', { class: 'fx-roxo-forte' }, X.firstMonth)])
-          : plano('mensal', null, X.monthly, [X2.mensalSub], [h('b', { class: 'fx-grande' }, brl(P.mensal), h('small', null, X2.barraMes))]);
-      // Black Friday: o Anual em cima e marcado, borda lima, etiqueta, "R$ 12,49/mes" grande e, pequeno, o anual normal
-      // riscado, o valor a vista, a economia contra 12 meses no Mensal (R$ 358,80 - R$ 149,90 = R$ 208,90) e o parcelado.
+            X.monthly, [h('s', null, brl(P.mensal)), h('b', { class: 'fx-grande' }, precoOferta), h('span', { class: 'fx-roxo-forte' }, X.firstMonth)],
+            `${X.then} ${brl(P.mensal)}${X.perMonthShort}`)
+          : plano('mensal', null, X.monthly, porMes(P.mensal), X2.mensalTotal);
+      // Trimestral so com a oferta em js/funil.js (sem ela, o toque cairia no anual).
+      const cartaoTrimestral = P.trimestral && window.TF_FUNIL && window.TF_FUNIL.cakto.trimestral
+        ? plano('trimestral', null, X2.trimestral, porMes(P.trimestral / 3), X2.trimestralTotal.replace('{valor}', brl(P.trimestral)))
+        : null;
+      // Anual: na Black, borda lima, selo preto com a economia sobre o anual normal, e o normal riscado antes do total.
+      // Depois dela, o selo com a economia contra 12 meses no Mensal (R$ 478,80 - R$ 229,90 = R$ 248,90), sem riscado.
+      const totalAnual = X2.anualTotal.replace('{valor}', brl(precoAnual));
       const cartaoAnual = fimAnual
-        ? plano('anual', h('span', { class: 'fx-selo-black' }, BF.etiqueta),
-          X.annual, [h('span', { class: 'fx-vista' }, h('s', null, brl(P.anual)), ' ', BF.vista.replace('{preco}', brl(precoAnual))),
-            h('span', { class: 'fx-mais' }, BF.economiza.replace('{valor}', brl(dozeMeses - precoAnual))),
-            h('span', { class: 'fx-parcelado' }, BF.parcelado)],
-          [h('b', { class: 'fx-grande' }, brl(porMesAnual), h('small', null, X2.barraMes))])
-        : plano('anual', h('span', { class: 'fx-selo-eco' }, X2.economize.replace('{valor}', brl(riscado - precoAnual))),
-          X.annual, [h('span', { class: 'fx-vista' }, h('s', null, brl(riscado)), ' ', X2.anualVistaCurto.replace('{anual}', brl(precoAnual))),
-            h('span', { class: 'fx-parcelado' }, X2.anualParcelado)],
-          [h('b', { class: 'fx-grande' }, brl(porMesAnual), h('small', null, X2.barraMes))]);
+        ? plano('anual', h('span', { class: 'fx-selo-black' }, BF.etiqueta.replace('{valor}', inteiro(P.anual - precoAnual))),
+          X.annual, porMes(precoAnual / 12), [h('s', null, brl(P.anual)), ' ', totalAnual])
+        : plano('anual', oferta ? null : h('span', { class: 'fx-selo-eco' }, X2.recomendado.replace('{valor}', inteiro(P.mensal * 12 - precoAnual))),
+          X.annual, porMes(precoAnual / 12), totalAnual);
       if (fimAnual) cartaoAnual.classList.add('fx-black');
-      const cartoes = fimAnual ? [cartaoAnual, cartaoMensal] : [cartaoMensal, cartaoAnual];
+      const cartoes = (oferta ? [cartaoMensal, cartaoTrimestral, cartaoAnual] : [cartaoAnual, cartaoTrimestral, cartaoMensal]).filter(Boolean);
       const btn = primary(F.buttonPay, comprar);
       const hoje = h('p', { class: 'fx-hoje' });
       const acessoEl = escolhe && lead && lead.email ? acesso() : null;
-      // Embaixo do botao: a renovacao do plano marcado, o selo de compra segura e o aviso do CPF.
-      // /quiz2/: 7 dias de garantia, pagamento seguro pela Cakto e Pix ou cartao, e o aviso do CPF.
-      // Embaixo do botao, so duas linhas: confianca (com o cadeado) e a prova social. Sem a linha da renovacao (o "por mes"
-      // e o "por ano" ja estao no plano) e sem o aviso do CPF (a Cakto pede no checkout).
-      const seguro = escolhe && [h('p', { class: 'fx-confia' }, icon('lock-closed', 13, '#5B34D6'), X2.confiaLinha), h('p', { class: 'fx-prova2' }, X2.prova)];
-      const e = { cartoes, btn, hoje, el: [h('div', { class: 'fx-planos', role: escolhe ? 'radiogroup' : null, 'aria-label': X.choose }, cartoes), h('div', { class: 'fx-cta' }, acessoEl, btn, seguro)] };
+      // Embaixo do botao: o que se paga hoje e a renovacao do plano marcado (muda com a escolha), a confianca (com o
+      // cadeado e os 7 dias do reembolso), o WhatsApp do fundador e a nota da App Store.
+      const seguro = escolhe && [h('p', { class: 'fx-confia' }, icon('lock-closed', 13, '#5B34D6'), X2.confiaLinha),
+        h('a', { class: 'fx-fundador', href: `https://wa.me/${(window.TF_FUNIL || {}).whatsapp || '5511949268402'}`, target: '_blank', rel: 'noopener' }, X2.fundador),
+        h('p', { class: 'fx-prova2' }, X2.prova)];
+      const e = { cartoes, btn, hoje, el: [h('div', { class: 'fx-planos', role: escolhe ? 'radiogroup' : null, 'aria-label': X.choose }, cartoes), h('div', { class: 'fx-cta' }, acessoEl, btn, escolhe && hoje, seguro)] };
       escolhas.push(e);
       return e.el;
     }
     function atualiza() {
       const ofertaNoMensal = oferta && planoWeb === 'mensal';
-      const rotulo = !escolhe ? R.button : ofertaNoMensal ? X.buttonOffer.replace('{preco}', precoOferta) : fimAnual && planoWeb === 'anual' ? BF.botao : F.buttonPay;
-      const linha = !escolhe ? '' : planoWeb === 'anual' ? X.todayAnnual
+      const rotulo = !escolhe ? R.button : ofertaNoMensal ? X.buttonOffer.replace('{preco}', precoOferta) : F.buttonPay;
+      const linha = !escolhe ? '' : planoWeb === 'anual' ? X.todayAnnual.replaceAll('{valor}', brl(precoAnual))
         : ofertaNoMensal ? X.todayOffer.replace('{oferta}', precoOferta).replace('{mensal}', brl(P.mensal))
-          : X.todayMonthly.replace('{mensal}', brl(P.mensal));
+          : planoWeb === 'trimestral' ? X.todayQuarterly.replace('{valor}', brl(P.trimestral)) : X.todayMonthly.replace('{valor}', brl(P.mensal));
       for (const e of escolhas) {
         for (const c of e.cartoes) {
           const sel = escolhe && c.dataset.plano === planoWeb;
@@ -2677,7 +2674,7 @@
       return h('div', { class: 'fx-faq-item' }, btn, resp);
     }));
 
-    // /quiz2/ (preco limpo): a primeira tela, sem rolar, tem o titulo curto, a previsao numa linha, o palpite, os planos,
+    // /quiz2/ (preco limpo): a primeira tela, sem rolar, tem o titulo curto, a previsao numa linha, os planos,
     // o botao, a confianca e a prova social. Abaixo: como funciona, o que voce recebe (5 itens), nunca mais e personalizado
     // num bloco so, a garantia, as perguntas e os planos de novo.
     const previsaoLinha = (m.kind === 'lose' || m.kind === 'gain') && m.alvo && m.mes && m.dif >= 1
@@ -2686,10 +2683,7 @@
       body: [
         h('div', { class: 'fx-topo-preco' },
           h('h1', { class: 'fx-h1 fx-h1-curto', tabindex: '-1' }, X2.titulo),
-          previsaoLinha,
-          a.priceGuess != null && h('p', { class: 'fx-palpite' }, (fimAnual
-            ? X2.palpiteBlack.replace('{mes}', brl(Math.round((precoAnual / 12) * 100) / 100))
-            : X2.palpite.replace('{mensal}', brl(P.mensal))).replace('{chute}', `R$\u00a0${Math.round(a.priceGuess)}`))),
+          previsaoLinha),
         escolhaTopo,
         h('div', { class: 'fx-card fx-gap12 fx-mt24' }, h('h2', { class: 'fx-h2b' }, X2.passosTitulo),
           h('ol', { class: 'fx-passos' }, X2.passos.map(([t1, t2], i) => h('li', null, h('span', { class: 'fx-passo-n' }, String(i + 1)), h('div', null, h('b', null, t1), t2 && h('span', null, t2)))))),
@@ -2707,7 +2701,7 @@
       ],
       footer: [],
     });
-    // Faixa da Black Friday (so com BLACK.ativa e dentro do prazo), fixa no topo: "BLACK FRIDAY" grande, a linha do preco
+    // Faixa da Black Friday (so com BLACK.ativa e dentro do prazo), fixa no topo: uma linha com o prazo (sem precos)
     // e o contador (dias, horas, minutos e segundos) ate 30/11 23:59. A zero, a tela volta ao preco normal sozinha.
     if (fimAnual) {
       const caixa = (rot) => { const n = h('b', null, '00'); return [n, h('span', { class: 'bf-cx' }, n, h('small', null, rot))]; };
@@ -2722,7 +2716,6 @@
       };
       const faixa = h('div', { class: 'bf-faixa', role: 'timer' },
         h('b', { class: 'bf-tit' }, BF.faixa),
-        h('p', { class: 'bf-linha' }, BF.linha.replace('{preco}', brl(BLACK.preco))),
         h('div', { class: 'bf-cd' }, cd, ch, cm, cs));
       tique();
       const id = setInterval(tique, 1000);
@@ -3091,7 +3084,7 @@
     const curto = !bruto.includes('.') && /^[A-Za-z0-9_-]{12}$/.test(bruto) ? bruto : null;
     const m = curto ? null : /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\.([0-9a-f]{16,64})$/i.exec(bruto);
     if ((!m && !curto) || !TF.PAGAMENTO_ATIVO || !F) return false;
-    const cupomUrl = curto ? (URL_PARAMS.get('cupom') || '').trim().slice(0, 40) || null : null;
+    const cupomUrl = curto && F.cupomAtivo ? (URL_PARAMS.get('cupom') || '').trim().slice(0, 40) || null : null;
     const pedido = curto ? { token: curto, ...(cupomUrl ? { cupom: cupomUrl } : {}) } : { lead_id: m[1].toLowerCase(), token: m[2].toLowerCase() };
     try {
       // O retomar.js (no topo da pagina) ja fez este mesmo pedido enquanto o quiz baixava: usa a resposta dele.
@@ -3113,14 +3106,15 @@
       for (const k of Object.keys(base)) if (d.answers[k] !== undefined && d.answers[k] !== null) base[k] = d.answers[k];
       if (d.answers.priceExpectationValue != null) base.priceGuess = d.answers.priceExpectationValue;
       a = base;
-      if (d.plan === 'mensal' || d.plan === 'anual') planoWeb = d.plan;
+      if (d.plan === 'mensal' || d.plan === 'trimestral' || d.plan === 'anual') planoWeb = d.plan;
       // A assinatura do link do e-mail (resume) nao vale na /obrigado/: usa o handoff_token se o servidor mandar;
       // sem ele, o callback leva so o lead_id (a /obrigado/ entao avisa que o codigo chega por e-mail).
       lead = { id: curto ? d.lead_id.toLowerCase() : m[1].toLowerCase(), resumeSig: curto ? null : m[2].toLowerCase(),
         token: typeof d.handoff_token === 'string' && /^[0-9a-f]{16,64}$/i.test(d.handoff_token) ? d.handoff_token.toLowerCase() : null,
         name: d.name || a.fullName || '', email: d.email, whatsapp: soDigitos(d.whatsapp || ''), curto, cupomUrl };
       // Cupom aceito pelo servidor: abre no Mensal. Sem cupom na resposta (mesmo com cupom na URL): preco normal, sem aviso.
-      if (curto && typeof d.coupon === 'string' && /^[A-Za-z0-9_-]{1,40}$/.test(d.coupon)) {
+      // Com cupomAtivo desligado (js/funil.js), o cupom e ignorado.
+      if (F.cupomAtivo && curto && typeof d.coupon === 'string' && /^[A-Za-z0-9_-]{1,40}$/.test(d.coupon)) {
         lead.cupom = { codigo: d.coupon, preco: typeof d.coupon_price === 'string' ? d.coupon_price.slice(0, 20) : null, ate: typeof d.coupon_until === 'string' ? d.coupon_until : null };
         planoWeb = 'mensal';
       }

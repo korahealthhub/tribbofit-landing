@@ -2922,7 +2922,7 @@
     const curto = !bruto.includes('.') && /^[A-Za-z0-9_-]{12}$/.test(bruto) ? bruto : null;
     const m = curto ? null : /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\.([0-9a-f]{16,64})$/i.exec(bruto);
     if ((!m && !curto) || !TF.PAGAMENTO_ATIVO || !F) return false;
-    const cupomUrl = curto ? (URL_PARAMS.get('cupom') || '').trim().slice(0, 40) || null : null;
+    const cupomUrl = curto && F.cupomAtivo ? (URL_PARAMS.get('cupom') || '').trim().slice(0, 40) || null : null;
     const pedido = curto ? { token: curto, ...(cupomUrl ? { cupom: cupomUrl } : {}) } : { lead_id: m[1].toLowerCase(), token: m[2].toLowerCase() };
     try {
       // O retomar.js (no topo da pagina) ja fez este mesmo pedido enquanto o quiz baixava: usa a resposta dele.
@@ -2951,7 +2951,8 @@
         token: typeof d.handoff_token === 'string' && /^[0-9a-f]{16,64}$/i.test(d.handoff_token) ? d.handoff_token.toLowerCase() : null,
         name: d.name || a.fullName || '', email: d.email, whatsapp: soDigitos(d.whatsapp || ''), curto, cupomUrl };
       // Cupom aceito pelo servidor: abre no Mensal. Sem cupom na resposta (mesmo com cupom na URL): preco normal, sem aviso.
-      if (curto && typeof d.coupon === 'string' && /^[A-Za-z0-9_-]{1,40}$/.test(d.coupon)) {
+      // Com cupomAtivo desligado (js/funil.js), o cupom e ignorado.
+      if (F.cupomAtivo && curto && typeof d.coupon === 'string' && /^[A-Za-z0-9_-]{1,40}$/.test(d.coupon)) {
         lead.cupom = { codigo: d.coupon, preco: typeof d.coupon_price === 'string' ? d.coupon_price.slice(0, 20) : null, ate: typeof d.coupon_until === 'string' ? d.coupon_until : null };
         planoWeb = 'mensal';
       }

@@ -143,24 +143,21 @@ window.TF = window.TF || {};
     ],
     tudoPronto: 'Tudo pronto, {nome}!', tudoProntoSemNome: 'Tudo pronto!',
     preco: {
-      mensalSub: 'Cancele quando quiser', porMes: 'por mês', porAno: 'por ano', barraMes: '/mês',
-      // Primeira tela do preco (sem rolar): titulo curto, previsao numa linha, palpite, planos, botao, confianca e prova.
+      // Cartoes: o valor por mes grande e, embaixo, o total cobrado. Nada de parcelas na tela.
+      trimestral: 'Trimestral', barraMes: '/mês', mensalTotal: 'cobrado todo mês', trimestralTotal: '{valor} a cada 3 meses', anualTotal: '{valor} à vista por 12 meses',
+      // Primeira tela do preco (sem rolar): titulo curto, previsao numa linha, planos, botao, confianca e prova.
       titulo: 'Seu plano está pronto', previsao: '{alvo} kg até {mes}',
-      confia: '7 dias de garantia · Pagamento seguro · Pix ou cartão',
-      prova: '4,8 na App Store · mais de 5 mil pessoas', // App Store 4,86 (store_stats, 15/11/2026) e 5 mil downloads
-      anualVistaCurto: '{anual} à vista (Pix ou cartão em 1x)',
+      prova: '4,8 na App Store', // App Store 4,86 (store_stats, 15/11/2026)
       nuncaTitulo: 'Nunca mais', feitoTitulo: 'Personalizado pra você',
-      economize: 'Economize {valor}',
-      anualVista: '{anual} à vista (Pix ou cartão em 1x)', anualEquivale: 'Equivale a {mes} por mês', anualParcelado: 'ou parcelado no cartão, com juros da operadora',
+      recomendado: 'Recomendado para seu objetivo · economize {valor} por ano',
       garantia: '7 dias de garantia', seguro: 'Pagamento seguro pela Cakto', formas: 'Pix ou cartão',
       passosTitulo: 'Como funciona',
       passos: [['Pague', 'Pix ou cartão'], ['Receba o código', 'Por e-mail'], ['Entre no app', null]],
-      palpite: 'Você chutou {chute}. No Tribbo sai {mensal} por mês.',
-      palpiteBlack: 'Você chutou {chute}. Na Black Friday sai {mes} por mês.', // durante a Black: o anual da Black por mes
       // Black Friday do anual (BLACK em app.js): R$ 149,90 na oferta propria da Cakto (sem cupom) ate 30/11 23:59.
-      black: { faixa: 'BLACK FRIDAY', linha: 'Anual por {preco} · termina em', etiqueta: 'BLACK FRIDAY', vista: '{preco} por ano à vista',
-        economiza: 'Economize {valor} em relação ao mensal', parcelado: 'ou em até 12x no cartão, com juros', botao: 'Garantir preço de Black Friday', dias: 'dias', dia: 'dia', horas: 'horas', min: 'min', seg: 'seg' },
-      confiaLinha: '7 dias de garantia · Pagamento seguro · Cancele quando quiser',
+      black: { faixa: 'Black Friday · termina 30/11 às 23h59', etiqueta: 'Black Friday · economize {valor}',
+        dias: 'dias', dia: 'dia', horas: 'horas', min: 'min', seg: 'seg' },
+      confiaLinha: 'Pix ou cartão\u00a0· Pagamento seguro\u00a0· 7 dias para pedir o reembolso',
+      fundador: 'Fale com o fundador no WhatsApp',
     },
   };
 
@@ -693,9 +690,10 @@ window.TF = window.TF || {};
         access: 'Seu acesso vai para:', accessWhats: 'WhatsApp:', fix: 'corrigir', save: 'Salvar', saving: 'Salvando...', accessLabel: 'E-mail para receber o seu acesso',
         secure: 'Compra segura', secureSub: 'Pix ou cartão pela Cakto · 7 dias de garantia', cpf: 'A Cakto vai pedir seu CPF.',
         buttonOffer: 'Começar por {preco}',
-        // Linha embaixo do botao, pelo plano marcado. "Cancele quando quiser" nunca no anual.
-        todayAnnual: 'Renova em 1 ano',
-        todayMonthly: 'Renova todo mês · cancele quando quiser',
+        // Linha embaixo do botao, pelo plano marcado: o que se paga hoje e a renovacao (valores conferidos na Cakto em 24/11/2026).
+        todayAnnual: 'Hoje: {valor}. Renova em 12 meses por {valor}. Cancele quando quiser.',
+        todayMonthly: 'Hoje: {valor}. Renova todo mês. Cancele quando quiser.',
+        todayQuarterly: 'Hoje: {valor}. Renova a cada 3 meses. Cancele quando quiser.',
         todayOffer: '{oferta} no 1º mês, depois {mensal} · cancele quando quiser',
         get: {
           title: 'O que você recebe no app',
@@ -751,7 +749,7 @@ window.TF = window.TF || {};
         ],
         proof: '⭐ 4,8 na App Store · mais de 5 mil pessoas · Pix ou cartão',
       },
-      buttonPay: 'Desbloquear meu plano',
+      buttonPay: 'Começar meu plano',
     },
     // So na web: cadastro (tela 48L, com TF.PAGAMENTO_ATIVO), depois do resultado e antes do preco. Envia para o web-lead.
     leadForm: {

@@ -1061,3 +1061,20 @@ p.fx-confia svg { display: inline-block; vertical-align: -2px; margin-right: 4px
 .btn.btn-enche { position: relative; overflow: hidden; isolation: isolate; }
 .btn-enche-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: #BFD200; z-index: -1; }
 .btn-enche-txt { position: relative; }
+/* Escada de precos (24/11/2026): nome e valor por mes (grande) na mesma linha; embaixo, o total cobrado. */
+.fx-plano { flex-wrap: wrap; row-gap: 4px; }
+.fx-total { flex: 0 0 100%; text-align: right; font-size: 14px; line-height: 1.35; color: var(--fx-t2); }
+.fx-total s { color: var(--fx-t2); }
+/* Selo longo do Anual depois da Black: tarja lima no alto do cartao (uma linha em 360 e 390 px). */
+.fx-planos .fx-plano { padding: 14px 14px 12px; }
+.fx-planos .fx-plano.fx-black { padding-top: 20px; margin-top: 6px; }
+.fx-plano .fx-selo-eco { position: static; flex: 0 0 calc(100% + 28px); margin: -14px -14px 6px; padding: 6px 4px; border-radius: 16px 16px 0 0; text-align: center; line-height: 1.3; letter-spacing: -0.01em; }
+.fx-hoje { font-size: 13px; line-height: 1.4; text-wrap: balance; }
+.fx-fundador { align-self: center; padding: 4px 8px; font-size: 13.5px; font-weight: 600; color: var(--fx-roxo); text-decoration: underline; text-underline-offset: 2px; }
+.bf-tit { font-size: 17px; line-height: 1.2; font-weight: 800; letter-spacing: 0; margin-bottom: 8px; }
+@media (max-width: 380px) {
+  .fx-planos .fx-plano { gap: 4px 8px; }
+  .fx-plano .fx-selo-eco { font-size: 10.5px; padding: 5px 2px; letter-spacing: -0.02em; }
+  .fx-hoje { font-size: 12.5px; }
+  .bf-tit { font-size: 16px; margin-bottom: 5px; }
+}
