@@ -149,6 +149,7 @@ window.TF = window.TF || {};
       titulo: 'Seu plano está pronto', previsao: '{alvo} kg até {mes}',
       nota: '4,9', notaTxt: 'avaliações', notaAlt: 'Nota 4,9 de 5 nas avaliações', // App Store 4,86 (conferido em 25/11/2026)
       provaTitulo: 'Junte-se a mais de {n} pessoas', // {n}: o mesmo da tela de avaliações (reviews.peopleLabel)
+      depoimentos: ['Carol B.', 'Lais M.', 'Caio T.'], // os 3 de reviewList que aparecem no preço (registro em docs/depoimentos.md)
       nuncaTitulo: 'Nunca mais', feitoTitulo: 'Personalizado pra você',
       recomendado: 'Recomendado para seu objetivo · economize {valor} por ano',
       garantia: '7 dias de garantia', seguro: 'Pagamento seguro pela Cakto', formas: 'Pix ou cartão',
@@ -425,9 +426,10 @@ window.TF = window.TF || {};
       title: 'Você pode alcançar seus objetivos', button: 'Eu consigo', with: 'Com o Tribbo Fit', without: 'Sem rotina',
       item1: 'Desbloqueie suas conquistas', item2: 'Ative as notificações para lembrarmos você do que fazer', caption: 'Gráfico ilustrativo.', y: 'EVOLUÇÃO', x: 'SEMANAS',
     },
-    reviews: { titleA: 'Mais de', titleB: 'pessoas', peopleLabel: '5 mil', subtitle: 'já começaram com o Tribbo Fit', button: 'Quero começar também' },
+    reviews: { titleA: 'Mais de', titleB: 'pessoas', peopleLabel: '6 mil', subtitle: 'já começaram com o Tribbo Fit', button: 'Quero começar também' },
     // Reservas de src/onboarding/peopleCount.ts: PEOPLE_COUNT_FALLBACK. O app busca o numero no servidor; o quiz usa a reserva.
     peopleCount: 4000,
+    // Depoimentos validados por Roberto Rosa em 25/11/2026: clientes reais, com autorização (docs/depoimentos.md).
     reviewList: [
       { name: 'Carol B.', photo: 'assets/reviews/carol_b.webp', text: 'Agora consigo acompanhar minha evolução na academia e não fico mais com dúvida do movimento dos exercícios.' },
       { name: 'Lais M.', photo: 'assets/reviews/lais_m.webp', text: 'Muito bom para treinar e fazer dieta.' },
@@ -749,7 +751,7 @@ window.TF = window.TF || {};
           ['Posso cancelar quando quiser?', 'Sim. E nos primeiros 7 dias devolvemos 100% do valor.'],
           ['E se meu objetivo mudar?', 'Você cria um novo plano no app quando quiser.'],
         ],
-        proof: '⭐ 4,8 na App Store · mais de 5 mil pessoas · Pix ou cartão',
+        proof: '⭐ 4,8 na App Store · mais de 6 mil pessoas · Pix ou cartão',
       },
       buttonPay: 'Começar meu plano',
     },
@@ -796,7 +798,7 @@ window.TF = window.TF || {};
       // Com o pagamento ligado (TF.PAGAMENTO_ATIVO):
       buttonPay: 'Assinar e receber meu plano', mostChosen: 'Mais escolhido', renewalPay: 'Renovação automática ao fim de cada período.',
       guaranteeA: 'Garantia de 7 dias:', guaranteeB: 'não gostou, devolvemos o valor', cancelAnytime: 'Cancele quando quiser',
-      rating: '4,8', ratingTail: 'na App Store · mais de 5 mil pessoas', card: 'Cartão', secure: 'Pagamento seguro pela Cakto',
+      rating: '4,8', ratingTail: 'na App Store · mais de 6 mil pessoas', card: 'Cartão', secure: 'Pagamento seguro pela Cakto',
       vsApps: 'contra cerca de R$43 por mês em 3 apps separados',
     },
     // Termos e privacidade: mesmos enderecos de src/utils/legalLinks.ts, no proprio site.

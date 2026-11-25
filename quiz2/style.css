@@ -997,6 +997,7 @@ p.fx-confia svg { flex: none; }
 .fx-depos { margin-top: 20px; color: var(--fx-txt); }
 .fx-depos .fx-h2b { text-align: center; }
 .fx-depos .fx-card { padding: 16px 18px; }
+.fx-depos .rev-name { font-weight: 700; }
 .fx-nunca.fx-nunca-escuro { color: #FFFFFF; }
 .fx-nunca.fx-nunca-escuro > span { color: var(--fx-lima); }
 .fx-mt8 { margin-top: 8px; }

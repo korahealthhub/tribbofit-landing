@@ -2709,9 +2709,9 @@
           h('h1', { class: 'fx-h1 fx-h1-curto', tabindex: '-1' }, X2.titulo),
           previsaoLinha),
         escolhaTopo,
-        // Prova social: os 3 primeiros depoimentos da tela de avaliacoes, cada um no seu cartao.
+        // Prova social: 3 depoimentos da tela de avaliacoes (V2.preco.depoimentos), cada um no seu cartao.
         h('div', { class: 'fx-depos' }, h('h2', { class: 'fx-h2b' }, (X2.provaTitulo || '').replace('{n}', T.reviews.peopleLabel)),
-          T.reviewList.slice(0, 3).map((r) => h('div', { class: 'fx-card' }, depoimento(r)))),
+          (X2.depoimentos || []).map((nome) => T.reviewList.find((r) => r.name === nome)).filter(Boolean).map((r) => h('div', { class: 'fx-card' }, depoimento(r)))),
         h('div', { class: 'fx-card fx-gap12' }, h('h2', { class: 'fx-h2b' }, X2.passosTitulo),
           h('ol', { class: 'fx-passos' }, X2.passos.map(([t1, t2], i) => h('li', null, h('span', { class: 'fx-passo-n' }, String(i + 1)), h('div', null, h('b', null, t1), t2 && h('span', null, t2)))))),
         h('div', { class: 'fx-card fx-gap14' }, h('h2', { class: 'fx-h2b' }, X.get.title),
