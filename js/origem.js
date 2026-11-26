@@ -21,6 +21,8 @@
  *   Página com botões:  <script src="/js/origem.js" defer></script>
  *   Link curto:         <script src="/js/origem.js" defer data-redirect data-entrada="ig"
  *                         data-source="instagram" data-medium="organic" data-campaign="perfil"></script>
+ *   Link curto para uma página do site em vez da loja: data-destino="/quiz2/" (a página
+ *   recebe as utm_* da origem; conta o clique igual, sem o /download/ de reserva).
  * Botão de loja que não deve contar clique: data-origem-sem-contagem.
  * Convenção dos nomes: docs/links-de-campanha.md
  */
@@ -277,7 +279,11 @@
   if (script && script.hasAttribute('data-redirect')) quandoAtiva(function () {
     var nome = entrada(script.getAttribute('data-entrada') || 'link');
     var reaberto = params.get('r') === '1';
-    var destino = window.TribboOrigem.storeUrl();
+    // data-destino (26/11/2026, /tt-b e /ig-b): vai para essa página do site com as utm_*, em vez da loja.
+    var destinoFixo = script.getAttribute('data-destino');
+    var destino = destinoFixo
+      ? destinoFixo + (destinoFixo.indexOf('?') === -1 ? '?' : '&') + utmQuery(origem)
+      : window.TribboOrigem.storeUrl();
     track(nome, { reaberto: reaberto });
     gaEvent('smart_link_redirect', { entrada: nome, device: device() });
     if (window.ttq && typeof window.ttq.track === 'function') {
@@ -287,7 +293,7 @@
       navigate(destino);
       // Navegador interno: se o app bloquear a loja (ou a pessoa voltar dela), /download/
       // mostra o botão da loja. f=1: não conta o clique de novo.
-      if (isInApp() && device() !== 'desktop') {
+      if (!destinoFixo && isInApp() && device() !== 'desktop') {
         setTimeout(function () { navigate('/download/?' + utmQuery(origem) + '&f=1'); }, 2500);
       }
     };

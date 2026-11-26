@@ -21,11 +21,11 @@ no ar sem mudança (`campaign = perfil`).
 | Link na bio | Origem / mídia / campanha | `ct` da Apple | Entrada em `link_clicks` |
 |---|---|---|---|
 | `tribbofit.com.br/tt-a` | tiktok / organic / tt_tribbofit_app | `tiktok_organic_tt_tribbofit_app` | `tt-a` |
-| `tribbofit.com.br/tt-b` | tiktok / organic / tt_tribbofit_reels | `tiktok_organic_tt_tribbofit_reels` | `tt-b` |
+| `tribbofit.com.br/tt-b` | tiktok / organic / tt_tribbofit_reels | quiz do site (desde 26/11) | `tt-b` |
 | `tribbofit.com.br/tt-c` | tiktok / organic / tt_roberto_rosa | `tiktok_organic_tt_roberto_rosa` | `tt-c` |
 | `tribbofit.com.br/tt-d` | tiktok / organic / tt_martin | `tiktok_organic_tt_martin` | `tt-d` |
 | `tribbofit.com.br/ig-a` | instagram / organic / ig_tribbofit_app | `instagram_organic_ig_tribbofit_app` | `ig-a` |
-| `tribbofit.com.br/ig-b` | instagram / organic / ig_tribbofit_reels | `instagram_organic_ig_tribbofit_reels` | `ig-b` |
+| `tribbofit.com.br/ig-b` | instagram / organic / ig_tribbofit_reels | quiz do site (desde 26/11) | `ig-b` |
 | `tribbofit.com.br/ig-c` | instagram / organic / ig_betoarosa | `instagram_organic_ig_betoarosa` | `ig-c` |
 
 - Google Play: `referrer=utm_source=…&utm_medium=organic&utm_campaign=<campanha>` (codificado). No Android o app
@@ -35,6 +35,16 @@ no ar sem mudança (`campaign = perfil`).
   (ex.: `instagram_organic_ig_tribbofit_reels_lin`): somar as linhas que começam com o `ct` da tabela.
 - Para juntar todos os links de bio de uma rede: `medium = 'organic'` e a `source`; por perfil: `campaign`.
 - Linhas com campanha `teste_…` em `link_clicks` (25/11/2026) são do teste destes links: não contar.
+- **`/tt-b` e `/ig-b` (perfis de Reels) levam ao quiz, não à loja (desde 26/11/2026).** Destino:
+  `/quiz2/?utm_source=tiktok|instagram&utm_medium=organic&utm_campaign=tt_tribbofit_reels|ig_tribbofit_reels`
+  (mais o `utm_content` da URL, se houver; no Instagram fica `link_in_bio`). O clique continua em `link_clicks`
+  e a origem segue para o lead (`web_leads.utm_*`) e para os eventos do quiz no PostHog (`utm_source` tiktok ou
+  instagram, separado dos anúncios, que chegam com `utm_source=FB`). Feito com `data-destino="/quiz2/"` no
+  `<script>` da página (`js/origem.js`); sem esse atributo, o link curto vai para a loja como sempre.
+  Antes da mudança (25/11 a 26/11) esses dois iam para a loja com o `ct` `tiktok_organic_tt_tribbofit_reels` e
+  `instagram_organic_ig_tribbofit_reels`.
+- Teste de 26/11/2026: `utm_content` `teste_e2e_…` em `link_clicks`, `web_leads` (e-mail `delivered+bio…@resend.dev`)
+  e PostHog. Não contar.
 
 Os links curtos aceitam `utm_content` para separar criativos:
 `tribbofit.com.br/ig-ads?utm_content=video-03`.
@@ -43,6 +53,8 @@ Nos links curtos, **origem e mídia da página sempre vencem** (o Instagram acre
 `utm_source=ig&utm_medium=social&utm_content=link_in_bio` na bio; o /ig continua gravando
 `instagram / organic / perfil`, com `link_in_bio` como conteúdo). `utm_campaign` e `utm_content` da URL
 só entram se a página não tiver os seus (todas têm campanha, nenhuma tem conteúdo).
+Com `data-destino` (hoje só `/tt-b` e `/ig-b`), o link curto vai para essa página do site com as `utm_*`, sem o
+`/download/` de reserva do navegador interno.
 Para uma campanha diferente, use `/download?utm_…` ou crie um link curto novo.
 
 Os links antigos `korahealthhub.com.br/ig`, `/tt`, `/download` e `/android` continuam funcionando:
