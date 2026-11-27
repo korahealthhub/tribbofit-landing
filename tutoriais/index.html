@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Guia Tribbo Fit: vídeos tutoriais do app</title>
+<meta name="description" content="Vídeos curtos pra você aproveitar o app desde o primeiro dia.">
+<meta name="referrer" content="strict-origin">
+<meta name="theme-color" content="#F8F5F4">
+<!-- /tutoriais/ (27/11/2026): os 7 vídeos tutoriais do app. Sem preço e sem oferta. Medição no PostHog sem cookie (/js/medida.js):
+     tutorial_page_viewed e tutorial_video_played (video = número do vídeo). Sem pixel e sem faixa de cookies. Vídeos e capas em tutoriais/videos/. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' blob:; font-src 'self'; media-src 'self'; connect-src https://us.i.posthog.com; base-uri 'none'; form-action 'none'">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Tribbo Fit">
+<meta property="og:url" content="https://tribbofit.com.br/tutoriais/">
+<meta property="og:title" content="Guia Tribbo Fit">
+<meta property="og:description" content="Vídeos curtos pra você aproveitar o app desde o primeiro dia.">
+<meta property="og:image" content="https://tribbofit.com.br/tutoriais/videos/01-capa-og.jpg">
+<meta property="og:image:width" content="720">
+<meta property="og:image:height" content="1280">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://tribbofit.com.br/tutoriais/">
+<link rel="icon" href="/plano/assets/icones/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/plano/assets/icones/favicon-48.png" sizes="48x48" type="image/png">
+<link rel="apple-touch-icon" href="/plano/assets/icones/apple-touch-icon.png">
+<link rel="preload" href="/quiz2/assets/fontes/inter-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/quiz2/assets/fontes/inter-700.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="tutoriais.css">
+<script src="/js/medida.js" defer></script>
+<script src="tutoriais.js" defer></script>
+</head>
+<body>
+<div class="pagina">
+  <header class="topo">
+    <a class="marca" href="/" aria-label="Tribbo Fit, página inicial"><img src="/plano/assets/icone.webp" alt="" width="30" height="30"><span>Tribbo Fit</span></a>
+  </header>
+
+  <main>
+    <h1 class="titulo">Guia Tribbo Fit</h1>
+    <p class="sub">Vídeos curtos pra você aproveitar o app desde o primeiro dia.</p>
+
+    <!-- Os cards: a ordem, os títulos e as frases ficam aqui; a duração vem do vídeo (ffprobe) e o tutoriais.js só abre o player. -->
+    <ol class="lista" id="lista">
+      <li><button type="button" class="card" data-n="1" data-src="videos/01-primeiros-passos.mp4" data-capa="videos/01-capa.webp">
+        <span class="capa"><img src="videos/01-capa.webp" alt="" width="108" height="192" loading="lazy" decoding="async"><span class="play" aria-hidden="true"></span></span>
+        <span class="txt"><span class="num">Vídeo 1</span><span class="nome">Primeiros passos</span><span class="frase">Como o app calcula suas metas e o que tem em cada aba.</span><span class="dur">1:26</span></span>
+      </button></li>
+      <li><button type="button" class="card" data-n="2" data-src="videos/02-home-e-checkin.mp4" data-capa="videos/02-capa.webp">
+        <span class="capa"><img src="videos/02-capa.webp" alt="" width="108" height="192" loading="lazy" decoding="async"><span class="play" aria-hidden="true"></span></span>
+        <span class="txt"><span class="num">Vídeo 2</span><span class="nome">Home e check-in</span><span class="frase">Seu Score do dia e o check-in.</span><span class="dur">1:05</span></span>
+      </button></li>
+      <li><button type="button" class="card" data-n="3" data-src="videos/03-registrar-refeicao.mp4" data-capa="videos/03-capa.webp">
+        <span class="capa"><img src="videos/03-capa.webp" alt="" width="108" height="192" loading="lazy" decoding="async"><span class="play" aria-hidden="true"></span></span>
+        <span class="txt"><span class="num">Vídeo 3</span><span class="nome">Registrar refeição</span><span class="frase">Foto, áudio, texto e código de barras.</span><span class="dur">1:10</span></span>
+      </button></li>
+      <li><button type="button" class="card" data-n="4" data-src="videos/04-treino.mp4" data-capa="videos/04-capa.webp">
+        <span class="capa"><img src="videos/04-capa.webp" alt="" width="108" height="192" loading="lazy" decoding="async"><span class="play" aria-hidden="true"></span></span>
+        <span class="txt"><span class="num">Vídeo 4</span><span class="nome">Treino</span><span class="frase">Seus planos, começar o treino e registrar carga.</span><span class="dur">1:03</span></span>
+      </button></li>
+      <li><button type="button" class="card" data-n="5" data-src="videos/05-tribu.mp4" data-capa="videos/05-capa.webp">
+        <span class="capa"><img src="videos/05-capa.webp" alt="" width="108" height="192" loading="lazy" decoding="async"><span class="play" aria-hidden="true"></span></span>
+        <span class="txt"><span class="num">Vídeo 5</span><span class="nome">Tribu</span><span class="frase">Como usar o coach do app.</span><span class="dur">0:31</span></span>
+      </button></li>
+      <li><button type="button" class="card" data-n="6" data-src="videos/06-evolucao-e-conquistas.mp4" data-capa="videos/06-capa.webp">
+        <span class="capa"><img src="videos/06-capa.webp" alt="" width="108" height="192" loading="lazy" decoding="async"><span class="play" aria-hidden="true"></span></span>
+        <span class="txt"><span class="num">Vídeo 6</span><span class="nome">Evolução e conquistas</span><span class="frase">Seu histórico, peso e conquistas.</span><span class="dur">0:49</span></span>
+      </button></li>
+      <li><button type="button" class="card" data-n="7" data-src="videos/07-perfil-e-planos.mp4" data-capa="videos/07-capa.webp">
+        <span class="capa"><img src="videos/07-capa.webp" alt="" width="108" height="192" loading="lazy" decoding="async"><span class="play" aria-hidden="true"></span></span>
+        <span class="txt"><span class="num">Vídeo 7</span><span class="nome">Perfil e planos</span><span class="frase">Seus dados, metas e planos novos.</span><span class="dur">0:37</span></span>
+      </button></li>
+    </ol>
+  </main>
+
+  <footer class="rodape">
+    <a class="botao-2" href="https://wa.me/5511949268402" target="_blank" rel="noopener">Ficou com dúvida? Me chama no WhatsApp</a>
+    <a class="botao-2" href="https://whatsapp.com/channel/0029Vb9KgSeISTkApLgk9s3j" target="_blank" rel="noopener">Siga o canal do Tribbo Fit</a>
+  </footer>
+</div>
+
+<!-- Player: um só <video>, troca o arquivo ao navegar. Abre por cima da lista; o botão Voltar do celular fecha (#video-N no endereço). -->
+<div class="player" id="player" role="dialog" aria-modal="true" aria-labelledby="player-nome" hidden>
+  <div class="player-topo">
+    <div class="player-titulo"><span class="num" id="player-num"></span><span class="player-nome" id="player-nome"></span></div>
+    <button type="button" class="fechar" id="fechar" aria-label="Fechar o vídeo"></button>
+  </div>
+  <div class="celular"><video id="video" controls playsinline preload="metadata"></video></div>
+  <div class="player-nav">
+    <button type="button" class="nav" id="anterior">Anterior</button>
+    <button type="button" class="nav" id="proximo">Próximo</button>
+  </div>
+</div>
+<noscript><style>.card{pointer-events:none}</style></noscript>
+</body>
+</html>

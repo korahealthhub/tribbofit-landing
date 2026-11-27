@@ -1,0 +1,103 @@
+/* /tutoriais/ (27/11/2026): mesmo visual do /quiz2/ (fundo bege, cards brancos, violeta nos detalhes, Inter do quiz2). */
+@font-face { font-family: Inter; font-weight: 400; font-display: swap; src: url(/quiz2/assets/fontes/inter-400.woff2) format("woff2"); }
+@font-face { font-family: Inter; font-weight: 600; font-display: swap; src: url(/quiz2/assets/fontes/inter-600.woff2) format("woff2"); }
+@font-face { font-family: Inter; font-weight: 700; font-display: swap; src: url(/quiz2/assets/fontes/inter-700.woff2) format("woff2"); }
+
+:root {
+  --bg: #F8F5F4; --violeta: #7B3FF2; --lima: #E2F408; --lilas: #F3EEFE; --on: #0E1A1D;
+  --t1: #0E1A1D; --t2: #5F6B69; --t3: #85908D; --card: #FFFFFF;
+  --sombra: 0 1px 2px rgba(14,26,29,.04), 0 8px 24px rgba(14,26,29,.06);
+  color-scheme: light;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { background: var(--bg); }
+body {
+  margin: 0; background: var(--bg); color: var(--t1);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; -webkit-text-size-adjust: 100%;
+}
+body.travado { overflow: hidden; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-align: left; }
+img { display: block; }
+p { margin: 0; }
+a { color: inherit; }
+button:focus-visible, a:focus-visible { outline: 2px solid var(--violeta); outline-offset: 2px; }
+
+.pagina {
+  max-width: 480px; margin: 0 auto;
+  padding: env(safe-area-inset-top) 16px calc(env(safe-area-inset-bottom) + 24px);
+}
+.topo { display: flex; align-items: center; min-height: 56px; }
+.marca { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 700; font-size: 17px; letter-spacing: -.2px; }
+.marca img { border-radius: 8px; }
+
+.titulo { margin: 12px 0 0; font-weight: 700; font-size: 28px; line-height: 34px; letter-spacing: -.5px; }
+.sub { margin-top: 8px; font-size: 16px; line-height: 24px; color: var(--t2); }
+
+.lista { list-style: none; margin: 24px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.card {
+  display: flex; align-items: center; gap: 14px; width: 100%; padding: 10px 14px 10px 10px;
+  background: var(--card); border-radius: 18px; box-shadow: var(--sombra); border: 1.5px solid transparent;
+  transition: border-color 120ms, transform 120ms;
+}
+.card:active { transform: scale(.99); border-color: var(--violeta); }
+.capa { position: relative; flex: none; width: 72px; height: 128px; border-radius: 12px; overflow: hidden; background: #E9E4E1; }
+.capa img { width: 100%; height: 100%; object-fit: cover; }
+.play {
+  position: absolute; left: 50%; top: 50%; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%;
+  background: rgba(255,255,255,.92); box-shadow: 0 2px 8px rgba(14,26,29,.25);
+}
+.play::after {
+  content: ""; position: absolute; left: 13px; top: 10px;
+  border-style: solid; border-width: 7px 0 7px 11px; border-color: transparent transparent transparent var(--violeta);
+}
+.txt { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.num { font-weight: 700; font-size: 12px; line-height: 16px; letter-spacing: .4px; text-transform: uppercase; color: var(--violeta); }
+.nome { font-weight: 700; font-size: 18px; line-height: 23px; color: var(--t1); }
+.frase { font-size: 14px; line-height: 20px; color: var(--t2); }
+.dur {
+  align-self: flex-start; margin-top: 5px; padding: 3px 9px; border-radius: 100px; background: var(--lilas);
+  font-weight: 600; font-size: 12px; line-height: 16px; color: var(--violeta); font-variant-numeric: tabular-nums;
+}
+
+.rodape { margin-top: 28px; display: flex; flex-direction: column; gap: 10px; }
+.botao-2 {
+  display: flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 18px; border-radius: 999px;
+  background: var(--card); border: 1px solid rgba(14,26,29,.18);
+  font-weight: 600; font-size: 15px; line-height: 20px; text-align: center; text-decoration: none; color: var(--t1);
+}
+.botao-2:first-child { background: var(--lima); border-color: transparent; box-shadow: 0 1px 0 rgba(14,26,29,.08), 0 8px 20px rgba(160,175,0,.28); }
+
+/* Player por cima da lista */
+.player {
+  position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center;
+  padding: calc(env(safe-area-inset-top) + 10px) 16px calc(env(safe-area-inset-bottom) + 14px);
+  background: #07161B;
+}
+.player[hidden] { display: none; }
+.player-topo { width: 100%; max-width: 448px; display: flex; align-items: center; gap: 12px; min-height: 44px; flex: none; }
+.player-titulo { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.player-titulo .num { color: #C9B3FF; }
+.player-nome { font-weight: 700; font-size: 18px; line-height: 23px; color: #FFFFFF; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fechar { position: relative; flex: none; width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,.12); }
+.fechar::before, .fechar::after { content: ""; position: absolute; left: 13px; top: 21px; width: 18px; height: 2px; border-radius: 2px; background: #FFFFFF; transform: rotate(45deg); }
+.fechar::after { transform: rotate(-45deg); }
+
+/* Vídeo: o maior 9:16 que cabe no espaço que sobra (largura e altura). Sem moldura: os vídeos já têm o celular desenhado. */
+.celular {
+  flex: 1; min-height: 0; width: 100%; display: flex; align-items: center; justify-content: center; margin: 10px 0 12px;
+  container-type: size;
+}
+.celular video {
+  display: block; box-sizing: content-box; width: min(100cqw, 100cqh * 9 / 16); height: auto; aspect-ratio: 9 / 16; object-fit: contain;
+  background: #000; border-radius: 14px;
+}
+.player-nav { width: 100%; max-width: 448px; display: flex; gap: 10px; flex: none; }
+.nav {
+  flex: 1; display: flex; align-items: center; justify-content: center; min-height: 52px; border-radius: 999px;
+  font-weight: 700; font-size: 16px; text-align: center; background: rgba(255,255,255,.12); color: #FFFFFF;
+}
+#proximo { background: var(--lima); color: var(--on); }
+.nav[disabled] { opacity: .35; cursor: default; }
+
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } }

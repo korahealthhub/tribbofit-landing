@@ -1,6 +1,6 @@
 /*
  * Medição de uso no PostHog (mesmo projeto do app: região US, projeto 523653).
- * Usada na /plano/, na /plano/comunidade/ e no /quiz/.
+ * Usada na /plano/, na /plano/comunidade/, no /quiz/ e em /tutoriais/.
  *
  * Sem a biblioteca posthog-js: os eventos vão direto para a API pública de captura,
  * com o mesmo efeito da configuração
@@ -24,7 +24,7 @@
   'use strict';
   var KEY = 'phc_kUMmnj2VXm86CNuUUAx56gY74qkYoczupVb4frwhdryV';
   var URL_CAPTURA = 'https://us.i.posthog.com/i/v0/e/';
-  var PERMITIDAS = ['page', 'button', 'step_number', 'step_name', 'guess', 'store', 'plan', 'offer', 'entrada', 'quiz_version', 'price_game']; // plan: mensal, trimestral ou anual; offer: oferta do link curto (sim ou nao); entrada: 'objetivo' (anuncio direto na 1a pergunta); quiz_version: versao do quiz ('v1')
+  var PERMITIDAS = ['page', 'button', 'step_number', 'step_name', 'guess', 'store', 'plan', 'offer', 'entrada', 'quiz_version', 'price_game', 'video']; // video: numero do video em /tutoriais/; plan: mensal, trimestral ou anual; offer: oferta do link curto (sim ou nao); entrada: 'objetivo' (anuncio direto na 1a pergunta); quiz_version: versao do quiz ('v1')
 
   function novoId() {
     try { if (crypto.randomUUID) return crypto.randomUUID(); } catch (e) {}
